@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom"
 import GuestPage from "./pages/GuestPage"
-import HomePage from "./pages/HomePage"
+import UserPage from "./pages/user/UserPage"
 import LoginPage from "./pages/LoginPage"
-import RenderingPage from "./pages/RenderingPage"
+import RegisterPage from "./pages/RegisterPage"
 
 
 function App() {
@@ -12,8 +12,8 @@ function App() {
     <Routes>
       <Route path="/" element={<GuestPage/>}></Route>
       <Route path="/login" element={<LoginPage/>}/>
-      <Route path="/home" element={<HomePage/>}/>
-      <Route path="/render" element={<RenderingPage/>}/>
+      <Route path="/register" element={<RegisterPage/>}/>
+      <Route path="/user/*" element={<UserPage/>}/>
     </Routes>
     </>
   )
