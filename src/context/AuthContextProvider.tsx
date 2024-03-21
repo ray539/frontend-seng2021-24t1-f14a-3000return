@@ -1,29 +1,23 @@
 import { ReactElement, createContext, useContext, useState } from "react";
+import { UserProfile } from "../data";
 
-interface UserProfile {
-  username: string,
-  setUsername: Function
-  password: string,
-  setPassword: Function
+interface AuthContextT {
+  currentUser: UserProfile | null,
+  setCurrentUser: Function
 }
 
-const AuthContext = createContext<UserProfile>({
-  username: '',
-  password: '',
-  setUsername: () => null,
-  setPassword: () => null
+export const AuthContext = createContext<AuthContextT>({
+  currentUser: null,
+  setCurrentUser: () => null
 })
 
 export default function AuthContextProvider({ children } : { children: ReactElement }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [currentUser, setCurrentUser] = useState(null)
 
   return (
     <AuthContext.Provider value={{
-      username: username,
-      setUsername: setUsername,
-      password: password,
-      setPassword: setPassword
+      currentUser: currentUser,
+      setCurrentUser: setCurrentUser
     }}>
       {children}
     </AuthContext.Provider>
