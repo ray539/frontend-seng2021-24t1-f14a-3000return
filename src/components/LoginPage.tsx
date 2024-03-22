@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
 import { logInAndGetUser } from "../data";
 import { Container, Form, Button, Alert } from 'react-bootstrap';
@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [showError, setShowError] = useState(false);
   const authContext = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const user = logInAndGetUser(username, password);
     if (user == null) {
