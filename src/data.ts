@@ -1,3 +1,4 @@
+let globalId: number = 2;
 
 export interface UserProfile {
   id: string
@@ -85,3 +86,25 @@ export function logInAndGetUser(username: string, password: string) {
   return { ...u };
 }
 
+export function registerUser(username: string, email: string, password: string): UserProfile | null {
+  // Check if the username or email is already taken
+  if (USERS.some(user => user.username === username || user.email === email)) {
+    return null; // Return null if username or email is already taken
+  }
+
+  // Generate a unique ID for the new user
+  const id = globalId.toString();
+  globalId++;
+
+  // Create a new user object
+  const newUser: UserProfile = {
+    id,
+    username,
+    email,
+    password
+  };
+
+  USERS.push(newUser);
+
+  return newUser;
+}
