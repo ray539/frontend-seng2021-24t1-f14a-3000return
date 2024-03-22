@@ -80,8 +80,8 @@ export function getInvoicesBelongingTo(id: string): EInvoice[] {
 
 export function logInAndGetUser(username: string, password: string) {
   // if using database, will have to deal with encryption here...
-  let u = USERS.find(u => u.username === username && u.password === password);
+  const u = USERS.find(u => u.username === username && u.password === password);
   if (u == null) return null
-  return {...u};
+  return { ...u };
 }
 
