@@ -10,7 +10,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const [invoices, setInvoices] = useState<EInvoice[]>([])
-  
+
   const renderedInvoices = invoices.map((invoice, i) => ({
     name: invoice.name,
     key: i
