@@ -1,6 +1,7 @@
-require('dotenv').config()
+import { configDotenv } from 'dotenv'
+import mongoose from 'mongoose'
 
-const mongoose = require('mongoose')
+configDotenv()
 const uri = process.env.MONGODB_URI
 mongoose.set("strictQuery", false);
 mongoose.connect(uri)
@@ -14,13 +15,5 @@ const EInvoiceSchema = new Schema({
   data: String
 })
 
-// AccountSchema.set('toJSON', {
-//   transform: (document, retObj) => {
-//     retObj.id = retObj._id
-//     delete retObj._id;
-//     delete retObj._class
-//   }
-// })
-
 const EInvoiceModel = mongoose.model("EInvoice", EInvoiceSchema)
-module.exports = EInvoiceModel
+export default EInvoiceModel

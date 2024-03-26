@@ -1,9 +1,18 @@
-const express = require('express')
-const cors = require('cors')
-const morgan = require('morgan')
-const bcrypt = require('bcryptjs')
-const Account = require('./models/account');
-const EInvoice = require('./models/einvoice')
+// const express = require('express')
+// const cors = require('cors')
+// const morgan = require('morgan')
+// const bcrypt = require('bcryptjs')
+// const Account = require('./models/account');
+// const EInvoice = require('./models/einvoice')
+import express from 'express'
+import cors from 'cors'
+import morgan from 'morgan'
+import bcrypt from 'bcryptjs'
+import Account from './models/account.js'
+import EInvoice from './models/einvoice.js'
+import axios from 'axios'
+import { callValidationAPIJSON } from './external-apis/validation.js'
+
 
 // app
 const app = express();
@@ -11,6 +20,7 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan())
+app.use(express.text({type: 'application/xml'}))
 
 // bcrypt
 const salt = bcrypt.genSaltSync(10);
@@ -35,16 +45,19 @@ app.listen(PORT, () => {
  * @returns 
  */
 async function loginUser(username, password) {
+  console.log('loginUser');
   const accounts = await Account.find({
     username: username
   })
 
   if (accounts.length == 0) {
-    return false;
+    console.log('failed login');
+    return null;
   }
 
   const account = accounts[0]
   if (!verifyHash(password, account.passwordEncrypted)) {
+    console.log('failed login');
     return null;
   }
   return account;
@@ -94,24 +107,32 @@ app.post('/api/login', async (req, res) => {
 })
 
 app.post('/api/validate', async(req, res) => {
-  const username = req.params.username;
-  const password = req.params.password;
-  if (!loginUser(username, password)) {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  console.log(username, password)
+
+  const account = await loginUser(username, password)
+  if (!account) {
     return res.status(403).json({error: 'invalid username or password'})
   }
-  // call our validation api here
-  // return the result
+
+  const xmlData = req.body
+  const data = await callValidationAPIJSON(xmlData)
+  return res.json(data)
 })
 
 // assumes that the invoice being added is already valid
+// 
 app.post('/api/addInvoice', async(req, res) => {
   const username = req.params.username;
   const password = req.params.password;
+  
   if (!loginUser(username, password)) {
     return res.status(403).json({error: 'invalid username or password'})
   }
-  const name = req.body.name
-  const xmlData = req.body.data;
+  const name = req.params.name
+  const xmlData = req.body;
   const newInvoice = new EInvoice({
     belongsTo: username,
     name: name,
