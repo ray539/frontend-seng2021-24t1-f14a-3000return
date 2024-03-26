@@ -1,16 +1,9 @@
-// const express = require('express')
-// const cors = require('cors')
-// const morgan = require('morgan')
-// const bcrypt = require('bcryptjs')
-// const Account = require('./models/account');
-// const EInvoice = require('./models/einvoice')
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
 import bcrypt from 'bcryptjs'
 import Account from './models/account.js'
 import EInvoice from './models/einvoice.js'
-import axios from 'axios'
 import { callValidationAPIJSON } from './external-apis/validation.js'
 
 
@@ -94,10 +87,10 @@ app.post('/api/newAccount', async (req, res) => {
   })
 })
 
-app.post('/api/login', async (req, res) => {
-  const body = req.body;
-  const username = body.username
-  const password = body.password
+app.get('/api/login', async (req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
   const account = loginUser(username, password);
   if (account) {
     return res.json(account);
@@ -125,13 +118,14 @@ app.post('/api/validate', async(req, res) => {
 // assumes that the invoice being added is already valid
 // 
 app.post('/api/addInvoice', async(req, res) => {
-  const username = req.params.username;
-  const password = req.params.password;
-  
-  if (!loginUser(username, password)) {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
     return res.status(403).json({error: 'invalid username or password'})
   }
-  const name = req.params.name
+  const name = req.query.name
   const xmlData = req.body;
   const newInvoice = new EInvoice({
     belongsTo: username,
@@ -143,9 +137,11 @@ app.post('/api/addInvoice', async(req, res) => {
 
 // user must be logged in to use this route
 app.get('/api/getInvoicesBelongingTo', async(req, res) => {
-  const username = req.params.username;
-  const password = req.params.password;
-  if (!loginUser(username, password)) {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
     return res.status(403).json({error: 'invalid username or password'})
   }
 
