@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import Account from './models/account.js'
 import EInvoice from './models/einvoice.js'
 import { callValidationAPIJSON } from './external-apis/validation.js'
+import { callRenderingAPIPDF } from './external-apis/rendering.js'
 
 
 // app
@@ -115,8 +116,29 @@ app.post('/api/validate', async(req, res) => {
   return res.json(data)
 })
 
-// assumes that the invoice being added is already valid
-// 
+// returns
+// sample response:
+// {
+//     PDFURL: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf,
+//     UID: 2
+// }
+app.post('/api/render', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  console.log(username, password)
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  const xmlData = req.body
+  const data = await callRenderingAPIPDF(xmlData)
+  return res.json(data)
+})
+
+// assumes that the invoice being added is already valid 
 app.post('/api/addInvoice', async(req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
@@ -150,3 +172,4 @@ app.get('/api/getInvoicesBelongingTo', async(req, res) => {
   })
   res.json(invoices)
 })
+
