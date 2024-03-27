@@ -7,7 +7,7 @@ const RENDERING_ACCOUNT = {
   password: 'Password123'
 }
 const MAX_TRIES = 3
-const TOKEN = 'bf007bcf9b6fa5c430bcd3abbca9c7f15282e61ae959d37c35701b5944730e6d' // DON'T CHANGE THIS!!
+const TOKEN = '525529328dea3c286d4f34b0b09df8a409e2378df47391ebf811140a2ff924bf' // DON'T CHANGE THIS!!
 
 // sample pdf: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf
 

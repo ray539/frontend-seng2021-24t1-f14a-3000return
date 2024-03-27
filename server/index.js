@@ -115,6 +115,11 @@ app.post('/api/validate', async(req, res) => {
   return res.json(data)
 })
 
+// header
+//    username
+//    password
+// body
+//    xmldata
 // returns
 // sample response:
 // {
@@ -156,7 +161,7 @@ async function checkName(belongsTo, invName) {
   }
   return true;
 }
-// assumes that the invoice being added is already valid 
+// assumes that the invoice being added is already valididated
 // headers:
 //   username
 //   password
@@ -196,6 +201,9 @@ app.post('/api/addInvoice', async(req, res) => {
 })
 
 // user must be logged in to use this route
+// headers:
+//   username
+//   password
 app.get('/api/getInvoicesBelongingTo', async(req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
@@ -215,7 +223,34 @@ app.get('/api/getInvoicesBelongingTo', async(req, res) => {
   res.json(invoices)
 })
 
+
+// delete invoice given a name
+// headers:
+//   username
+//   password
+// query:
+//   name
+app.delete('/api/deleteInvoice', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  const name = req.query.name;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  const res = EInvoice.deleteOne(
+    {name: name}
+  )
+  res.json(res)
+})
+
+
 // get names of invoices belonging to certain person
+// headers:
+//   username
+//   password
 app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
@@ -233,24 +268,25 @@ app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
 })
 
 // get data of certain invoice
-// app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
-//   const username = req.headers.username;
-//   const password = req.headers.password;
+// headers:
+//   username
+//   password
+// query:
+//   invoiceName
+app.get('/api/getInvoiceDataByName', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  const invoiceName = req.query.name;
 
-//   const account = await loginUser(username, password)
-//   if (!account) {
-//     return res.status(403).json({error: 'invalid username or password'})
-//   }
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
 
-//   const invoices = await EInvoice.find({
-//     belongsTo: username
-//   })
-//   const names = invoices.map((inv, i) => {
-//     if (inv.name) {
-//       return inv.name
-//     } else {
-//       return '<error unnamed invoice>'
-//     }
-//   })
-//   res.json(names)
-// })
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: invoiceName
+  })
+
+  res.json(invoices[0].data)
+})
