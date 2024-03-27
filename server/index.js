@@ -7,7 +7,6 @@ import EInvoice from './models/einvoice.js'
 import { callValidationAPIJSON } from './external-apis/validation.js'
 import { callRenderingAPIPDF } from './external-apis/rendering.js'
 
-
 // app
 const app = express();
 app.use(express.json())
@@ -138,7 +137,36 @@ app.post('/api/render', async(req, res) => {
   return res.json(data)
 })
 
+/**
+ * checks that invName is unique
+ * assume that belongsTo points to a correct username
+ * @param {*} belongsTo 
+ * @param {*} invName 
+ * @returns 
+ */
+async function checkName(belongsTo, invName) {
+  const foundInvoices = await EInvoice.find(
+    {
+      belongsTo: belongsTo,
+      name: invName
+    }
+  )
+  if (foundInvoices.length > 0) {
+    return false;
+  }
+  return true;
+}
 // assumes that the invoice being added is already valid 
+// headers:
+//   username
+//   password
+// query
+//   name
+// body
+//   <xml data>
+// 
+// an invoice must have an "name" field
+// for a certain user, the all invoices must be unique
 app.post('/api/addInvoice', async(req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
@@ -148,13 +176,23 @@ app.post('/api/addInvoice', async(req, res) => {
     return res.status(403).json({error: 'invalid username or password'})
   }
   const name = req.query.name
+  if (!name) {
+    return res.status(400).json({error: 'must include name field in params'})
+  }
+
+  if (!(await checkName(username, name))) {
+    return res.status(400).json({error: 'name must be unique'})
+  }
+
   const xmlData = req.body;
   const newInvoice = new EInvoice({
     belongsTo: username,
     name: name,
     data: xmlData
   })
-  newInvoice.save().then(invoice => res.json(invoice))
+
+  let invoice = newInvoice.save();
+  res.json(invoice)
 })
 
 // user must be logged in to use this route
@@ -167,9 +205,52 @@ app.get('/api/getInvoicesBelongingTo', async(req, res) => {
     return res.status(403).json({error: 'invalid username or password'})
   }
 
-  const invoices = EInvoice.find({
+  const invoices = await EInvoice.find({
     belongsTo: username
   })
+
+  // console.log(invoices[0].data)
+  // console.log(invoices);
+
   res.json(invoices)
 })
 
+// get names of invoices belonging to certain person
+app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+  const invoiceNames = await EInvoice.find({
+    belongsTo: username
+  }).select('name')
+
+  res.json(invoiceNames)
+
+})
+
+// get data of certain invoice
+// app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
+//   const username = req.headers.username;
+//   const password = req.headers.password;
+
+//   const account = await loginUser(username, password)
+//   if (!account) {
+//     return res.status(403).json({error: 'invalid username or password'})
+//   }
+
+//   const invoices = await EInvoice.find({
+//     belongsTo: username
+//   })
+//   const names = invoices.map((inv, i) => {
+//     if (inv.name) {
+//       return inv.name
+//     } else {
+//       return '<error unnamed invoice>'
+//     }
+//   })
+//   res.json(names)
+// })
