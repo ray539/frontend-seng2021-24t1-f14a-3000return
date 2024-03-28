@@ -1,4 +1,4 @@
-import { ReactElement, createContext, useContext, useState } from "react";
+import { ReactElement, createContext, useState } from "react";
 import { UserProfile } from "../data";
 
 interface AuthContextT {
