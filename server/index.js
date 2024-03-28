@@ -191,7 +191,10 @@ app.post('/api/addInvoice', async(req, res) => {
     return res.status(400).json({error: 'must include name field in params'})
   }
 
-  if (!(await checkName(username, name))) {
+  const isUniqueName = await checkName(username, name);
+  console.log(username, name);
+  console.log(isUniqueName)
+  if (!isUniqueName) {
     return res.status(400).json({error: 'name must be unique'})
   }
 
