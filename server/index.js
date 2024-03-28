@@ -240,10 +240,10 @@ app.delete('/api/deleteInvoice', async(req, res) => {
     return res.status(403).json({error: 'invalid username or password'})
   }
 
-  const res = EInvoice.deleteOne(
+  const deleted = EInvoice.deleteOne(
     {name: name}
   )
-  res.json(res)
+  res.json(deleted)
 })
 
 
