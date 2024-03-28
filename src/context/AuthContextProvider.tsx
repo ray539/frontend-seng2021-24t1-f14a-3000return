@@ -11,7 +11,7 @@ export const AuthContext = createContext<AuthContextT>({
   setCurrentUser: () => null
 })
 
-export default function AuthContextProvider({ children } : { children: ReactElement }) {
+export default function AuthContextProvider({ children }: { children: ReactElement }) {
   const [currentUser, setCurrentUser] = useState(null)
 
   return (
