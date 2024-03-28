@@ -6,6 +6,7 @@ import Account from './models/account.js'
 import EInvoice from './models/einvoice.js'
 import { callValidationAPIJSON } from './external-apis/validation.js'
 import { callRenderingAPIPDF } from './external-apis/rendering.js'
+import 'express-async-errors'
 
 // app
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan())
 app.use(express.text({type: 'application/xml'}))
+
 
 // bcrypt
 const salt = bcrypt.genSaltSync(10);
@@ -55,8 +57,11 @@ async function loginUser(username, password) {
   }
   return account;
 }
-
-
+// return object:
+//   _id
+//   username
+//   email
+//   passwordEncrypted
 app.post('/api/newAccount', async (req, res) => {
   const body = req.body;
   const usernameNew = body.username
@@ -77,21 +82,22 @@ app.post('/api/newAccount', async (req, res) => {
     passwordEncrypted: hashPassword(passwordNew),
   })
 
-  // attributes:
-  // _id
-  // username
-  // email
-  // passwordEncrypted
+
   newAccount.save().then(account => {
     res.json(account)
   })
 })
 
+// returnObject:
+//    _id
+//    username
+//    email
+//    passwordEncrypted
 app.get('/api/login', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
-  const account = loginUser(username, password);
+  const account = await loginUser(username, password);
   if (account) {
     return res.json(account);
   } else {
@@ -290,3 +296,4 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
 
   res.json(invoices[0].data)
 })
+
