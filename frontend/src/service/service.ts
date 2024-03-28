@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { EInvoiceItem, UserProfile } from '../data';
 
 export async function logInAndGetUser(username: string, password: string) {
@@ -40,11 +40,29 @@ export async function getInvoicesBelongingTo(username: string, password: string)
     }
   })
   return einvoices
+}
+
+export async function validateFile(username: string, password: string, xmlFile: File) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader()
+    reader.readAsText(xmlFile)
+    reader.onload = async(e) => {
+      const xmlData = e.target?.result as string;
+      const res = await axios.post('/api/validate', xmlData, {
+        headers: {
+          username: username,
+          password: password,
+          "Content-Type": 'application/xml'
+        }
+      })
+      resolve(res.data)
+    }
+  })
+
 
 }
 
 export async function registerUser(username: string, email: string, password: string) {
-
   try {
     const res = await axios.post('/api/newAccount', {
       username: username,
@@ -63,5 +81,31 @@ export async function registerUser(username: string, email: string, password: st
   } catch (err) {
     return null;
   }
+}
 
+export async function addInvoiceToUser(username: string, password: string, xmlFile: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsText(xmlFile)
+    reader.onload = async(e) => {
+      const xmlData = e.target?.result as string;
+
+      try {
+        await axios.post('/api/addInvoice', xmlData, {
+          params: {
+            name: xmlFile.name
+          },
+          headers: {
+            username: username,
+            password: password,
+            "Content-Type": 'application/xml'
+          }
+        })
+
+        resolve('ok')
+      } catch (err) {
+        reject((err! as AxiosError).response!.data)
+      }
+    }
+  })
 }
