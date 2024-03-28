@@ -4,22 +4,27 @@ import GetStarted from "./GetStarted";
 import UploadPage from "./UploadPage";
 import CreationPage from "./CreationPage";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { EInvoice, getInvoicesBelongingTo } from "../../data";
+import { EInvoiceItem } from "../../data";
+import { getInvoicesBelongingTo } from "../../service/service";
 
 function Dashboard() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
-  const [invoices, setInvoices] = useState<EInvoice[]>([])
+  const user = authContext.currentUser
+  const [invoices, setInvoices] = useState<EInvoiceItem[]>([])
   
-  const renderedInvoices = invoices.map((invoice, i) => ({
+  const renderedInvoices = invoices.map(invoice => ({
     name: invoice.name,
-    key: i
+    key: invoice.id
   }))
 
   useEffect(() => {
     // on mount get all invoices belonging to logged in user
     // must exist otherwise this page won't show
-    setInvoices(getInvoicesBelongingTo(authContext.currentUser!.id));
+    console.log(user?.username, user?.password);
+    getInvoicesBelongingTo(user!.username, user!.password)
+      .then(invoices => setInvoices(invoices))    
+    // setInvoices(getInvoicesBelongingTo(authContext.currentUser!.id));
   }, [])
 
   return (
@@ -42,7 +47,11 @@ function Dashboard() {
         Get started
       </button>
       
-      {renderedInvoices.map(i => <div key={i.key}>{i.name} <input type='checkbox'></input></div>)}
+      { renderedInvoices.length == 0 ?
+        <div>none</div>
+        :
+        renderedInvoices.map(i => <div key={i.key}>{i.name} <input type='checkbox'></input></div>)
+      }
 
       <button>download</button>
       <button>render</button>

@@ -13,6 +13,11 @@ export interface EInvoice {
   data: string
 }
 
+export interface EInvoiceItem {
+  id: string,
+  name: string
+}
+
 export const USERS: UserProfile[] = [
   {
     id: '0',
