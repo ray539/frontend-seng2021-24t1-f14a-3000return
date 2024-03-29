@@ -36,7 +36,8 @@ export async function getInvoicesBelongingTo(username: string, password: string)
   const einvoices: EInvoiceItem[] = einvoicesRaw.map(invoice => {
     return {
       id: invoice._id,
-      name: invoice.name
+      name: invoice.name,
+      checked: false
     }
   })
   return einvoices
@@ -108,4 +109,26 @@ export async function addInvoiceToUser(username: string, password: string, xmlFi
       }
     }
   })
+}
+
+export async function deleteInvoicesFromUser(username: string, password: string, invoiceNames: string[]) {
+  try {
+    const res = await axios({
+      method: 'delete',
+      url: '/api/deleteInvoices',
+      data: {names: invoiceNames},
+      headers: {
+        username: username,
+        password: password
+      }
+    })
+
+    console.log(res);
+    
+
+    const numDel = res.data.numDeleted
+    return numDel
+  } catch (err) {
+    return null;
+  }
 }

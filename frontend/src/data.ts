@@ -15,7 +15,8 @@ export interface EInvoice {
 
 export interface EInvoiceItem {
   id: string,
-  name: string
+  name: string,
+  checked: boolean
 }
 
 export const USERS: UserProfile[] = [
