@@ -255,6 +255,38 @@ app.delete('/api/deleteInvoice', async(req, res) => {
   res.json(deleted)
 })
 
+// delete a bunch of invoices from the database
+// headers:
+//   username
+//   password
+// body:
+//   names: array[string]
+app.delete('/api/deleteInvoices', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  const names = req.body.names;
+
+  console.log(username, password);
+
+  console.log(names);
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  try {
+    const result = await EInvoice.deleteMany(
+      {
+        name: {$in: names}
+      }
+    )
+    res.json({numDeleted: result.deletedCount})
+  } catch (err) {
+    res.status(400).status(err.message)
+  }
+})
+
 
 // get names of invoices belonging to certain person
 // headers:
@@ -300,3 +332,4 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
   res.json(invoices[0].data)
 })
 
+// get invoice data
