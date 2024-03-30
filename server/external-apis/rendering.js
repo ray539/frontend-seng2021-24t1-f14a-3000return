@@ -6,8 +6,8 @@ const RENDERING_ACCOUNT = {
   email: 'raywang2003@gmail.com',
   password: 'Password123'
 }
-const MAX_TRIES = 3
-const TOKEN = '525529328dea3c286d4f34b0b09df8a409e2378df47391ebf811140a2ff924bf' // DON'T CHANGE THIS!!
+const MAX_TRIES = 1
+const TOKEN = '14059eab64562219290b12e1bf7b544ec44ba479e970e0d7b549cd7a40d96222' // DON'T CHANGE THIS!!
 
 // sample pdf: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf
 
@@ -31,6 +31,7 @@ export async function callRenderingAPIPDF(xmlData) {
 
   while (numTries < MAX_TRIES) {
     const formData = getFormData(xmlData)
+    // console.log(formData);
     try {
       const res = await axios.post('http://rendering.ap-southeast-2.elasticbeanstalk.com/render', formData, {
         headers: {

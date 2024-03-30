@@ -6,6 +6,7 @@ import Account from './models/account.js'
 import EInvoice from './models/einvoice.js'
 import { callValidationAPIJSON } from './external-apis/validation.js'
 import { callRenderingAPIPDF } from './external-apis/rendering.js'
+import 'express-async-errors'
 
 // app
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan())
 app.use(express.text({type: 'application/xml'}))
+
 
 // bcrypt
 const salt = bcrypt.genSaltSync(10);
@@ -55,8 +57,11 @@ async function loginUser(username, password) {
   }
   return account;
 }
-
-
+// return object:
+//   _id
+//   username
+//   email
+//   passwordEncrypted
 app.post('/api/newAccount', async (req, res) => {
   const body = req.body;
   const usernameNew = body.username
@@ -77,21 +82,22 @@ app.post('/api/newAccount', async (req, res) => {
     passwordEncrypted: hashPassword(passwordNew),
   })
 
-  // attributes:
-  // _id
-  // username
-  // email
-  // passwordEncrypted
+
   newAccount.save().then(account => {
     res.json(account)
   })
 })
 
+// returnObject:
+//    _id
+//    username
+//    email
+//    passwordEncrypted
 app.get('/api/login', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
-  const account = loginUser(username, password);
+  const account = await loginUser(username, password);
   if (account) {
     return res.json(account);
   } else {
@@ -185,7 +191,10 @@ app.post('/api/addInvoice', async(req, res) => {
     return res.status(400).json({error: 'must include name field in params'})
   }
 
-  if (!(await checkName(username, name))) {
+  const isUniqueName = await checkName(username, name);
+  console.log(username, name);
+  console.log(isUniqueName)
+  if (!isUniqueName) {
     return res.status(400).json({error: 'name must be unique'})
   }
 
@@ -240,10 +249,42 @@ app.delete('/api/deleteInvoice', async(req, res) => {
     return res.status(403).json({error: 'invalid username or password'})
   }
 
-  const res = EInvoice.deleteOne(
+  const deleted = EInvoice.deleteOne(
     {name: name}
   )
-  res.json(res)
+  res.json(deleted)
+})
+
+// delete a bunch of invoices from the database
+// headers:
+//   username
+//   password
+// body:
+//   names: array[string]
+app.delete('/api/deleteInvoices', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  const names = req.body.names;
+
+  console.log(username, password);
+
+  console.log(names);
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  try {
+    const result = await EInvoice.deleteMany(
+      {
+        name: {$in: names}
+      }
+    )
+    res.json({numDeleted: result.deletedCount})
+  } catch (err) {
+    res.status(400).status(err.message)
+  }
 })
 
 
@@ -290,3 +331,5 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
 
   res.json(invoices[0].data)
 })
+
+// get invoice data

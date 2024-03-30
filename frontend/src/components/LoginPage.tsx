@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { logInAndGetUser } from "../data";
+// import { logInAndGetUser } from "../data";
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { logInAndGetUser } from "../service/service";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ export default function LoginPage() {
   const [showError, setShowError] = useState(false);
   const authContext = useContext(AuthContext);
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    const user = logInAndGetUser(username, password);
+    const user = await logInAndGetUser(username, password);
+    console.log(user);
+    
     if (user == null) {
       setShowError(true);
       return;

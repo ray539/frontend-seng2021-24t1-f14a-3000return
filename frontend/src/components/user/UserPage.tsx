@@ -4,22 +4,30 @@ import GetStarted from "./GetStarted";
 import UploadPage from "./UploadPage";
 import CreationPage from "./CreationPage";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { EInvoice, getInvoicesBelongingTo } from "../../data";
+import { EInvoiceItem } from "../../data";
+import { deleteInvoicesFromUser, getInvoicesBelongingTo } from "../../service/service";
 
 function Dashboard() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
-  const [invoices, setInvoices] = useState<EInvoice[]>([])
-  
-  const renderedInvoices = invoices.map((invoice, i) => ({
-    name: invoice.name,
-    key: i
-  }))
+  const user = authContext.currentUser
+  const [invoices, setInvoices] = useState<EInvoiceItem[]>([])
+
+  const [deletedConfirmation, setDeleteConfirmation] = useState<{
+    state: 'hidden' | 'shown' | 'loading',
+    numItems: number
+  }>({
+    state: 'hidden',
+    numItems: 0
+  })
 
   useEffect(() => {
     // on mount get all invoices belonging to logged in user
     // must exist otherwise this page won't show
-    setInvoices(getInvoicesBelongingTo(authContext.currentUser!.id));
+    console.log(user?.username, user?.password);
+    getInvoicesBelongingTo(user!.username, user!.password)
+      .then(invoices => setInvoices(invoices))    
+    // setInvoices(getInvoicesBelongingTo(authContext.currentUser!.id));
   }, [])
 
   return (
@@ -42,12 +50,52 @@ function Dashboard() {
         Get started
       </button>
       
-      {renderedInvoices.map(i => <div key={i.key}>{i.name} <input type='checkbox'></input></div>)}
+      { invoices.length == 0 ?
+        <div>none</div>
+        :
+        invoices.map((invoice, i) => 
+        <div key={invoice.id}>
+          {invoice.name} 
+          <input type='checkbox' checked={invoice.checked} onChange={(e) => {
+            let invoices_ = [...invoices]
+            invoices_[i].checked = e.target.checked
+            setInvoices(invoices_)
+          }} />
+        </div>)
+      }
 
       <button>download</button>
       <button>render</button>
       <button>send</button>
-      <button>delete</button>
+      <button onClick={() => {
+        const numItems = invoices.filter(invoice => invoice.checked).length;
+        if (numItems == 0) return;
+        setDeleteConfirmation({
+          state: 'shown',
+          numItems: numItems
+        })
+      }}>delete</button>
+
+      {
+        deletedConfirmation.state != 'hidden' && 
+        <div>
+          { deletedConfirmation.state == 'shown' ? 
+            <div>Delete these {deletedConfirmation.numItems} items?'</div> :
+            <div>LOADING</div>
+          }
+          <button onClick={async () => {
+            const names = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name)
+            setDeleteConfirmation({...deletedConfirmation, state: 'loading'})
+            await deleteInvoicesFromUser(user!.username, user!.password, names)
+
+            setInvoices(invoices.filter(invoice => !invoice.checked))
+            setDeleteConfirmation({...deletedConfirmation, state: 'hidden'})
+          }}> yes</button>
+          <button onClick={() => setDeleteConfirmation({...deletedConfirmation, state: 'hidden'})}> no </button>
+        </div>
+      }
+
+
     </>
   );
 }

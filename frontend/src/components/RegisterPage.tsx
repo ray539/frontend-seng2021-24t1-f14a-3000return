@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { registerUser } from "../data";
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { registerUser } from "../service/service";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -13,17 +13,19 @@ export default function RegisterPage() {
   const [showError, setShowError] = useState(false);
   const authContext = useContext(AuthContext);
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setShowError(true);
       return;
     }
-    const user = registerUser(username, email, password);
+    const user = await registerUser(username, email, password)
+    // const user = registerUser(username, email, password);
     if (user == null) {
       setShowError(true);
       return;
     }
+    
     authContext.setCurrentUser(user);
     navigate("/user");
   };
