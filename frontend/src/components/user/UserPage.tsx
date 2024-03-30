@@ -55,7 +55,15 @@ function Dashboard() {
         :
         invoices.map((invoice, i) => 
         <div key={invoice.id}>
-          {invoice.name} 
+          {invoice.name}
+          <button>
+            <a>view xml</a>
+          </button>
+
+          <button>
+          <a href="https://google.com" target='_blank' >view pdf</a>
+          </button>
+          
           <input type='checkbox' checked={invoice.checked} onChange={(e) => {
             let invoices_ = [...invoices]
             invoices_[i].checked = e.target.checked
@@ -94,6 +102,7 @@ function Dashboard() {
           <button onClick={() => setDeleteConfirmation({...deletedConfirmation, state: 'hidden'})}> no </button>
         </div>
       }
+      
 
 
     </>

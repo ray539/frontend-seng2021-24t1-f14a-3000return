@@ -7,6 +7,7 @@ import AuthContextProvider from "./context/AuthContextProvider"
 
 
 function App() {
+
   return (
     <>
       <AuthContextProvider>
