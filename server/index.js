@@ -163,64 +163,8 @@ app.post('/api/render', async(req, res) => {
   console.log('here');
   console.log(data);
 
-  // const billTimeUrl = data.PDFURL
-  // const ourLink = generateLink();
-  // tempLinks.push({
-  //   username: username,
-  //   ourLink: ourLink,
-  //   billTimeUrl: billTimeUrl
-  // })
-
   return res.json(data)
 })
-
-// app.get('/storage/pdf', async(req, res) => {
-//   const username = req.headers.username;
-//   const password = req.headers.password;
-//   const link = req.query.tempPdfLink
-
-//   const account = await loginUser(username, password)
-//   if (!account) {
-//     return res.status(403).json({error: 'invalid username or password'})
-//   }
-
-//   // get link they requested
-//   const tempLinkData = tempLinks.find(l => l.ourLink == link);
-//   if (!tempLinkData) {
-//     return res.status(404).send('<div>404 PAGE NOT FOUND </div>')
-//   }
-
-//   // check that usernames match up
-//   if (tempLinkData.username != username) {
-//     return res.status(404).send('<div>404 PAGE NOT FOUND </div>')
-//   }
-
-//   const htmlContent = `
-//     <!DOCTYPE html>
-//     <html lang="en">
-//     <head>
-//         <meta charset="UTF-8">
-//         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//         <title>Sample HTML Page</title>
-//     </head>
-//     <style>
-//       iframe {
-//         width: 100%;
-//         height: 100%;
-//         border: none;
-//       }
-//     </style>
-//     <body>
-//         <iframe src="${tempLinkData.billTimeUrl}"></iframe>
-//     </body>
-//     </html>
-//   `;
-//   // res.send(htmlContent)
-//   res.send(tempLinkData.billTimeUrl)
-
-
-
-  
 
 
 // })

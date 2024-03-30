@@ -37,7 +37,8 @@ export async function getInvoicesBelongingTo(username: string, password: string)
     return {
       id: invoice._id,
       name: invoice.name,
-      checked: false
+      checked: false,
+      pdfGenMsg: 'generate pdf'
     }
   })
   return einvoices
@@ -59,8 +60,45 @@ export async function validateFile(username: string, password: string, xmlFile: 
       resolve(res.data)
     }
   })
+}
 
+export async function getPdfLink(username: string, password: string, xmlData: string) {
+  try {
+    const res = await axios.post('/api/render', xmlData, {
+      headers: {
+        username: username,
+        password: password,
+        "Content-Type": 'application/xml'
+      }
+    })
+    console.log(res.data);
+    return res.data.PDFURL
+  } catch (err) {
+    return null
+  }
 
+}
+
+/**
+ * get xml data of an invoice given it's name
+ * @param username 
+ * @param password 
+ * @param filename 
+ * @returns 
+ */
+export async function getXmlData(username: string, password: string, filename: string) {
+  try {
+    const res = await axios.get(`/api/getInvoiceDataByName?name=${filename}`, {
+      headers: {
+        username: username,
+        password: password
+      },
+    })
+    const xmlData = res.data
+    return xmlData
+  } catch (err) {
+    return null;
+  }
 }
 
 export async function registerUser(username: string, email: string, password: string) {

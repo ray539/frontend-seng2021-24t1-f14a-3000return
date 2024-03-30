@@ -16,7 +16,8 @@ export interface EInvoice {
 export interface EInvoiceItem {
   id: string,
   name: string,
-  checked: boolean
+  checked: boolean,
+  pdfGenMsg: 'generate pdf' | 'fetching xml...' | 'generating...' | 'an error occured :('
 }
 
 export const USERS: UserProfile[] = [
