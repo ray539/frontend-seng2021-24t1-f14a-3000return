@@ -7,7 +7,7 @@ const RENDERING_ACCOUNT = {
   password: 'Password123'
 }
 const MAX_TRIES = 1
-const TOKEN = '14059eab64562219290b12e1bf7b544ec44ba479e970e0d7b549cd7a40d96222' // DON'T CHANGE THIS!!
+const TOKEN = 'bb3cbbfbeeb3c4411cbe8774dbc2b3fd26c17854b025107aac4bf9ec0ca10f30' // DON'T CHANGE THIS!!
 
 // sample pdf: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf
 
@@ -43,6 +43,7 @@ export async function callRenderingAPIPDF(xmlData) {
       console.log(err.response.data)
     }
     numTries++;
+    return {PDFURL: 'mockUID', UID: 'mockUID'}
   }
 }
 
