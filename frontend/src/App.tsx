@@ -4,10 +4,9 @@ import UserPage from "./components/user/UserPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
 import AuthContextProvider from "./context/AuthContextProvider";
+
+
 function App() {
-
-
-
   return (
     <>
       <AuthContextProvider>
