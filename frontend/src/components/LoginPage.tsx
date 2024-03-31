@@ -15,7 +15,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const user = await logInAndGetUser(username, password);
-    console.log(user);
 
     if (user == null) {
       setShowError(true);
@@ -27,7 +26,7 @@ export default function LoginPage() {
 
   return (
     <Container component="main" maxWidth="xs" sx={{ mt: 3 }}>
-      <Typography variant="h2" component="h1" align="center" gutterBottom>Login</Typography>
+      <Typography variant="h3" component="h1" align="center" gutterBottom>Sign in</Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -67,7 +66,12 @@ export default function LoginPage() {
         >
           Login
         </Button>
-        <Grid container justifyContent="flex-end">
+        <Grid container justifyContent="space-between" alignItems={"center"}>
+          <Grid item>
+            <Button variant="contained" color="primary" href="/" role="button">
+              Back
+            </Button>
+          </Grid>
           <Grid item>
             <Link href="/register" variant="body2">
               Don't have an account? Sign Up
