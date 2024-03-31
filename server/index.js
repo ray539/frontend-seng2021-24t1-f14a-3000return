@@ -6,6 +6,7 @@ import Account from './models/account.js'
 import EInvoice from './models/einvoice.js'
 import { callValidationAPIJSON } from './external-apis/validation.js'
 import { callRenderingAPIPDF } from './external-apis/rendering.js'
+import axios from 'axios'
 import 'express-async-errors'
 
 // app
@@ -121,6 +122,21 @@ app.post('/api/validate', async(req, res) => {
   return res.json(data)
 })
 
+// //
+// // each item has
+// //   -username
+// //   -ourLink
+// //   -billTimeUrl
+// const tempLinks = []
+
+
+// // update this
+// let linkGen = 0;
+// function generateLink() {
+//   linkGen++;
+//   return linkGen.toString()
+// }
+
 // header
 //    username
 //    password
@@ -145,8 +161,14 @@ app.post('/api/render', async(req, res) => {
 
   const xmlData = req.body
   const data = await callRenderingAPIPDF(xmlData)
+  console.log('here');
+  console.log(data);
+
   return res.json(data)
 })
+
+
+// })
 
 /**
  * checks that invName is unique
@@ -305,7 +327,6 @@ app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
   }).select('name')
 
   res.json(invoiceNames)
-
 })
 
 // get data of certain invoice
@@ -329,7 +350,99 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
     name: invoiceName
   })
 
+  if (invoices.length == 0) {
+    return res.status(403).json({error: 'your invoice couldn\'t be found'})
+  }
+
   res.json(invoices[0].data)
 })
 
-// get invoice data
+// returns full data of all invoices in invoiceNames
+// headers:
+//   username
+//   password
+// body
+//   invoiceNames: name of invoices
+// return
+//    list of invoices, each invoice has the form
+//    _id, belongsTo, name, data
+app.post('/api/getInvoicesByNames', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  const invoiceNames = req.body.invoiceNames
+  console.log(invoiceNames);
+
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: { $in: invoiceNames}
+  })
+
+  if (invoices.length == 0) {
+    return res.status(403).json({error: 'your invoice couldn\'t be found'})
+  }
+
+  res.json(invoices)
+})
+
+// send invoice to destination emails
+// headers:
+//   username
+//   password
+// body
+//   invoiceNames: invoice names
+//   emails: list of emails
+//   from: from field to appear in email
+// return
+//    list of invoices, each invoice has the form
+//    _id, belongsTo, name, data
+app.post('/api/sendInvoicesByNames', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  const invoiceNames = req.body.invoiceNames
+  const emails = req.body.emails
+  const from = req.body.from
+  console.log(invoiceNames);
+
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: { $in: invoiceNames}
+  })
+
+  if (invoices.length == 0) {
+    return res.status(403).json({error: 'no invoices found'})
+  }
+
+  const content = invoices.map(invoice => {
+    return {
+      xmlString: invoice.data,
+      filename: invoice.name
+    }
+  })
+  
+  const data = {
+    type: 'multiplexml',
+    from: from,
+    recipients: emails,
+    content: content
+  }
+
+  // console.log(data)
+
+  const apiResponse = await axios.post('https://invoice-seng2021-24t1-eggs.vercel.app/send/multEmail', data)
+
+  res.json(apiResponse.data)
+})

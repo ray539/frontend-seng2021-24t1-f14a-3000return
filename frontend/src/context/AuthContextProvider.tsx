@@ -1,5 +1,7 @@
 import { ReactElement, createContext, useState } from "react";
 import { UserProfile } from "../data";
+import { usePersistedState } from "./PersistedState";
+// import createPersistedState from 'use-persisted-state'
 
 interface AuthContextT {
   currentUser: UserProfile | null,
@@ -11,8 +13,11 @@ export const AuthContext = createContext<AuthContextT>({
   setCurrentUser: () => null
 })
 
+
 export default function AuthContextProvider({ children }: { children: ReactElement }) {
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = usePersistedState<UserProfile | null>(null, 'currentUser')
+  // console.log(currentUser);
+  
 
   return (
     <AuthContext.Provider value={{
