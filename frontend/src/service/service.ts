@@ -76,7 +76,55 @@ export async function getPdfLink(username: string, password: string, xmlData: st
   } catch (err) {
     return null
   }
+}
 
+/**
+ * give a list of invoiceNames and
+ * get all invoices with name in invoiceNames
+ * @param username 
+ * @param password 
+ * @param invoiceNames 
+ * @returns 
+ */
+export async function getInvoicesByNames(username: string, password: string, invoiceNames: string[]) {
+  try {
+    const res = await axios.post('/api/getInvoicesByNames', {names: invoiceNames}, {
+      headers: {
+        username: username,
+        password: password,
+      }
+    })
+    return res.data;
+  } catch (err) {
+    return null
+  }
+}
+
+
+/**
+ * give a list of invoiceNames and emails
+ * sends those invoices to those emails
+ * @param username 
+ * @param password 
+ * @param invoiceNames 
+ * @returns 
+ */
+export async function sendInvoicesByNames(username: string, password: string, invoiceNames: string[], emails: string[], from: string) {
+  try {
+    const res = await axios.post('/api/sendInvoicesByNames', {
+      invoiceNames: invoiceNames,
+      emails: emails,
+      from: from
+    }, {
+      headers: {
+        username: username,
+        password: password,
+      }
+    })
+    return res.data;
+  } catch (err) {
+    return {success: false}
+  }
 }
 
 /**
@@ -97,6 +145,8 @@ export async function getXmlData(username: string, password: string, filename: s
     const xmlData = res.data
     return xmlData
   } catch (err) {
+    console.log('here');
+    
     return null;
   }
 }

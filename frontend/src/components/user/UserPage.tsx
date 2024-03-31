@@ -1,4 +1,4 @@
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import GetStarted from "./GetStarted";
 import UploadPage from "./UploadPage";
@@ -10,7 +10,70 @@ import {
   getInvoicesBelongingTo,
   getPdfLink,
   getXmlData,
+  sendInvoicesByNames,
 } from "../../service/service";
+
+function SendUI({invoices, showSendUI, setShowSendUI}: {invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function}) {
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
+  // const [emailList, setEmailList] = useState<string[]>([])
+  const [emailListStr, setEmailListStr] = useState('')
+  const [from, setFrom] = useState('')
+  const [buttonText, setButtonText] = useState('SEND')
+
+  return (
+    <>
+      <div>
+        <h2>send checked invoices</h2>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+        }}>
+          <div>
+            Recipient emails (comma separated):
+            <input type='text' value={emailListStr} onChange={(e) => setEmailListStr(e.target.value)}></input>
+          </div>
+          <div>
+            From:
+            <input type='text' value={from} onChange={(e) => setFrom(e.target.value)}></input>
+          </div>
+          <button onClick={async () => {
+            const emails = emailListStr.split(',').filter(e => e !== '');
+            if (emails.length == 0) {
+              window.alert('enter at least one email')
+              return;
+            }
+            // get list of checked invoice names
+            const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
+            if (invoiceNames.length == 0) {
+              window.alert('no invoices are selected')
+              return;
+            }
+
+            if (!from) {
+              window.alert('please fill out field: from')
+            }
+
+            setButtonText('SENDING...')
+            const res = await sendInvoicesByNames(user!.username, user!.password, invoiceNames, emails, from);
+            if (!res.success) {
+              window.alert('send failed')
+              return;
+            }
+            setButtonText('SENT')
+            setTimeout(() => {
+              setShowSendUI(false)
+            }, 1000)
+
+          }}
+          disabled={buttonText != 'SEND'}
+          >{buttonText}</button>
+          <button disabled={buttonText != 'SEND'} onClick={() => setShowSendUI(false)}>cancel</button>
+        </form>
+
+      </div>
+    </>
+  )
+}
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -25,6 +88,8 @@ function Dashboard() {
     state: "hidden",
     numItems: 0,
   });
+
+  const [showSendUI, setShowSendUI] = useState(false)
 
   useEffect(() => {
     // on mount get all invoices belonging to logged in user
@@ -79,7 +144,11 @@ function Dashboard() {
         invoices.map((invoice, i) => (
           <div key={invoice.id}>
             {invoice.name}
-            <button>
+            <button
+              onClick={() => {
+                window.open(`/user/view-invoice/${invoice.name}`);
+              }}
+            >
               <a>view xml</a>
             </button>
 
@@ -128,8 +197,15 @@ function Dashboard() {
       )}
 
       <button>download</button>
-      <button>render</button>
-      <button>send</button>
+
+      <button onClick={() => {
+        if (!invoices.find(i => i.checked)) {
+          return;
+        }
+        setShowSendUI(true)}
+      }>send</button>
+
+
       <button
         onClick={() => {
           const numItems = invoices.filter((invoice) => invoice.checked).length;
@@ -143,10 +219,16 @@ function Dashboard() {
         delete
       </button>
 
+      {showSendUI && <SendUI invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />}
+
       {deletedConfirmation.state != "hidden" && (
         <div>
           {deletedConfirmation.state == "shown" ? (
+            <>
+            <h2>delete items</h2>
             <div>Delete these {deletedConfirmation.numItems} items?'</div>
+            </>
+            
           ) : (
             <div>LOADING</div>
           )}
@@ -199,6 +281,56 @@ export function NotLoggedIn() {
   );
 }
 
+function InvoiceView() {
+  const authContext = useContext(AuthContext);
+  // const params = useParams();
+  const user = authContext.currentUser;
+
+  const { invoiceName } = useParams();
+  const [xmlData, setXmlData] = useState("fetching...");
+
+  useEffect(() => {
+    console.log(invoiceName);
+    if (!invoiceName) {
+      setXmlData("your invoice couldn't be loaded");
+    }
+
+    getXmlData(user!.username, user!.password, invoiceName!).then((data) => {
+      if (data == null) {
+        setXmlData("your invoice couldn't be loaded");
+        return;
+      }
+      setXmlData(data);
+    });
+  }, []);
+
+  return (
+    <>
+      <h1>{invoiceName}</h1>
+      <pre>{xmlData}</pre>
+    </>
+  );
+}
+
+// function SendPage() {
+//   const authContext = useContext(AuthContext);
+//   const user = authContext.currentUser;
+//   const { ids } = useParams();
+
+//   const [invoiceIds, setInvoiceIds] = useState<string[]>([]);
+
+//   useEffect(() => {
+//     console.log(ids)
+//   }, []);
+
+//   return (
+//     <>
+//       <h1>send invoices</h1>
+
+//       <div>test</div>
+//     </>
+//   );
+// }
 
 /**
  * home page for logged in users
@@ -216,6 +348,11 @@ export default function UserPage() {
           <Route path="/get-started" element={<GetStarted />}></Route>
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/create" element={<CreationPage />} />
+          <Route
+            path="/view-invoice/:invoiceName"
+            element={<InvoiceView />}
+          ></Route>
+          {/* <Route path="/send-invoices/:ids" element={<SendPage/>}/> */}
         </Routes>
       )}
     </>
