@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { addInvoiceToUser, validateFile } from "../../service/service";
@@ -5,7 +6,7 @@ import { AuthContext } from "../../context/AuthContextProvider";
 
 // type PageState = 'waiting-submit' | 'wait-validation' | 'post-validation'
 
-function ValidationMsg({validationOutcome} : {validationOutcome: ValidationOutcome}) {
+function ValidationMsg({ validationOutcome }: { validationOutcome: ValidationOutcome }) {
   if (validationOutcome == '') {
     return <></>
   } else if (validationOutcome == 'loading') {
@@ -17,7 +18,7 @@ function ValidationMsg({validationOutcome} : {validationOutcome: ValidationOutco
   }
 }
 
-function StorageMsg({outcome} : {outcome: StoreOutcome}) {
+function StorageMsg({ outcome }: { outcome: StoreOutcome }) {
   if (outcome == '') {
     return <></>
   } else if (outcome == 'loading') {
@@ -50,7 +51,7 @@ export default function UploadPage() {
     setWarning(false)
 
     if (e.target.files && e.target.files.length > 0) {
-      const toUpload = e.target.files[0];      
+      const toUpload = e.target.files[0];
       if (!(toUpload.type == 'text/xml')) {
         setFile(null)
         setWarning(true);
@@ -63,7 +64,7 @@ export default function UploadPage() {
     }
   }
 
-  const handleFileSubmit = async() => {
+  const handleFileSubmit = async () => {
     setValidationOutcome('loading')
     const reportJSON = await validateFile(user!.username, user!.password, file!) as any
     console.log(reportJSON);
@@ -74,7 +75,7 @@ export default function UploadPage() {
     }
   }
 
-  const handleFileStore = async() => {
+  const handleFileStore = async () => {
     try {
       setStoreOutcome('loading')
       await addInvoiceToUser(user!.username, user!.password, file!)
@@ -82,7 +83,7 @@ export default function UploadPage() {
     } catch (err) {
       setStoreOutcome('error')
     }
-    
+
   }
 
   return (
@@ -91,7 +92,7 @@ export default function UploadPage() {
       <div>
         <input id="file" type='file' onChange={handleFileChange}></input>
       </div>
-      { warning && <div>error: the file must be XML</div>}
+      {warning && <div>error: the file must be XML</div>}
       {
         file && (
           <div>
@@ -106,7 +107,7 @@ export default function UploadPage() {
       {
         file ? (
           <div>
-           Click submit. We will run some validation checks before allowing you to store it to our database
+            Click submit. We will run some validation checks before allowing you to store it to our database
           </div>
         ) : (
           <div>
@@ -116,12 +117,12 @@ export default function UploadPage() {
       }
 
       <ValidationMsg validationOutcome={validationOutcome}></ValidationMsg>
-      
+
       <button disabled={file == null} onClick={handleFileSubmit}>Submit</button>
       <button disabled={validationOutcome == '' || validationOutcome == 'loading'}>download validation report</button>
       <button disabled={validationOutcome != 'successful'} onClick={handleFileStore}>store</button>
 
-      <StorageMsg outcome={storeOutcome}/>
+      <StorageMsg outcome={storeOutcome} />
 
       <div>
         <Link to="/user/get-started">back</Link>

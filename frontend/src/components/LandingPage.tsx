@@ -1,80 +1,82 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { AppBar, Toolbar, Typography, Button, Container, Grid, Paper, Divider } from "@mui/material";
 
 export default function LandingPage() {
   const authContext = useContext(AuthContext);
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
-        <Container>
-          <Navbar.Brand href="/">
-            3000 return e-invoice application
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            {/* <Nav className="me-auto">
-              <Nav.Link as={Link} to="/user">Go to Dashboard</Nav.Link>
-            </Nav> */}
-            <Nav className="ms-auto">
-              {authContext.currentUser == null ? (
-                <>
-                  <Nav.Link as={Link} to="/login">
-                    Login
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/register">
-                    Register
-                  </Nav.Link>
-                </>
-              ) : (
-                <>
-                  <Nav.Link>You are already logged in</Nav.Link>
-                  <Nav.Link as={Link} to='/user'>Go to dashboard</Nav.Link>
-                </>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <Container className="mb-5">
-        <h1 className="display-2">Welcome to our e-Invoice App!</h1>
-        <br></br>
-        <p className="lead">What we offer:</p>
-        <div className="container overflow-hidden">
-          <div className="gy-5">
-            <div className="p-3 mb-4">Hassle free e-invoicing</div>
-            <div className="p-3 mb-4"> Multiple invoice creation types</div>
-            <div className="p-3 mb-4">Secure and fast invoice validation</div>
-            <div className="p-3 mb-4">Extra features coming soon!</div>
-          </div>
-        </div>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            3000Return e-invoice application
+          </Typography>
+          {authContext.currentUser == null ? (
+            <>
+              <Button component={Link} to="/login" color="inherit">Sign In </Button>
+              <Button component={Link} to="/register" color="inherit">Sign Up</Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="body1">You are already logged in</Typography>
+              <Button component={Link} to='/user' color="inherit">Go to dashboard</Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ mt: 3 }}>
+        <Typography variant="h2" align="center" gutterBottom>Smart Invoicing Made Simple</Typography>
+        <Divider />
+        <Typography variant="h6" sx={{ marginBottom: 2, marginTop: 5 }}>Why choose us?</Typography>
+        <Grid container spacing={4} justifyContent="center" sx={{ display: 'flex', alignItems: 'stretch' }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Hassle free e-invoicing</Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Multiple invoice creation types</Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Secure and fast invoice validation</Paper>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Extra features coming soon!</Paper>
+          </Grid>
+        </Grid>
       </Container>
-      <figure className="text-center">
-        <blockquote className="blockquote">
-          <p>Our Competitive Pricing Plans</p>
-        </blockquote>
-        <div className="container text-center">
-          <div className="row align-items-start">
-            <div className="col">
-              Starter <br></br>
-              <br></br>
-              Free
-            </div>
-            <div className="col">
-              Standard <br></br>
-              <br></br>
-              $5/month
-            </div>
-            <div className="col">
-              Premium <br></br>
-              <br></br>
-              $8/month
-            </div>
-          </div>
-        </div>
-      </figure>
+      <Container sx={{ mt: 10 }}>
+        <Typography variant="h4" align="center" sx={{ mb: 5 }}>Our Competitive Pricing Plans</Typography>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} sm={4}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
+              <Typography variant="h5">Starter</Typography>
+              <Typography variant="h6" sx={{ mt: 1 }}>Free</Typography>
+              - Invoice Validation <br />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
+              <Typography variant="h5">Standard</Typography>
+              <Typography variant="h6" sx={{ mt: 1 }}>$5/month</Typography>
+              - Invoice Validation <br />
+              - Invoice Rendering and Sending <br />
+              - Quick Fix Suggestions on Invalid Reports <br />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
+              <Typography variant="h5">Premium</Typography>
+              <Typography variant="h6" sx={{ mt: 1 }}>$10/month</Typography>
+              - Invoice Validation <br />
+              - Invoice Rendering and Sending <br />
+              - Quick Fix Suggestions on Invalid Reports <br />
+              - Unlimited Invoice Storage
+              - Bulk Validation
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
     </>
   );
 }

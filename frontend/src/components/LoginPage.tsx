@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-// import { logInAndGetUser } from "../data";
-import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { Container, TextField, Button, Alert, Grid, Link, Typography } from "@mui/material";
+import { useContext } from "react";
 import { logInAndGetUser } from "../service/service";
 
 export default function LoginPage() {
@@ -16,7 +16,7 @@ export default function LoginPage() {
     e.preventDefault();
     const user = await logInAndGetUser(username, password);
     console.log(user);
-    
+
     if (user == null) {
       setShowError(true);
       return;
@@ -26,37 +26,55 @@ export default function LoginPage() {
   };
 
   return (
-    <Container>
-      <h1 className="display-2">Login</h1><br></br>
-      <Form onSubmit={handleSubmit} onFocus={() => setShowError(false)}>
-        <Form.Group className="mb-3" controlId="formBasicUsername">
-          <Form.Label>Username:</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password:</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        {showError && <Alert variant="danger">Incorrect username or password!</Alert>}
-
-        <Button variant="primary" type="submit">
+    <Container component="main" maxWidth="xs" sx={{ mt: 3 }}>
+      <Typography variant="h2" component="h1" align="center" gutterBottom>Login</Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="password"
+              label="Password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        {showError && <Alert severity="error">Incorrect username or password!</Alert>}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
           Login
         </Button>
-      </Form>
-      <a className="btn btn-primary" href="/" role="button">Back</a>
-
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Link href="/register" variant="body2">
+              Don't have an account? Sign Up
+            </Link>
+          </Grid>
+        </Grid>
+      </form>
     </Container>
   );
 }

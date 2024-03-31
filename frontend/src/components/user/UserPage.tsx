@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GetStarted from "./GetStarted";
 import UploadPage from "./UploadPage";
 import CreationPage from "./CreationPage";
@@ -12,63 +13,59 @@ import {
   getXmlData,
   sendInvoicesByNames,
 } from "../../service/service";
+import { Button, Form } from 'react-bootstrap';
 
-function SendUI({invoices, showSendUI, setShowSendUI}: {invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function}) {
+function SendUI({ invoices, setShowSendUI }: { invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function }) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
-  // const [emailList, setEmailList] = useState<string[]>([])
-  const [emailListStr, setEmailListStr] = useState('')
-  const [from, setFrom] = useState('')
-  const [buttonText, setButtonText] = useState('SEND')
+  const [emailListStr, setEmailListStr] = useState('');
+  const [from, setFrom] = useState('');
+  const [buttonText, setButtonText] = useState('SEND');
 
   return (
     <>
       <div>
-        <h2>send checked invoices</h2>
-        <form onSubmit={(e) => {
-          e.preventDefault()
-        }}>
-          <div>
-            Recipient emails (comma separated):
-            <input type='text' value={emailListStr} onChange={(e) => setEmailListStr(e.target.value)}></input>
-          </div>
-          <div>
-            From:
-            <input type='text' value={from} onChange={(e) => setFrom(e.target.value)}></input>
-          </div>
-          <button onClick={async () => {
+        <h2>Send Checked Invoices</h2>
+        <Form onSubmit={(e) => { e.preventDefault() }}>
+          <Form.Group>
+            <Form.Label>Recipient emails (comma separated):</Form.Label>
+            <Form.Control type='text' value={emailListStr} onChange={(e) => setEmailListStr(e.target.value)} />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>From:</Form.Label>
+            <Form.Control type='text' value={from} onChange={(e) => setFrom(e.target.value)} />
+          </Form.Group>
+          <Button onClick={async () => {
             const emails = emailListStr.split(',').filter(e => e !== '');
             if (emails.length == 0) {
-              window.alert('enter at least one email')
+              window.alert('Enter at least one email');
               return;
             }
-            // get list of checked invoice names
             const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
             if (invoiceNames.length == 0) {
-              window.alert('no invoices are selected')
+              window.alert('No invoices are selected');
               return;
             }
 
             if (!from) {
-              window.alert('please fill out field: from')
-            }
-
-            setButtonText('SENDING...')
-            const res = await sendInvoicesByNames(user!.username, user!.password, invoiceNames, emails, from);
-            if (!res.success) {
-              window.alert('send failed')
+              window.alert('Please fill out the "From" field');
               return;
             }
-            setButtonText('SENT')
-            setTimeout(() => {
-              setShowSendUI(false)
-            }, 1000)
 
-          }}
-          disabled={buttonText != 'SEND'}
-          >{buttonText}</button>
-          <button disabled={buttonText != 'SEND'} onClick={() => setShowSendUI(false)}>cancel</button>
-        </form>
+            setButtonText('SENDING...');
+            const res = await sendInvoicesByNames(user!.username, user!.password, invoiceNames, emails, from);
+            if (!res.success) {
+              window.alert('Send failed');
+              return;
+            }
+            setButtonText('SENT');
+            setTimeout(() => {
+              setShowSendUI(false);
+            }, 1000);
+
+          }} disabled={buttonText !== 'SEND'}>{buttonText}</Button>
+          <Button disabled={buttonText !== 'SEND'} onClick={() => setShowSendUI(false)}>Cancel</Button>
+        </Form>
 
       </div>
     </>
@@ -80,6 +77,7 @@ function Dashboard() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+  const [showSendUI, setShowSendUI] = useState(false);
 
   const [deletedConfirmation, setDeleteConfirmation] = useState<{
     state: "hidden" | "shown" | "loading";
@@ -89,16 +87,11 @@ function Dashboard() {
     numItems: 0,
   });
 
-  const [showSendUI, setShowSendUI] = useState(false)
-
   useEffect(() => {
-    // on mount get all invoices belonging to logged in user
-    // must exist otherwise this page won't show
     console.log(user?.username, user?.password);
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
       setInvoices(invoices)
     );
-    // setInvoices(getInvoicesBelongingTo(authContext.currentUser!.id));
   }, []);
 
   function changePdfButtonMsg(
@@ -109,85 +102,67 @@ function Dashboard() {
       | "an error occured :(",
     i: number
   ) {
-    let invoices_ = [...invoices];
+    const invoices_ = [...invoices];
     invoices_[i].pdfGenMsg = msg;
     setInvoices(invoices_);
   }
 
   return (
     <>
-      <h1>Welcome user</h1>
+      <h1>Welcome, {authContext.currentUser?.username}</h1>
       <div>
-        <h2>profile</h2>
-        <div>username: {authContext.currentUser?.username}</div>
-        <button
-          onClick={() => {
-            authContext.setCurrentUser(null);
-            navigate("/");
-          }}
-        >
-          logout
-        </button>
+        <h2>Profile</h2>
+        <div>Username: {authContext.currentUser?.username}</div>
+        <Button onClick={() => {
+          authContext.setCurrentUser(null);
+          navigate("/");
+        }}>Logout</Button>
       </div>
-      <h2>your invoices</h2>
-      <button
-        onClick={() => {
-          navigate("/user/get-started");
-        }}
-      >
-        Get started
-      </button>
+      <h2>Your Invoices</h2>
+      <Button onClick={() => {
+        navigate("/user/get-started");
+      }}>Get Started</Button>
 
       {invoices.length == 0 ? (
-        <div>none</div>
+        <div>None</div>
       ) : (
         invoices.map((invoice, i) => (
           <div key={invoice.id}>
             {invoice.name}
-            <button
-              onClick={() => {
-                window.open(`/user/view-invoice/${invoice.name}`);
-              }}
-            >
-              <a>view xml</a>
-            </button>
+            <Button onClick={() => {
+              window.open(`/user/view-invoice/${invoice.name}`);
+            }}>View XML</Button>
 
-            <button
-              onClick={async () => {
-                // get the service layer to generate a pdf
-                changePdfButtonMsg("fetching xml...", i);
-                const xmlData = await getXmlData(
-                  user!.username,
-                  user!.password,
-                  invoice.name
-                );
-                console.log(xmlData);
+            <Button onClick={async () => {
+              changePdfButtonMsg("fetching xml...", i);
+              const xmlData = await getXmlData(
+                user!.username,
+                user!.password,
+                invoice.name
+              );
+              console.log(xmlData);
 
-                changePdfButtonMsg("generating...", i);
-                const link = await getPdfLink(
-                  user!.username,
-                  user!.password,
-                  xmlData
-                );
-                if (!link) {
-                  changePdfButtonMsg("an error occured :(", i);
-                  setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-                  return;
-                }
+              changePdfButtonMsg("generating...", i);
+              const link = await getPdfLink(
+                user!.username,
+                user!.password,
+                xmlData
+              );
+              if (!link) {
+                changePdfButtonMsg("an error occured :(", i);
+                setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+                return;
+              }
 
-                changePdfButtonMsg("generate pdf", i);
-                // open the window in a new tab
-                setTimeout(() => window.open(link), 100);
-              }}
-            >
-              {invoice.pdfGenMsg}
-            </button>
+              changePdfButtonMsg("generate pdf", i);
+              setTimeout(() => window.open(link), 100);
+            }}>{invoice.pdfGenMsg}</Button>
 
-            <input
+            <Form.Check
               type="checkbox"
               checked={invoice.checked}
               onChange={(e) => {
-                let invoices_ = [...invoices];
+                const invoices_ = [...invoices];
                 invoices_[i].checked = e.target.checked;
                 setInvoices(invoices_);
               }}
@@ -196,28 +171,24 @@ function Dashboard() {
         ))
       )}
 
-      <button>download</button>
+      <Button>Download</Button>
 
-      <button onClick={() => {
+      <Button onClick={() => {
         if (!invoices.find(i => i.checked)) {
           return;
         }
-        setShowSendUI(true)}
-      }>send</button>
+        setShowSendUI(true);
+      }}>Send</Button>
 
 
-      <button
-        onClick={() => {
-          const numItems = invoices.filter((invoice) => invoice.checked).length;
-          if (numItems == 0) return;
-          setDeleteConfirmation({
-            state: "shown",
-            numItems: numItems,
-          });
-        }}
-      >
-        delete
-      </button>
+      <Button onClick={() => {
+        const numItems = invoices.filter((invoice) => invoice.checked).length;
+        if (numItems == 0) return;
+        setDeleteConfirmation({
+          state: "shown",
+          numItems: numItems,
+        });
+      }}>Delete</Button>
 
       {showSendUI && <SendUI invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />}
 
@@ -225,46 +196,36 @@ function Dashboard() {
         <div>
           {deletedConfirmation.state == "shown" ? (
             <>
-            <h2>delete items</h2>
-            <div>Delete these {deletedConfirmation.numItems} items?'</div>
+              <h2>Delete Items</h2>
+              <div>Delete these {deletedConfirmation.numItems} items?'</div>
             </>
-            
-          ) : (
-            <div>LOADING</div>
-          )}
-          <button
-            onClick={async () => {
-              const names = invoices
-                .filter((invoice) => invoice.checked)
-                .map((invoice) => invoice.name);
-              setDeleteConfirmation({
-                ...deletedConfirmation,
-                state: "loading",
-              });
-              await deleteInvoicesFromUser(
-                user!.username,
-                user!.password,
-                names
-              );
 
-              setInvoices(invoices.filter((invoice) => !invoice.checked));
-              setDeleteConfirmation({
-                ...deletedConfirmation,
-                state: "hidden",
-              });
-            }}
-          >
-            {" "}
-            yes
-          </button>
-          <button
-            onClick={() =>
-              setDeleteConfirmation({ ...deletedConfirmation, state: "hidden" })
-            }
-          >
-            {" "}
-            no{" "}
-          </button>
+          ) : (
+            <div>Loading</div>
+          )}
+          <Button onClick={async () => {
+            const names = invoices
+              .filter((invoice) => invoice.checked)
+              .map((invoice) => invoice.name);
+            setDeleteConfirmation({
+              ...deletedConfirmation,
+              state: "loading",
+            });
+            await deleteInvoicesFromUser(
+              user!.username,
+              user!.password,
+              names
+            );
+
+            setInvoices(invoices.filter((invoice) => !invoice.checked));
+            setDeleteConfirmation({
+              ...deletedConfirmation,
+              state: "hidden",
+            });
+          }}>Yes</Button>
+          <Button onClick={() =>
+            setDeleteConfirmation({ ...deletedConfirmation, state: "hidden" })
+          }>No</Button>
         </div>
       )}
     </>
@@ -274,30 +235,28 @@ function Dashboard() {
 export function NotLoggedIn() {
   return (
     <>
-      <h1>you are not logged in</h1>
-      you must log into access features
-      <Link to="/">back</Link>
+      <h1>You are not logged in</h1>
+      <p>You must log in to access features</p>
+      <Link to="/">Back</Link>
     </>
   );
 }
 
 function InvoiceView() {
   const authContext = useContext(AuthContext);
-  // const params = useParams();
   const user = authContext.currentUser;
-
   const { invoiceName } = useParams();
-  const [xmlData, setXmlData] = useState("fetching...");
+  const [xmlData, setXmlData] = useState("Fetching...");
 
   useEffect(() => {
     console.log(invoiceName);
     if (!invoiceName) {
-      setXmlData("your invoice couldn't be loaded");
+      setXmlData("Your invoice couldn't be loaded");
     }
 
     getXmlData(user!.username, user!.password, invoiceName!).then((data) => {
       if (data == null) {
-        setXmlData("your invoice couldn't be loaded");
+        setXmlData("Your invoice couldn't be loaded");
         return;
       }
       setXmlData(data);
@@ -312,29 +271,6 @@ function InvoiceView() {
   );
 }
 
-// function SendPage() {
-//   const authContext = useContext(AuthContext);
-//   const user = authContext.currentUser;
-//   const { ids } = useParams();
-
-//   const [invoiceIds, setInvoiceIds] = useState<string[]>([]);
-
-//   useEffect(() => {
-//     console.log(ids)
-//   }, []);
-
-//   return (
-//     <>
-//       <h1>send invoices</h1>
-
-//       <div>test</div>
-//     </>
-//   );
-// }
-
-/**
- * home page for logged in users
- */
 export default function UserPage() {
   const authContext = useContext(AuthContext);
 
@@ -352,7 +288,6 @@ export default function UserPage() {
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}
           ></Route>
-          {/* <Route path="/send-invoices/:ids" element={<SendPage/>}/> */}
         </Routes>
       )}
     </>
