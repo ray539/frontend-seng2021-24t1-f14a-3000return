@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import CreationForm from "./CreationForm";
 
-
-export default function CreationPage() {
+function Default() {
+  const navigate = useNavigate();
   return (
     <>
     <h1>Creation page</h1>
@@ -10,11 +11,20 @@ export default function CreationPage() {
     </div>
     <div>
       create from form
-      <button>GO</button>
+      <button onClick={() => navigate('/user/create/form')}>GO</button>
     </div>
     <div>
       <Link to="/user/get-started">back</Link>
     </div>
     </>
+  )
+}
+
+export default function CreationPage() {
+  return (
+    <Routes>
+      <Route path="/" element={<Default/>}/>
+      <Route path="/form" element={<CreationForm />}/>
+    </Routes>
   )
 }

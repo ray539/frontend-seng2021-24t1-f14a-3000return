@@ -312,26 +312,6 @@ function InvoiceView() {
   );
 }
 
-// function SendPage() {
-//   const authContext = useContext(AuthContext);
-//   const user = authContext.currentUser;
-//   const { ids } = useParams();
-
-//   const [invoiceIds, setInvoiceIds] = useState<string[]>([]);
-
-//   useEffect(() => {
-//     console.log(ids)
-//   }, []);
-
-//   return (
-//     <>
-//       <h1>send invoices</h1>
-
-//       <div>test</div>
-//     </>
-//   );
-// }
-
 /**
  * home page for logged in users
  */
@@ -347,7 +327,7 @@ export default function UserPage() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="/get-started" element={<GetStarted />}></Route>
           <Route path="/upload" element={<UploadPage />} />
-          <Route path="/create" element={<CreationPage />} />
+          <Route path="/create/*" element={<CreationPage />} />
           <Route
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}

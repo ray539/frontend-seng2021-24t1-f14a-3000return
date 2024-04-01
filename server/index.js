@@ -8,6 +8,7 @@ import { callValidationAPIJSON } from './external-apis/validation.js'
 import { callRenderingAPIPDF } from './external-apis/rendering.js'
 import axios from 'axios'
 import 'express-async-errors'
+import { convertDataToInvoice } from './external-apis/creation.js'
 
 // app
 const app = express();
@@ -443,6 +444,20 @@ app.post('/api/sendInvoicesByNames', async(req, res) => {
   // console.log(data)
 
   const apiResponse = await axios.post('https://invoice-seng2021-24t1-eggs.vercel.app/send/multEmail', data)
-
   res.json(apiResponse.data)
+})
+
+app.post('/api/createInvoice', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({error: 'invalid username or password'})
+  }
+
+  const data = req.body;
+  const xmlString = convertDataToInvoice(data);
+  res.send(xmlString);
 })
