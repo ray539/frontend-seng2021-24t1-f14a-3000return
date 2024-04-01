@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { EInvoiceItem, UserProfile } from '../data';
+import { CreationFormData } from '../components/user/formTypes';
 
 export async function logInAndGetUser(username: string, password: string) {
   try {
@@ -216,6 +217,20 @@ export async function deleteInvoicesFromUser(username: string, password: string,
 
     const numDel = res.data.numDeleted
     return numDel
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function createInvoice(username: string, password: string, data: CreationFormData) {
+  try {
+    const res = await axios.post('/api/createInvoice', data, {
+      headers: {
+        username: username,
+        password: password
+      }
+    })
+    return res.data;
   } catch (err) {
     return null;
   }

@@ -15,6 +15,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/user/*" element={<UserPage />} />
+          <Route path="/mockUID" element={<div>your pdf couldn't be generated :(</div>} />
           <Route path="*" element={<div>404 NOT FOUND</div>}></Route>
         </Routes>
       </AuthContextProvider>

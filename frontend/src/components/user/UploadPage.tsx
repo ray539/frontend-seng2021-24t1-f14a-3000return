@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addInvoiceToUser, validateFile } from "../../service/service";
 import { AuthContext } from "../../context/AuthContextProvider";
 
@@ -42,6 +42,8 @@ export default function UploadPage() {
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>('')
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>('')
 
+  const navigate = useNavigate();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     // reset
@@ -79,6 +81,7 @@ export default function UploadPage() {
       setStoreOutcome('loading')
       await addInvoiceToUser(user!.username, user!.password, file!)
       setStoreOutcome('stored')
+      setTimeout(() => navigate('/user'), 1000)
     } catch (err) {
       setStoreOutcome('error')
     }
