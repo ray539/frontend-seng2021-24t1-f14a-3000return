@@ -1,5 +1,5 @@
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GetStarted from "./GetStarted";
 import UploadPage from "./UploadPage";
 import CreationPage from "./CreationPage";
@@ -13,7 +13,7 @@ import {
   sendInvoicesByNames,
 } from "../../service/service";
 
-function SendUI({invoices, showSendUI, setShowSendUI}: {invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function}) {
+function SendUI({invoices, setShowSendUI}: {invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function}) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   // const [emailList, setEmailList] = useState<string[]>([])
