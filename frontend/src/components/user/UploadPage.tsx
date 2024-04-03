@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Typography, Container, CircularProgress, AppBar, Toolbar } from "@mui/material";
 import { addInvoiceToUser, validateFile } from "../../service/service";
 import { AuthContext } from "../../context/AuthContextProvider";
@@ -18,7 +18,7 @@ export default function UploadPage() {
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // reset
