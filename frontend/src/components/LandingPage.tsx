@@ -32,16 +32,16 @@ export default function LandingPage() {
         <Typography variant="h6" sx={{ marginBottom: 2, marginTop: 5 }}>Why choose us?</Typography>
         <Grid container spacing={4} justifyContent="center" sx={{ display: 'flex', alignItems: 'stretch' }}>
           <Grid item xs={12} sm={6} md={3}>
-            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Hassle free e-invoicing</Paper>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}><Typography>Hassle free e-invoicing</Typography></Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Multiple invoice creation types</Paper>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}><Typography>Multiple invoice creation types</Typography></Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Secure and fast invoice validation</Paper>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}><Typography>Secure and fast invoice validation</Typography></Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}>Extra features coming soon!</Paper>
+            <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', height: '50%' }}><Typography>Extra features coming soon!</Typography></Paper>
           </Grid>
         </Grid>
       </Container>
@@ -52,27 +52,31 @@ export default function LandingPage() {
             <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h5">Starter</Typography>
               <Typography variant="h6" sx={{ mt: 1 }}>Free</Typography>
-              - Invoice Validation <br />
+              <Typography>- Invoice Validation <br /></Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h5">Standard</Typography>
               <Typography variant="h6" sx={{ mt: 1 }}>$5/month</Typography>
-              - Invoice Validation <br />
-              - Invoice Rendering and Sending <br />
-              - Quick Fix Suggestions on Invalid Reports <br />
+              <Typography>
+                - Invoice Validation <br />
+                - Invoice Rendering and Sending <br />
+                - Quick Fix Suggestions on Invalid Reports <br />
+              </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h5">Premium</Typography>
               <Typography variant="h6" sx={{ mt: 1 }}>$10/month</Typography>
-              - Invoice Validation <br />
-              - Invoice Rendering and Sending <br />
-              - Quick Fix Suggestions on Invalid Reports <br />
-              - Unlimited Invoice Storage
-              - Bulk Validation
+              <Typography>
+                - Invoice Validation <br />
+                - Invoice Rendering and Sending <br />
+                - Quick Fix Suggestions on Invalid Reports <br />
+                - Unlimited Invoice Storage
+                - Bulk Validation
+              </Typography>
             </Paper>
           </Grid>
         </Grid>
