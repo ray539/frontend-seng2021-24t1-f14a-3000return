@@ -143,9 +143,9 @@ function Dashboard() {
         </Toolbar>
       </AppBar>
       <div style={{ marginBottom: 25 }}></div>
-      <Grid container spacing={0} marginLeft={0} height={"auto"} marginRight={0}>
-        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, width: 400, paddingRight: 3, height: "auto", marginTop: -3, }}>
-          <Grid item xs={6}>
+      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5}>
+        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
+          <Grid item xs={3}>
             <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
             {/* NO USER MANAGEMENT PAGE */}
             <br />
@@ -168,8 +168,8 @@ function Dashboard() {
             </Box>
           </Container>
         </Paper >
-        <Grid item xs={6}>
-          <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, height: "auto", paddingRight: 7, marginTop: -3, minWidth: 610 }}>
+        <Grid item xs={9}>
+          <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
             <Typography variant="h4">Your Invoices</Typography>
             <Button
               type="submit"
@@ -205,54 +205,58 @@ function Dashboard() {
                 }}>Delete</Button>
               </Grid>
             </Grid>
-            {invoices.length === 0 ? (
-              <div>None</div>
-            ) : (
-              invoices.map((invoice, i) => (
-                <div key={invoice.id}>
-                  <FormControlLabel
-                    control={<Checkbox
-                      checked={invoice.checked}
-                      onChange={(e) => {
-                        const invoices_ = [...invoices];
-                        invoices_[i].checked = e.target.checked;
-                        setInvoices(invoices_);
-                      }}
-                    />}
-                    label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-                    labelPlacement="end" // Align the label to the start of the checkbox
-                  />
-                  <Button onClick={() => {
-                    window.open(`/user/view-invoice/${invoice.name}`);
-                  }}>View XML</Button>
+            <Box sx={{ bgcolor: "#cde6f7", marginTop: 2, paddingTop: "10px", minHeight: "34.5%" }}>
+              {invoices.length === 0 ? (
+                <Typography>No Invoices!</Typography>
+              ) : (
+                invoices.map((invoice, i) => (
+                  <Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
+                    <Box>
+                      <FormControlLabel
+                        control={<Checkbox
+                          checked={invoice.checked}
+                          onChange={(e) => {
+                            const invoices_ = [...invoices];
+                            invoices_[i].checked = e.target.checked;
+                            setInvoices(invoices_);
+                          }}
+                        />}
+                        label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+                        labelPlacement="end" // Align the label to the start of the checkbox
+                      />
+                    </Box>
+                    <Box>
+                      <Button variant="outlined" onClick={() => {
+                        window.open(`/user/view-invoice/${invoice.name}`);
+                      }}>View XML</Button>
+                      <Button variant="outlined" onClick={async () => {
+                        changePdfButtonMsg("fetching xml...", i);
+                        const xmlData = await getXmlData(
+                          user!.username,
+                          user!.password,
+                          invoice.name
+                        );
+                        console.log(xmlData);
+                        changePdfButtonMsg("generating...", i);
+                        const link = await getPdfLink(
+                          user!.username,
+                          user!.password,
+                          xmlData
+                        );
+                        if (!link) {
+                          changePdfButtonMsg("an error occured :(", i);
+                          setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+                          return;
+                        }
+                        changePdfButtonMsg("generate pdf", i);
+                        setTimeout(() => window.open(link), 100);
+                      }}>{invoice.pdfGenMsg}</Button>
+                    </Box>
+                  </Box>
+                ))
+              )}
+            </Box>
 
-                  <Button onClick={async () => {
-                    changePdfButtonMsg("fetching xml...", i);
-                    const xmlData = await getXmlData(
-                      user!.username,
-                      user!.password,
-                      invoice.name
-                    );
-                    console.log(xmlData);
-
-                    changePdfButtonMsg("generating...", i);
-                    const link = await getPdfLink(
-                      user!.username,
-                      user!.password,
-                      xmlData
-                    );
-                    if (!link) {
-                      changePdfButtonMsg("an error occured :(", i);
-                      setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-                      return;
-                    }
-
-                    changePdfButtonMsg("generate pdf", i);
-                    setTimeout(() => window.open(link), 100);
-                  }}>{invoice.pdfGenMsg}</Button>
-                </div>
-              ))
-            )}
 
 
             {showSendUI && <SendUI invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />}
