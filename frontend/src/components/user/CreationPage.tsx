@@ -2,7 +2,6 @@ import { Typography, Button, Grid, AppBar, Toolbar } from "@mui/material";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import CreationForm2 from "./CreationForm2";
-import CreationForm from "./CreationForm";
 
 function Options() {
   const navigate = useNavigate();

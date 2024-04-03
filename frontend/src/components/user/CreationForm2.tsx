@@ -1,10 +1,8 @@
-import { ReactNode, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { CreationFormData, InvoiceItem, sampleData } from "./formTypes";
 import {
-  Autocomplete,
-  AutocompleteRenderInputParams,
   Button,
   Container,
   MenuItem,
@@ -84,9 +82,8 @@ function StringField({
 
 import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { createInvoice } from "../../service/service";
-import { UserProfile } from "../../data";
 
 function MyDateField({
   label,
