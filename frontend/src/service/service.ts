@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios'
 import { EInvoiceItem, UserProfile } from '../data';
 
@@ -19,7 +20,7 @@ export async function logInAndGetUser(username: string, password: string) {
     }
 
     return retUser
-    
+
   } catch (err) {
     return null;
   }
@@ -45,10 +46,10 @@ export async function getInvoicesBelongingTo(username: string, password: string)
 }
 
 export async function validateFile(username: string, password: string, xmlFile: File) {
-  return new Promise((resolve, _) => {
+  return new Promise((resolve) => {
     const reader = new FileReader()
     reader.readAsText(xmlFile)
-    reader.onload = async(e) => {
+    reader.onload = async (e) => {
       const xmlData = e.target?.result as string;
       const res = await axios.post('/api/validate', xmlData, {
         headers: {
@@ -88,7 +89,7 @@ export async function getPdfLink(username: string, password: string, xmlData: st
  */
 export async function getInvoicesByNames(username: string, password: string, invoiceNames: string[]) {
   try {
-    const res = await axios.post('/api/getInvoicesByNames', {names: invoiceNames}, {
+    const res = await axios.post('/api/getInvoicesByNames', { names: invoiceNames }, {
       headers: {
         username: username,
         password: password,
@@ -123,7 +124,7 @@ export async function sendInvoicesByNames(username: string, password: string, in
     })
     return res.data;
   } catch (err) {
-    return {success: false}
+    return { success: false }
   }
 }
 
@@ -146,7 +147,7 @@ export async function getXmlData(username: string, password: string, filename: s
     return xmlData
   } catch (err) {
     console.log('here');
-    
+
     return null;
   }
 }
@@ -159,7 +160,7 @@ export async function registerUser(username: string, email: string, password: st
       password: password,
     })
     const acct = res.data
-  
+
     const retUser: UserProfile = {
       id: acct._id,
       username: acct.username,
@@ -176,7 +177,7 @@ export async function addInvoiceToUser(username: string, password: string, xmlFi
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.readAsText(xmlFile)
-    reader.onload = async(e) => {
+    reader.onload = async (e) => {
       const xmlData = e.target?.result as string;
 
       try {
@@ -204,7 +205,7 @@ export async function deleteInvoicesFromUser(username: string, password: string,
     const res = await axios({
       method: 'delete',
       url: '/api/deleteInvoices',
-      data: {names: invoiceNames},
+      data: { names: invoiceNames },
       headers: {
         username: username,
         password: password
@@ -212,7 +213,7 @@ export async function deleteInvoicesFromUser(username: string, password: string,
     })
 
     console.log(res);
-    
+
 
     const numDel = res.data.numDeleted
     return numDel

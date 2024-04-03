@@ -9,6 +9,12 @@ import AuthContextProvider from "./context/AuthContextProvider";
 function App() {
   return (
     <>
+      <style>{`
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      `}</style>
       <AuthContextProvider>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>

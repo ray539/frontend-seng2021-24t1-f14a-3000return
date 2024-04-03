@@ -1,131 +1,120 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button, Typography, Container, CircularProgress, AppBar, Toolbar } from "@mui/material";
 import { addInvoiceToUser, validateFile } from "../../service/service";
 import { AuthContext } from "../../context/AuthContextProvider";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-// type PageState = 'waiting-submit' | 'wait-validation' | 'post-validation'
-
-function ValidationMsg({validationOutcome} : {validationOutcome: ValidationOutcome}) {
-  if (validationOutcome == '') {
-    return <></>
-  } else if (validationOutcome == 'loading') {
-    return <div>LOADING...</div>
-  } else if (validationOutcome == 'successful') {
-    return <div>validation successful!</div>
-  } else if (validationOutcome == 'unsuccessful') {
-    return <div>validation failed</div>
-  }
-}
-
-function StorageMsg({outcome} : {outcome: StoreOutcome}) {
-  if (outcome == '') {
-    return <></>
-  } else if (outcome == 'loading') {
-    return <div>LOADING...</div>
-  } else if (outcome == 'stored') {
-    return <div>success! Your new invoice has been stored to our database</div>
-  } else if (outcome == 'error') {
-    return <div>there was an error storing your invoice. You most likely already have a invoice with that name</div>
-  }
-}
-
-type ValidationOutcome = '' | 'loading' | 'successful' | 'unsuccessful'
-type StoreOutcome = '' | 'loading' | 'stored' | 'error'
+type ValidationOutcome = "" | "loading" | "successful" | "unsuccessful";
+type StoreOutcome = "" | "loading" | "stored" | "error";
 
 export default function UploadPage() {
   const authContext = useContext(AuthContext);
-  const user = authContext.currentUser
+  const user = authContext.currentUser;
 
   const [file, setFile] = useState<File | null>(null);
-
   const [warning, setWarning] = useState(false);
-  const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>('')
-  const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>('')
+  const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
+  const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
     // reset
-    setValidationOutcome('')
-    setStoreOutcome('')
-    setWarning(false)
+    setValidationOutcome("");
+    setStoreOutcome("");
+    setWarning(false);
 
     if (e.target.files && e.target.files.length > 0) {
-      const toUpload = e.target.files[0];      
-      if (!(toUpload.type == 'text/xml')) {
-        setFile(null)
+      const toUpload = e.target.files[0];
+      if (!(toUpload.type === "text/xml")) {
+        setFile(null);
         setWarning(true);
         return;
       }
-      setFile(toUpload)
-      // setFile(e.target.files[0])
+      setFile(toUpload);
     } else {
-      setFile(null)
+      setFile(null);
     }
-  }
+  };
 
-  const handleFileSubmit = async() => {
-    setValidationOutcome('loading')
-    const reportJSON = await validateFile(user!.username, user!.password, file!) as any
-    console.log(reportJSON);
+  const handleFileSubmit = async () => {
+    setValidationOutcome("loading");
+    const reportJSON = await validateFile(user!.username, user!.password, file!) as any;
     if (reportJSON.successful) {
-      setValidationOutcome('successful')
+      setValidationOutcome("successful");
     } else {
-      setValidationOutcome('unsuccessful')
+      setValidationOutcome("unsuccessful");
     }
-  }
+  };
 
-  const handleFileStore = async() => {
+  const handleFileStore = async () => {
     try {
-      setStoreOutcome('loading')
-      await addInvoiceToUser(user!.username, user!.password, file!)
-      setStoreOutcome('stored')
+      setStoreOutcome("loading");
+      await addInvoiceToUser(user!.username, user!.password, file!);
+      setStoreOutcome("stored");
     } catch (err) {
-      setStoreOutcome('error')
+      setStoreOutcome("error");
     }
-    
-  }
+  };
 
   return (
     <>
-      <h1>upload your invoice</h1>
-      <div>
-        <input id="file" type='file' onChange={handleFileChange}></input>
-      </div>
-      { warning && <div>error: the file must be XML</div>}
-      {
-        file && (
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            3000Return e-invoice application
+          </Typography>
+          <Button color="inherit" component={Link} to="/user/get-started">
+            Back
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Container>
+        <br /><br />
+        <Typography variant="h2">Upload your invoice</Typography> <br /> <br /> <br />
+        <div>
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload file
+            <input type="file" onChange={handleFileChange} hidden />
+          </Button>
+        </div> <br />
+        {warning && <Typography variant="body1">Error: the file must be XML</Typography>}
+        {file && (
           <div>
-            File details:
+            <Typography variant="body1">File details:</Typography>
             <ul>
               <li>Name: {file.name} </li>
               <li>Size: {file.size} bytes</li>
             </ul>
           </div>
-        )
-      }
-      {
-        file ? (
-          <div>
-           Click submit. We will run some validation checks before allowing you to store it to our database
-          </div>
+        )}
+        {file ? (
+          <Typography variant="body1">
+            Click submit. We will run some validation checks before allowing you to store it to our database
+          </Typography>
         ) : (
-          <div>
-            Choose a file to upload
-          </div>
-        )
-      }
-
-      <ValidationMsg validationOutcome={validationOutcome}></ValidationMsg>
-      
-      <button disabled={file == null} onClick={handleFileSubmit}>Submit</button>
-      <button disabled={validationOutcome == '' || validationOutcome == 'loading'}>download validation report</button>
-      <button disabled={validationOutcome != 'successful'} onClick={handleFileStore}>store</button>
-
-      <StorageMsg outcome={storeOutcome}/>
-
-      <div>
-        <Link to="/user/get-started">back</Link>
-      </div>
+          <Typography variant="body1">Choose a file to upload</Typography>
+        )}
+        {validationOutcome && validationOutcome !== "loading" && (
+          <Typography variant="body1">Validation Outcome: {validationOutcome}</Typography>
+        )}
+        <Button disabled={!file || validationOutcome === "loading"} onClick={handleFileSubmit}>
+          Submit
+        </Button>
+        <Button disabled={!file || validationOutcome !== "successful"} onClick={handleFileStore}>
+          Store
+        </Button>
+        {storeOutcome && (
+          <Typography variant="body1">
+            Storage Outcome: {storeOutcome === "loading" ? <CircularProgress size={20} /> : storeOutcome}
+          </Typography>
+        )}
+      </Container>
     </>
   );
 }
