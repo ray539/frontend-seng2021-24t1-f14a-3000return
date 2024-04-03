@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Container } from "react-bootstrap";
 
-function SendUI({ invoices, setShowSendUI }: { invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function }) {
+function SendUI({invoices, setShowSendUI}: {invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function}) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [emailListStr, setEmailListStr] = useState('');
