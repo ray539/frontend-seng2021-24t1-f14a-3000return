@@ -1,9 +1,11 @@
 import { Typography, Button, Grid, AppBar, Toolbar } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
-export default function CreationPage() {
+import CreationForm2 from "./CreationForm2";
+import CreationForm from "./CreationForm";
+
+function Options() {
   const navigate = useNavigate();
-
   return (
     <>
       <AppBar position="static">
@@ -16,20 +18,46 @@ export default function CreationPage() {
           </Button>
         </Toolbar>
       </AppBar>
-      <Grid container spacing={2} justifyContent={"center"} marginTop={3} marginBottom={15}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent={"center"}
+        marginTop={3}
+        marginBottom={15}
+      >
         <Typography variant="h2">Creation page</Typography>
-        <Grid container spacing={2} marginTop={5} alignItems={"center"} textAlign={"center"}>
+        <Grid
+          container
+          spacing={2}
+          marginTop={5}
+          alignItems={"center"}
+          textAlign={"center"}
+        >
           <Grid item xs={6}>
-            <Typography variant="subtitle1">Create from file (coming soon)</Typography>
+            <Typography variant="subtitle1">
+              Create from file (coming soon)
+            </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1">Create from form</Typography> <br />
-            <Button variant="contained" onClick={() => navigate("/user/create")}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/user/create/form")}
+            >
               GO
             </Button>
           </Grid>
         </Grid>
       </Grid>
     </>
+  );
+}
+
+export default function CreationPage() {
+  return (
+    <Routes>
+      <Route path="/" element={<Options />} />
+      <Route path="/form" element={<CreationForm2 />} />
+    </Routes>
   );
 }

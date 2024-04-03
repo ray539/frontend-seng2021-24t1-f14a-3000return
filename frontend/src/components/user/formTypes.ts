@@ -36,14 +36,14 @@ export type CreationFormData = {
 };
 
 export const sampleData:CreationFormData = {
-  BuyerReference: 'Tuco Salamanca',
+  BuyerReference: 'ORDER42069',
   InvoiceID: 'YOU_OWE_ME_MONEY_1', // internal id to be used by your company
   IssueDate: '2020-10-02',
   DueDate: '2020-12-20',
   // fix currencycode at AUD
 
   // ACCOUNTING SUPPLIER PARTY
-  AccountingSupplierPartyPartyName: 'Walter White\'s Candy Factory',
+  AccountingSupplierPartyPartyName: 'Heisenberg',
   AccountingSupplierPartyStreetName: '3828 Piermont',
   AccountingSupplierPartyAdditionalStreetName: 'Dr Albuquerque NM',
   AccountingSupplierPartyCityName: 'Sydney',

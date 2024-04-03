@@ -590,9 +590,6 @@ export default function CreationForm() {
             document.body.removeChild(link)
             URL.revokeObjectURL(url)
             navigate('/user/upload')
-            
-            
-
           }}>submit</Button>
         </Form>
         
