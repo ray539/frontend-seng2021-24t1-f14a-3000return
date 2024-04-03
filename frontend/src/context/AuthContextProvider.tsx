@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/ban-types */
-=======
->>>>>>> ffcbae500baf1f0e409736e99a4e8c06b3f2bfbd
 import { ReactElement, createContext } from "react";
 import { UserProfile } from "../data";
 import { usePersistedState } from "./PersistedState";
