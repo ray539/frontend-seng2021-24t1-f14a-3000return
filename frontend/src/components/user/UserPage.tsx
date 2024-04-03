@@ -18,6 +18,10 @@ import {
   Typography, Grid, AppBar, Toolbar, Paper, Link, Box
 } from '@mui/material';
 import { Container } from "react-bootstrap";
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
+import DownloadIcon from '@mui/icons-material/Download';
+import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 
 function SendUI({ invoices, setShowSendUI }: { invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function }) {
   const authContext = useContext(AuthContext);
@@ -145,13 +149,13 @@ function Dashboard() {
       <div style={{ marginBottom: 25 }}></div>
       <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5}>
         <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
-          <Grid item xs={3}>
+          <Grid item xs={5}>
             <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
             {/* NO USER MANAGEMENT PAGE */}
             <br />
-            <Link href="/user-profile" variant="body2">
-              Manage account
-            </Link>➡️
+            <Button href="/user-profile" variant="contained">
+              Manage Account
+            </Button>
           </Grid>
           <br />
           <Container>
@@ -169,9 +173,10 @@ function Dashboard() {
           </Container>
         </Paper >
         <Grid item xs={9}>
-          <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
+          <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 4, marginTop: -3 }}>
             <Typography variant="h4">Your Invoices</Typography>
             <Button
+              endIcon={<PlayCircleFilledWhiteIcon />}
               type="submit"
               fullWidth
               variant="contained"
@@ -184,10 +189,10 @@ function Dashboard() {
             </Button>
             <Grid container spacing={2}>
               <Grid item >
-                <Button variant="contained">Download</Button>
+                <Button endIcon={<DownloadIcon />} variant="contained">Download</Button>
               </Grid>
               <Grid item >
-                <Button variant="contained" onClick={() => {
+                <Button variant="contained" endIcon={<SendIcon />} onClick={() => {
                   if (!invoices.find(i => i.checked)) {
                     return;
                   }
@@ -195,7 +200,7 @@ function Dashboard() {
                 }}>Send</Button>
               </Grid>
               <Grid item  >
-                <Button variant="contained" onClick={() => {
+                <Button endIcon={<DeleteIcon />} variant="contained" onClick={() => {
                   const numItems = invoices.filter((invoice) => invoice.checked).length;
                   if (numItems == 0) return;
                   setDeleteConfirmation({
@@ -226,10 +231,10 @@ function Dashboard() {
                       />
                     </Box>
                     <Box>
-                      <Button variant="outlined" onClick={() => {
+                      <Button variant="contained" onClick={() => {
                         window.open(`/user/view-invoice/${invoice.name}`);
                       }}>View XML</Button>
-                      <Button variant="outlined" onClick={async () => {
+                      <Button variant="contained" onClick={async () => {
                         changePdfButtonMsg("fetching xml...", i);
                         const xmlData = await getXmlData(
                           user!.username,
