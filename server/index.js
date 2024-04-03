@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan())
-app.use(express.text({type: 'application/xml'}))
+app.use(express.text({ type: 'application/xml' }))
 
 
 // bcrypt
@@ -75,7 +75,7 @@ app.post('/api/newAccount', async (req, res) => {
   })
 
   if (existing.length > 0) {
-    return res.status(403).json({error: 'account with username ' + usernameNew + ' already exists'})
+    return res.status(403).json({ error: 'account with username ' + usernameNew + ' already exists' })
   }
 
   const newAccount = new Account({
@@ -103,11 +103,11 @@ app.get('/api/login', async (req, res) => {
   if (account) {
     return res.json(account);
   } else {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 })
 
-app.post('/api/validate', async(req, res) => {
+app.post('/api/validate', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
@@ -115,7 +115,7 @@ app.post('/api/validate', async(req, res) => {
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const xmlData = req.body
@@ -149,7 +149,7 @@ app.post('/api/validate', async(req, res) => {
 //     PDFURL: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf,
 //     UID: 2
 // }
-app.post('/api/render', async(req, res) => {
+app.post('/api/render', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
@@ -157,7 +157,7 @@ app.post('/api/render', async(req, res) => {
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const xmlData = req.body
@@ -201,24 +201,24 @@ async function checkName(belongsTo, invName) {
 // 
 // an invoice must have an "name" field
 // for a certain user, the all invoices must be unique
-app.post('/api/addInvoice', async(req, res) => {
+app.post('/api/addInvoice', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
   const name = req.query.name
   if (!name) {
-    return res.status(400).json({error: 'must include name field in params'})
+    return res.status(400).json({ error: 'must include name field in params' })
   }
 
   const isUniqueName = await checkName(username, name);
   console.log(username, name);
   console.log(isUniqueName)
   if (!isUniqueName) {
-    return res.status(400).json({error: 'name must be unique'})
+    return res.status(400).json({ error: 'name must be unique' })
   }
 
   const xmlData = req.body;
@@ -236,13 +236,13 @@ app.post('/api/addInvoice', async(req, res) => {
 // headers:
 //   username
 //   password
-app.get('/api/getInvoicesBelongingTo', async(req, res) => {
+app.get('/api/getInvoicesBelongingTo', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const invoices = await EInvoice.find({
@@ -262,18 +262,18 @@ app.get('/api/getInvoicesBelongingTo', async(req, res) => {
 //   password
 // query:
 //   name
-app.delete('/api/deleteInvoice', async(req, res) => {
+app.delete('/api/deleteInvoice', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
   const name = req.query.name;
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const deleted = EInvoice.deleteOne(
-    {name: name}
+    { name: name }
   )
   res.json(deleted)
 })
@@ -284,7 +284,7 @@ app.delete('/api/deleteInvoice', async(req, res) => {
 //   password
 // body:
 //   names: array[string]
-app.delete('/api/deleteInvoices', async(req, res) => {
+app.delete('/api/deleteInvoices', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
   const names = req.body.names;
@@ -295,16 +295,16 @@ app.delete('/api/deleteInvoices', async(req, res) => {
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   try {
     const result = await EInvoice.deleteMany(
       {
-        name: {$in: names}
+        name: { $in: names }
       }
     )
-    res.json({numDeleted: result.deletedCount})
+    res.json({ numDeleted: result.deletedCount })
   } catch (err) {
     res.status(400).status(err.message)
   }
@@ -315,13 +315,13 @@ app.delete('/api/deleteInvoices', async(req, res) => {
 // headers:
 //   username
 //   password
-app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
+app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
   const invoiceNames = await EInvoice.find({
     belongsTo: username
@@ -336,14 +336,14 @@ app.get('/api/getInvoiceNamesBelongingTo', async(req, res) => {
 //   password
 // query:
 //   invoiceName
-app.get('/api/getInvoiceDataByName', async(req, res) => {
+app.get('/api/getInvoiceDataByName', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
   const invoiceName = req.query.name;
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const invoices = await EInvoice.find({
@@ -352,7 +352,7 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
   })
 
   if (invoices.length == 0) {
-    return res.status(403).json({error: 'your invoice couldn\'t be found'})
+    return res.status(403).json({ error: 'your invoice couldn\'t be found' })
   }
 
   res.json(invoices[0].data)
@@ -367,14 +367,14 @@ app.get('/api/getInvoiceDataByName', async(req, res) => {
 // return
 //    list of invoices, each invoice has the form
 //    _id, belongsTo, name, data
-app.post('/api/getInvoicesByNames', async(req, res) => {
+app.post('/api/getInvoicesByNames', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const invoiceNames = req.body.invoiceNames
@@ -382,11 +382,11 @@ app.post('/api/getInvoicesByNames', async(req, res) => {
 
   const invoices = await EInvoice.find({
     belongsTo: username,
-    name: { $in: invoiceNames}
+    name: { $in: invoiceNames }
   })
 
   if (invoices.length == 0) {
-    return res.status(403).json({error: 'your invoice couldn\'t be found'})
+    return res.status(403).json({ error: 'your invoice couldn\'t be found' })
   }
 
   res.json(invoices)
@@ -403,14 +403,15 @@ app.post('/api/getInvoicesByNames', async(req, res) => {
 // return
 //    list of invoices, each invoice has the form
 //    _id, belongsTo, name, data
-app.post('/api/sendInvoicesByNames', async(req, res) => {
+app.post('/api/sendInvoicesByNames', async (req, res) => {
+  console.log("Hi")
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const invoiceNames = req.body.invoiceNames
@@ -420,11 +421,11 @@ app.post('/api/sendInvoicesByNames', async(req, res) => {
 
   const invoices = await EInvoice.find({
     belongsTo: username,
-    name: { $in: invoiceNames}
+    name: { $in: invoiceNames }
   })
 
   if (invoices.length == 0) {
-    return res.status(403).json({error: 'no invoices found'})
+    return res.status(403).json({ error: 'no invoices found' })
   }
 
   const content = invoices.map(invoice => {
@@ -433,7 +434,7 @@ app.post('/api/sendInvoicesByNames', async(req, res) => {
       filename: invoice.name
     }
   })
-  
+
   const data = {
     type: 'multiplexml',
     from: from,

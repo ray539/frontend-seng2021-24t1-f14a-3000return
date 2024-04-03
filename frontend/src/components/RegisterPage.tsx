@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { Container, TextField, Button, Alert, Typography, Link, Grid } from '@mui/material';
 import { registerUser } from "../service/service";
 
 export default function RegisterPage() {
@@ -20,67 +20,80 @@ export default function RegisterPage() {
       return;
     }
     const user = await registerUser(username, email, password)
-    // const user = registerUser(username, email, password);
     if (user == null) {
       setShowError(true);
       return;
     }
-    
+
     authContext.setCurrentUser(user);
     navigate("/user");
   };
 
   return (
-    <Container>
-      <h1>Register page</h1>
-      <Form onSubmit={handleSubmit} onFocus={() => setShowError(false)}>
-        <Form.Group className="mb-3" controlId="formBasicUsername">
-          <Form.Label>Username:</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicEmail"> {/* Email input field */}
-          <Form.Label>Email:</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password:</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-          <Form.Label>Confirm Password:</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        {showError && <Alert variant="danger">Passwords do not match or user already exists</Alert>}
-
-        <Button variant="primary" type="submit">
-          Register
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
+      <Typography variant="h3" component="h1" align="center" gutterBottom>Sign up</Typography>
+      <form onSubmit={handleSubmit} onFocus={() => setShowError(false)}>
+        <TextField
+          required
+          fullWidth
+          margin="normal"
+          label="Username"
+          variant="outlined"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <TextField
+          required
+          fullWidth
+          margin="normal"
+          label="Email"
+          variant="outlined"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          required
+          fullWidth
+          margin="normal"
+          label="Password"
+          variant="outlined"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          required
+          fullWidth
+          margin="normal"
+          label="Confirm Password"
+          variant="outlined"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        {showError && <Alert severity="error">Passwords do not match or user already exists</Alert>}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign up
         </Button>
-        <a className="btn btn-primary" href="/" role="button">Back</a>
-      </Form>
+        <Grid container justifyContent="space-between" alignItems={"center"}>
+          <Grid item>
+            <Button variant="contained" color="primary" href="/" role="button">
+              Back
+            </Button>
+          </Grid>
+          <Grid item>
+            <Link href="/login" variant="body2">
+              Already have an account? Sign In
+            </Link>
+          </Grid>
+        </Grid>
+      </form>
     </Container>
   );
 }
