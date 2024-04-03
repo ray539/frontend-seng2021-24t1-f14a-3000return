@@ -147,21 +147,6 @@ function MultiSelect({
       </Select>
     </>
   );
-  // return (
-  //   <>
-  //     <Typography variant="body1" fontWeight="bold">
-  //       {label}
-  //     </Typography>
-
-  //     <Autocomplete
-  //       options={options}
-  //       getOptionLabel={(option) => option}
-  //       value={'AU'}
-  //       onChange={(e, v) => {v && setterFn(v)}}
-  //       renderInput={(params) => <TextField label={textLabel} {...params} />}
-  //     ></Autocomplete>
-  //   </>
-  // );
 }
 
 const sectionHeaderStyle = {
