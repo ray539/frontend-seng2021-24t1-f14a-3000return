@@ -143,8 +143,8 @@ function Dashboard() {
         </Toolbar>
       </AppBar>
       <div style={{ marginBottom: 25 }}></div>
-      <Grid container spacing={0} justifyContent={"space-between"} marginLeft={0} height={"auto"} marginRight={0}>
-        <Paper elevation={5} sx={{ paddingLeft: 3, paddingTop: 2, width: 400, paddingRight: 3, height: "auto", marginTop: -3, }}>
+      <Grid container spacing={0} marginLeft={0} height={"auto"} marginRight={0}>
+        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, width: 400, paddingRight: 3, height: "auto", marginTop: -3, }}>
           <Grid item xs={6}>
             <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
             {/* NO USER MANAGEMENT PAGE */}
@@ -169,7 +169,7 @@ function Dashboard() {
           </Container>
         </Paper >
         <Grid item xs={6}>
-          <Paper elevation={5} sx={{ paddingLeft: 3, paddingTop: 2, height: "auto", paddingRight: 7, marginTop: -3, width: "auto" }}>
+          <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, height: "auto", paddingRight: 7, marginTop: -3, minWidth: 610 }}>
             <Typography variant="h4">Your Invoices</Typography>
             <Button
               type="submit"
@@ -182,12 +182,46 @@ function Dashboard() {
             >
               Get Started
             </Button>
-            {invoices.length == 0 ? (
+            <Grid container spacing={2}>
+              <Grid item >
+                <Button variant="contained">Download</Button>
+              </Grid>
+              <Grid item >
+                <Button variant="contained" onClick={() => {
+                  if (!invoices.find(i => i.checked)) {
+                    return;
+                  }
+                  setShowSendUI(true);
+                }}>Send</Button>
+              </Grid>
+              <Grid item  >
+                <Button variant="contained" onClick={() => {
+                  const numItems = invoices.filter((invoice) => invoice.checked).length;
+                  if (numItems == 0) return;
+                  setDeleteConfirmation({
+                    state: "shown",
+                    numItems: numItems,
+                  });
+                }}>Delete</Button>
+              </Grid>
+            </Grid>
+            {invoices.length === 0 ? (
               <div>None</div>
             ) : (
               invoices.map((invoice, i) => (
                 <div key={invoice.id}>
-                  {invoice.name}
+                  <FormControlLabel
+                    control={<Checkbox
+                      checked={invoice.checked}
+                      onChange={(e) => {
+                        const invoices_ = [...invoices];
+                        invoices_[i].checked = e.target.checked;
+                        setInvoices(invoices_);
+                      }}
+                    />}
+                    label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+                    labelPlacement="end" // Align the label to the start of the checkbox
+                  />
                   <Button onClick={() => {
                     window.open(`/user/view-invoice/${invoice.name}`);
                   }}>View XML</Button>
@@ -216,40 +250,10 @@ function Dashboard() {
                     changePdfButtonMsg("generate pdf", i);
                     setTimeout(() => window.open(link), 100);
                   }}>{invoice.pdfGenMsg}</Button>
-
-                  <FormControlLabel
-                    control={<Checkbox
-                      checked={invoice.checked}
-                      onChange={(e) => {
-                        const invoices_ = [...invoices];
-                        invoices_[i].checked = e.target.checked;
-                        setInvoices(invoices_);
-                      }}
-                    />}
-                    label="Checked"
-                  />
                 </div>
               ))
             )}
 
-            <Button>Download</Button>
-
-            <Button onClick={() => {
-              if (!invoices.find(i => i.checked)) {
-                return;
-              }
-              setShowSendUI(true);
-            }}>Send</Button>
-
-
-            <Button onClick={() => {
-              const numItems = invoices.filter((invoice) => invoice.checked).length;
-              if (numItems == 0) return;
-              setDeleteConfirmation({
-                state: "shown",
-                numItems: numItems,
-              });
-            }}>Delete</Button>
 
             {showSendUI && <SendUI invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />}
 
