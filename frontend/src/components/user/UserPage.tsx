@@ -354,7 +354,7 @@ export default function UserPage() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="/get-started" element={<GetStarted />}></Route>
           <Route path="/upload" element={<UploadPage />} />
-          <Route path="/create" element={<CreationPage />} />
+          <Route path="/create/*" element={<CreationPage />} />
           <Route
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}

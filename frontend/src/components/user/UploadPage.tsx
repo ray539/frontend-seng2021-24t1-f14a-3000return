@@ -18,6 +18,8 @@ export default function UploadPage() {
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
 
+  // const navigate = useNavigate();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // reset
     setValidationOutcome("");
