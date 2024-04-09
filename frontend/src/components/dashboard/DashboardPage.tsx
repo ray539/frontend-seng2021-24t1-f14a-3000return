@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import GetStarted from "./GetStarted";
-import UploadPage from "./UploadPage";
-import CreationPage from "./CreationPage";
+import GetStartedPage from "./get_started/GetStartedPage";
+import ValidatePage from "./get_started/ValidatePage";
+import CreationPage from "./get_started/CreationPage";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
@@ -342,7 +342,7 @@ function InvoiceView() {
   );
 }
 
-export default function UserPage() {
+export default function DashboardPage() {
   const authContext = useContext(AuthContext);
 
   return (
@@ -352,8 +352,8 @@ export default function UserPage() {
       ) : (
         <Routes>
           <Route path="/" element={<Dashboard />}></Route>
-          <Route path="/get-started" element={<GetStarted />}></Route>
-          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/get-started" element={<GetStartedPage />}></Route>
+          <Route path="/upload" element={<ValidatePage />} />
           <Route path="/create/*" element={<CreationPage />} />
           <Route
             path="/view-invoice/:invoiceName"

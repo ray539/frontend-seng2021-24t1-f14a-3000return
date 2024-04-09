@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios'
 import { EInvoiceItem, UserProfile } from '../data';
-import { CreationFormData } from '../components/user/formTypes';
+import { CreationFormData } from '../components/dashboard/get_started/formTypes';
 
 export async function logInAndGetUser(username: string, password: string) {
   try {
