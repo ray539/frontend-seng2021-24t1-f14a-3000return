@@ -56,7 +56,8 @@ function Dashboard() {
           <InvoicesBox />
         </Paper>
       </Grid >
-    </>);
+    </>
+  );
 }
 
 export function NotLoggedIn() {
