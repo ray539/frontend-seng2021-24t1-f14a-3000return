@@ -27,8 +27,10 @@ export default function ValidatePage() {
   const [warning, setWarning] = useState(false);
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
-  const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
-  const [dialogMessage, setDialogMessage] = useState(""); // State for dialog message
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [validationReason, setValidationReason] = useState("");
+  const [validationDetails, setValidationDetails] = useState("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidationOutcome("");
@@ -59,6 +61,21 @@ export default function ValidatePage() {
       setValidationOutcome("unsuccessful");
       setOpenDialog(true);
       setDialogMessage("Validation Failed");
+      if (reportJSON.reason === "Both UBL assertion errors and PEPPOL assertion errors were fired") {
+        let tableContent = "<table style='border-collapse: collapse;'><thead><tr><th style='border: 1px solid black;'><Typography>ID</Typography></th><th style='border: 1px solid black;'><Typography>Test</Typography></th><th style='border: 1px solid black;'><Typography>Description</Typography></th><th style='border: 1px solid black;'><Typography>Severity</Typography></th></tr></thead><tbody>";
+        for (const assertionError of reportJSON.firedAssertionErrors.aunz_PEPPOL_1_1_10) {
+          tableContent += `<tr><td style='border: 1px solid black;'><Typography>${assertionError.id}</Typography></td><td style='border: 1px solid black;'><Typography>${assertionError.test}</Typography></td><td style='border: 1px solid black;'><Typography>${assertionError.description}</Typography></td><td style='border: 1px solid black; color: ${assertionError.severity === 'fatal' ? 'red' : assertionError.severity === 'warning' ? 'orange' : 'inherit'}'><Typography>${assertionError.severity}</Typography></td></tr>`;
+        }
+        for (const assertionError of reportJSON.firedAssertionErrors.aunz_UBL_1_1_10) {
+          tableContent += `<tr><td style='border: 1px solid black;'><Typography>${assertionError.id}</Typography></td><td style='border: 1px solid black;'><Typography>${assertionError.test}</Typography></td><td style='border: 1px solid black;'><Typography>${assertionError.description}</Typography></td><td style='border: 1px solid black; color: ${assertionError.severity === 'fatal' ? 'red' : assertionError.severity === 'warning' ? 'orange' : 'inherit'}'><Typography>${assertionError.severity}</Typography></td></tr>`;
+        }
+        tableContent += "</tbody></table>";
+        setValidationReason(reportJSON.reason);
+        setValidationDetails(tableContent.trim());
+      } else {
+        setValidationReason(reportJSON.reason);
+        setValidationDetails(`<Typography>${reportJSON.details}</Typography>`);
+      }
     }
   };
 
@@ -73,7 +90,7 @@ export default function ValidatePage() {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close dialog
+    setOpenDialog(false);
   };
 
   return (
@@ -138,12 +155,26 @@ export default function ValidatePage() {
             Storage Outcome: {storeOutcome === "loading" ? <CircularProgress size={20} /> : storeOutcome}
           </Typography>
         )}
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
           <DialogTitle>{dialogMessage}</DialogTitle>
           <DialogContent>
-            <Typography variant="body1">
-              {validationOutcome === "successful" ? "Your file has been successfully validated." : "Your file validation has failed."}
-            </Typography>
+            {validationOutcome === "successful" ? (
+              <>
+                <Typography variant="body1">
+                  Your file has been successfully validated.
+                </Typography>
+                <Button disabled={!file || validationOutcome !== "successful"} onClick={() => { handleCloseDialog(); handleFileStore(); }}>
+                  Store
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography variant="body1">
+                  {validationReason}
+                </Typography>
+                <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
+              </>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} color="primary">
