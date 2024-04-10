@@ -2,14 +2,14 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Typography, Container, CircularProgress, AppBar, Toolbar } from "@mui/material";
-import { addInvoiceToUser, validateFile } from "../../service/service";
-import { AuthContext } from "../../context/AuthContextProvider";
+import { addInvoiceToUser, validateFile } from "../../../service/service";
+import { AuthContext } from "../../../context/AuthContextProvider";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 type ValidationOutcome = "" | "loading" | "successful" | "unsuccessful";
 type StoreOutcome = "" | "loading" | "stored" | "error";
 
-export default function UploadPage() {
+export default function ValidatePage() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
 

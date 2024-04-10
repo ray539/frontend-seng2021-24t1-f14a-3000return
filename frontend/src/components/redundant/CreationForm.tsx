@@ -9,7 +9,7 @@ import {
 import { createInvoice } from "../../service/service";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
-import { CreationFormData, InvoiceItem, sampleData } from "./formTypes";
+import { CreationFormData, InvoiceItem, sampleData } from "../dashboard/get_started/formTypes";
 
 
 
