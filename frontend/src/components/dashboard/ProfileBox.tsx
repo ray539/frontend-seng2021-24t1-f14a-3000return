@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import {
-  Typography, Grid, Link, Box, Paper
+  Typography, Grid, Link, Box
 } from '@mui/material';
 import { Container } from "react-bootstrap";
 
