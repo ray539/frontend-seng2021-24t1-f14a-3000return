@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import SendPopUp from "./buttons/SendButton";
+import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
@@ -21,7 +21,7 @@ export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-  const [showSendUI, setShowSendUI] = useState(false);
+  // const [showSendUI, setShowSendUI] = useState(false);
 
 	const [deletedConfirmation, setDeleteConfirmation] = useState<{
     state: "hidden" | "shown" | "loading";
@@ -81,12 +81,7 @@ export default function InvoicesBox() {
 				</Grid>
 
 				<Grid item >
-					<Button variant="contained" onClick={() => {
-						if (!invoices.find(i => i.checked)) {
-							return;
-						}
-						setShowSendUI(true);
-					}}>Send</Button>
+					<SendButton invoices={invoices}/>
 				</Grid>
 
 				<Grid item  >
@@ -155,7 +150,7 @@ export default function InvoicesBox() {
 
 
 
-			{showSendUI && <SendPopUp invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />}
+			{/* {showSendUI && <SendButton invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />} */}
 
 			{deletedConfirmation.state != "hidden" && (
 				<div>

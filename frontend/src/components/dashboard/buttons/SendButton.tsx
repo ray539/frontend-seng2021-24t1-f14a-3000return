@@ -4,21 +4,26 @@ import { EInvoiceItem } from "../../../data";
 import {
   sendInvoicesByNames,
 } from "../../../service/service";
+import ErrorPopup from "./ErrorPopup";
 import {
-  Button, TextField, Typography
+  Button, Dialog, DialogTitle, TextField
 } from '@mui/material';
 
-export default function SendPopUp({ invoices, setShowSendUI }: { invoices: EInvoiceItem[], showSendUI: boolean, setShowSendUI: Function }) {
+function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function }) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [emailListStr, setEmailListStr] = useState('');
   const [from, setFrom] = useState('');
   const [buttonText, setButtonText] = useState('SEND');
 
+  const closePopup = () => {
+    setPopup(false);
+  }
+
   return (
     <>
-      <div>
-        <Typography variant="h5">Send Checked Invoices</Typography>
+      <Dialog onClose={closePopup} open>
+        <DialogTitle>Send eInvoice</DialogTitle>
         <form onSubmit={(e) => { e.preventDefault() }}>
           <TextField
             fullWidth
@@ -56,15 +61,37 @@ export default function SendPopUp({ invoices, setShowSendUI }: { invoices: EInvo
               return;
             }
             setButtonText('SENT');
-            setTimeout(() => {
-              setShowSendUI(false);
-            }, 1000);
+            setTimeout(closePopup, 1000);
 
           }} disabled={buttonText !== 'SEND'}>{buttonText}</Button>
-          <Button disabled={buttonText !== 'SEND'} onClick={() => setShowSendUI(false)}>Cancel</Button>
+          <Button disabled={buttonText !== 'SEND'} onClick={closePopup}>Cancel</Button>
         </form>
 
-      </div>
+      </Dialog>
     </>
   )
+}
+
+export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
+  const [Popup, setPopup] = useState(false);
+  const [Error, setError] = useState(false);
+
+  const openPopup = () => {
+    if (!invoices.find(i => i.checked)) {
+      setError(true);
+    } else {
+      setPopup(true);
+    }
+  }
+
+  return ( 
+    <>
+      <Button variant="contained" onClick={openPopup}>
+        Send
+      </Button>
+      
+      {Popup && <SendPopup invoices={invoices} Popup={Popup} setPopup={setPopup} />}
+      {Error && <ErrorPopup Popup={Error} setPopup={setError}/>}
+    </>
+  );
 }
