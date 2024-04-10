@@ -28,6 +28,7 @@ export default function ValidatePage() {
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
   const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
+  const [dialogMessage, setDialogMessage] = useState(""); // State for dialog message
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidationOutcome("");
@@ -52,9 +53,12 @@ export default function ValidatePage() {
     const reportJSON = await validateFile(user!.username, user!.password, file!) as any;
     if (reportJSON.successful) {
       setValidationOutcome("successful");
+      setOpenDialog(true);
+      setDialogMessage("Validation Successful");
     } else {
       setValidationOutcome("unsuccessful");
-      setOpenDialog(true); // Open dialog on unsuccessful validation
+      setOpenDialog(true);
+      setDialogMessage("Validation Failed");
     }
   };
 
@@ -135,9 +139,11 @@ export default function ValidatePage() {
           </Typography>
         )}
         <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Validation Failed</DialogTitle>
+          <DialogTitle>{dialogMessage}</DialogTitle>
           <DialogContent>
-            <Typography variant="body1">Your file validation has failed.</Typography>
+            <Typography variant="body1">
+              {validationOutcome === "successful" ? "Your file has been successfully validated." : "Your file validation has failed."}
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} color="primary">
