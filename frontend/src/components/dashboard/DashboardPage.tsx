@@ -11,7 +11,8 @@ import {
   getXmlData,
 } from "../../service/service";
 import {
-  Button, Typography, Grid, AppBar, Toolbar, Link
+  Button, Typography, Grid, AppBar, Toolbar, Link,
+  Paper
 } from '@mui/material';
 // import { Container } from "react-bootstrap";
 
@@ -48,8 +49,12 @@ function Dashboard() {
       </AppBar>
       <div style={{ marginBottom: 25 }}></div>
       <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
-        <ProfileBox />
-        <InvoicesBox />
+        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
+          <ProfileBox />
+        </Paper>
+        <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
+          <InvoicesBox />
+        </Paper>
       </Grid >
     </>);
 }
