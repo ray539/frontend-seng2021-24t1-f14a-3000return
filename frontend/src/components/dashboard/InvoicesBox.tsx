@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import SendPopUp from "./pop_ups/SendPopUp";
+import SendPopUp from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
@@ -12,7 +12,8 @@ import {
 } from "../../service/service";
 import {
   Button, Checkbox, FormControlLabel,
-  Typography, Grid, Box
+  Typography, Grid, Box,
+	TextField
 } from '@mui/material';
 
 export default function InvoicesBox() {
@@ -52,22 +53,33 @@ export default function InvoicesBox() {
 
 	return (
 		<>
-			<Typography variant="h4">Your Invoices</Typography>
-			<Button
-				type="submit"
-				fullWidth
-				variant="contained"
-				sx={{ mt: 3, mb: 2 }}
-				onClick={() => {
-					navigate("/user/get-started");
-				}}
-			>
-				Get Started
-			</Button>
+			<Grid container spacing={2} direction={"row"} justifyContent={"space-between"} wrap="nowrap" alignItems={"center"}>
+				<Grid item>
+					<Typography variant="h4">Invoices</Typography>
+				</Grid>
+				<Grid item width={"60%"}>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						sx={{ mt: 1, mb: 1 }}
+						onClick={() => {
+							navigate("/user/get-started");
+						}}
+					>
+						Get Started
+					</Button>
+				</Grid>
+			</Grid>
 			<Grid container spacing={2}>
+				<Grid item>
+					<TextField label="Search file" variant="outlined" />
+				</Grid>
+
 				<Grid item >
 					<Button variant="contained">Download</Button>
 				</Grid>
+
 				<Grid item >
 					<Button variant="contained" onClick={() => {
 						if (!invoices.find(i => i.checked)) {
@@ -76,6 +88,7 @@ export default function InvoicesBox() {
 						setShowSendUI(true);
 					}}>Send</Button>
 				</Grid>
+
 				<Grid item  >
 					<Button variant="contained" onClick={() => {
 						const numItems = invoices.filter((invoice) => invoice.checked).length;
@@ -87,6 +100,7 @@ export default function InvoicesBox() {
 					}}>Delete</Button>
 				</Grid>
 			</Grid>
+
 			<Box sx={{ bgcolor: "#cde6f7", marginTop: 2, paddingTop: "10px", minHeight: "34.5%" }}>
 				{invoices.length === 0 ? (
 					<Typography>No Invoices!</Typography>
