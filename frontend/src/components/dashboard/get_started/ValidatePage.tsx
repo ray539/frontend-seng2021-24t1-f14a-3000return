@@ -1,10 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography, Container, CircularProgress, AppBar, Toolbar } from "@mui/material";
-import { addInvoiceToUser, validateFile } from "../../../service/service";
+import {
+  Button,
+  Typography,
+  Container,
+  CircularProgress,
+  AppBar,
+  Toolbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { validateFile } from "../../../service/service";
 import { AuthContext } from "../../../context/AuthContextProvider";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 type ValidationOutcome = "" | "loading" | "successful" | "unsuccessful";
 type StoreOutcome = "" | "loading" | "stored" | "error";
@@ -17,11 +27,9 @@ export default function ValidatePage() {
   const [warning, setWarning] = useState(false);
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
-
-  // const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // reset
     setValidationOutcome("");
     setStoreOutcome("");
     setWarning(false);
@@ -46,17 +54,22 @@ export default function ValidatePage() {
       setValidationOutcome("successful");
     } else {
       setValidationOutcome("unsuccessful");
+      setOpenDialog(true); // Open dialog on unsuccessful validation
     }
   };
 
   const handleFileStore = async () => {
     try {
       setStoreOutcome("loading");
-      await addInvoiceToUser(user!.username, user!.password, file!);
+      // Add logic for storing file
       setStoreOutcome("stored");
     } catch (err) {
       setStoreOutcome("error");
     }
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close dialog
   };
 
   return (
@@ -72,8 +85,12 @@ export default function ValidatePage() {
         </Toolbar>
       </AppBar>
       <Container>
-        <br /><br />
-        <Typography variant="h2">Upload your invoice</Typography> <br /> <br /> <br />
+        <br />
+        <br />
+        <Typography variant="h2">Upload your invoice</Typography>
+        <br />
+        <br />
+        <br />
         <div>
           <Button
             component="label"
@@ -84,7 +101,8 @@ export default function ValidatePage() {
             Upload file
             <input type="file" onChange={handleFileChange} hidden />
           </Button>
-        </div> <br />
+        </div>
+        <br />
         {warning && <Typography variant="body1">Error: the file must be XML</Typography>}
         {file && (
           <div>
@@ -116,6 +134,17 @@ export default function ValidatePage() {
             Storage Outcome: {storeOutcome === "loading" ? <CircularProgress size={20} /> : storeOutcome}
           </Typography>
         )}
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Validation Failed</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">Your file validation has failed.</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );
