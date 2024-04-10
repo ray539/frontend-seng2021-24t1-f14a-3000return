@@ -13,6 +13,7 @@ import {
 import {
   Button, Typography, Grid, AppBar, Toolbar, Link
 } from '@mui/material';
+import { Row } from "react-bootstrap";
 // import { Container } from "react-bootstrap";
 
 function Dashboard() {
@@ -47,11 +48,9 @@ function Dashboard() {
         </Toolbar>
       </AppBar>
       <div style={{ marginBottom: 25 }}></div>
-      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5}>
+      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
         <ProfileBox />
-        <Grid item xs={9}>
-          <InvoicesBox />
-        </Grid>
+        <InvoicesBox />
       </Grid >
     </>);
 }
