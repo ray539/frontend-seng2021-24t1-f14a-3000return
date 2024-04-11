@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-
+import { addInvoiceToUser} from "../../../service/service";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -40,7 +40,7 @@ export default function ValidatePage() {
     setWarning(false);
     setSubmitted(false);
 
-    
+
     if (e.target.files && e.target.files.length > 0) {
       const toUpload = e.target.files[0];
       if (!(toUpload.type === "text/xml")) {
@@ -95,6 +95,8 @@ export default function ValidatePage() {
     try {
       setStoreOutcome("loading");
       // Add logic for storing file
+      await addInvoiceToUser(user!.username, user!.password, file!);
+      setSubmitted(true);
       setStoreOutcome("stored");
     } catch (err) {
       setStoreOutcome("error");
