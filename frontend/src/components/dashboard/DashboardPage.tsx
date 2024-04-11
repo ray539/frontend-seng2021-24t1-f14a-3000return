@@ -3,7 +3,6 @@ import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import InvoicesBox from "./InvoicesBox";
 import ProfileBox from "./ProfileBox";
-import GetStartedPage from "./get_started/GetStartedPage";
 import ValidatePage from "./get_started/ValidatePage";
 import CreationPage from "../redundant/CreationPage";
 import { AuthContext } from "../../context/AuthContextProvider";
@@ -109,7 +108,6 @@ export default function DashboardPage() {
       ) : (
         <Routes>
           <Route path="/" element={<Dashboard />}></Route>
-          <Route path="/get-started" element={<GetStartedPage />}></Route>
           <Route path="/upload" element={<ValidatePage />} />
           <Route path="/create/*" element={<CreationPage />} />
           <Route
