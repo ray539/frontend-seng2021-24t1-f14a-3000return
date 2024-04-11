@@ -24,6 +24,7 @@ export default function ValidatePage() {
   const user = authContext.currentUser;
 
   const [file, setFile] = useState<File | null>(null);
+  const [fileName] = useState('');
   const [warning, setWarning] = useState(false);
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
   const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
@@ -31,11 +32,13 @@ export default function ValidatePage() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [validationReason, setValidationReason] = useState("");
   const [validationDetails, setValidationDetails] = useState("");
-
+  const [submitted, setSubmitted] = useState(false);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidationOutcome("");
     setStoreOutcome("");
     setWarning(false);
+    setSubmitted(false);
+
 
     if (e.target.files && e.target.files.length > 0) {
       const toUpload = e.target.files[0];
@@ -48,6 +51,13 @@ export default function ValidatePage() {
     } else {
       setFile(null);
     }
+  };
+
+
+  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    const newFile = new File([file!], newName, { type: file!.type });
+    setFile(newFile);
   };
 
   const handleFileSubmit = async () => {
@@ -77,12 +87,14 @@ export default function ValidatePage() {
         setValidationDetails(`<Typography>${reportJSON.details}</Typography>`);
       }
     }
+    setSubmitted(true);
   };
 
   const handleFileStore = async () => {
     try {
       setStoreOutcome("loading");
       await addInvoiceToUser(user!.username, user!.password, file!)
+      setSubmitted(true);
       setStoreOutcome("stored");
     } catch (err) {
       setStoreOutcome("error");
@@ -129,7 +141,15 @@ export default function ValidatePage() {
           <div>
             <Typography variant="body1">File details:</Typography>
             <ul>
-              <li>Name: {file.name} </li>
+            <li>
+              Name: 
+              <input
+                type="text"
+                value={fileName !== '' ? fileName : (file ? file.name : '')}
+                onChange={handleFileNameChange}
+                disabled={submitted}
+              />
+            </li>
               <li>Size: {file.size} bytes</li>
             </ul>
           </div>
