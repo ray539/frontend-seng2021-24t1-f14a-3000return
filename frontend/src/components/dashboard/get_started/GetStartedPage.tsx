@@ -1,7 +1,7 @@
 import { Typography, Button, Grid, AppBar, Toolbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export default function GetStarted() {
+export default function GetStartedPage() {
   const navigate = useNavigate();
 
   return (<>
