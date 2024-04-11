@@ -123,6 +123,8 @@ app.post('/api/validate', async (req, res) => {
   return res.json(data)
 })
 
+
+
 // //
 // // each item has
 // //   -username
@@ -323,6 +325,7 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
   if (!account) {
     return res.status(403).json({ error: 'invalid username or password' })
   }
+
   const invoiceNames = await EInvoice.find({
     belongsTo: username
   }).select('name')

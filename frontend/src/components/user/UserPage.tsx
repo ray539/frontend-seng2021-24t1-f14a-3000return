@@ -102,6 +102,8 @@ function Dashboard() {
     );
   }, []);
 
+  
+
   function changePdfButtonMsg(
     msg:
       | "generate pdf"
@@ -144,7 +146,7 @@ function Dashboard() {
       </AppBar>
       <div style={{ marginBottom: 25 }}></div>
       <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5}>
-        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
+        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3, width:"330px" }}>
           <Grid item xs={3}>
             <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
             {/* NO USER MANAGEMENT PAGE */}
@@ -169,7 +171,7 @@ function Dashboard() {
           </Container>
         </Paper >
         <Grid item xs={9}>
-          <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
+          <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "95%", paddingRight: 7, marginTop: -3 }}>
             <Typography variant="h4">Your Invoices</Typography>
             <Button
               type="submit"
@@ -337,7 +339,9 @@ function InvoiceView() {
   return (
     <>
       <Typography variant="h1">{invoiceName}</Typography>
-      <Typography>{xmlData}</Typography>
+      <pre>
+        {xmlData}
+      </pre>
     </>
   );
 }

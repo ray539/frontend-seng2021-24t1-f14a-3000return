@@ -6,6 +6,7 @@ const RENDERING_ACCOUNT = {
   email: 'raywang2003@gmail.com',
   password: 'Password123'
 }
+
 const MAX_TRIES = 1
 const TOKEN = '71233f64eba0f6995d5898b719ad5e1b2cd1227df9983e50f4e679910f354f29' // DON'T CHANGE THIS!!
 
