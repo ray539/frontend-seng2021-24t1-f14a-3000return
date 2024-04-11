@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { validateFile } from "../../../service/service";
+import { addInvoiceToUser, validateFile } from "../../../service/service";
 import { AuthContext } from "../../../context/AuthContextProvider";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
@@ -82,7 +82,7 @@ export default function ValidatePage() {
   const handleFileStore = async () => {
     try {
       setStoreOutcome("loading");
-      // Add logic for storing file
+      await addInvoiceToUser(user!.username, user!.password, file!)
       setStoreOutcome("stored");
     } catch (err) {
       setStoreOutcome("error");

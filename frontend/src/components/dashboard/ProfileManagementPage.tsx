@@ -1,10 +1,11 @@
 
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { DashBoardHeader } from "./DashboardPage";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
+import { changeEmail, changePassword, deleteAccount, logInAndGetUser } from "../../service/service";
 
 
 function BackButton() {
@@ -64,9 +65,20 @@ function DropDown({text, tc, bgc, element, showElement, setShowElement}: {text: 
 
 
 function ChangeEmailForm({setShowElement}: {setShowElement: Function}) {
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
+
   const [newEmail, setNewEmail] = useState('')
   const [confEmail, setConfEmail] = useState('')
   const [pass, setPass] = useState('')
+
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      setShowSuccess(false)
+    }
+  }, [])
 
   return (
     <>
@@ -78,11 +90,29 @@ function ChangeEmailForm({setShowElement}: {setShowElement: Function}) {
         marginBottom: '1em', 
         position: 'relative'
         }}>
-        <form onSubmit={(e) => {
+        <form onSubmit={async (e) => {
           e.preventDefault()
-          console.log('submited');
-          
-        }}>
+          if (newEmail != confEmail) {
+            window.alert('emails do not match')
+            return;
+          }
+          let a = await logInAndGetUser(user!.username, pass)
+          if (a == null) {
+            window.alert('incorrect password')
+            return
+          }
+
+          let account = await changeEmail(user!.username, user!.password, newEmail)
+          if (!account) {
+            window.alert('an unknown error occured')
+            return
+          }
+          console.log(account)
+          authContext.setCurrentUser(account)
+          setShowSuccess(true)
+        }}
+          onFocus={() => setShowSuccess(false)}
+        >
 
         
         <Typography component={'h1'} sx={{width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600'}}>Update email</Typography>
@@ -102,7 +132,7 @@ function ChangeEmailForm({setShowElement}: {setShowElement: Function}) {
             cursor: 'pointer'
           }
         }}
-          onClick={() => setShowElement(false)}
+          onClick={() => {setShowElement(false)}}
         >
             <Typography>back</Typography>
         </Box>
@@ -140,6 +170,14 @@ function ChangeEmailForm({setShowElement}: {setShowElement: Function}) {
           sx={{ mt: 2, mb: 2 }}
         >
         </TextField>
+        
+        {
+          showSuccess &&         
+          <Alert severity="success" sx={{marginBottom: '1em'}}>
+            Email successfully changed.
+          </Alert>
+        }
+
 
         <Container sx={{width:'fit-content', marginBottom:'1em'}}>
           <Button variant='contained' type='submit'>Confirm</Button>
@@ -155,6 +193,10 @@ function ChangePasswordForm({setShowElement}: {setShowElement: Function}) {
   const [oldPass, setOldPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [confPass, setConfPass] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
   return (
     <>
@@ -166,13 +208,34 @@ function ChangePasswordForm({setShowElement}: {setShowElement: Function}) {
         marginBottom: '1em', 
         position: 'relative'
         }}>
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          console.log('submited');
-        }}>
+        <form 
+          onSubmit={async (e) => {
+            e.preventDefault()
+            if (newPass != confPass) {
+              window.alert('passwords don\'t match')
+              return;
+            }
+            let a = await logInAndGetUser(user!.username, oldPass)
+            if (a == null) {
+              window.alert('incorrect password')
+              return
+            }
+
+            let account = await changePassword(user!.username, oldPass, newPass)
+            if (!account) {
+              window.alert('an unknown error occured')
+              return
+            }
+
+            authContext.setCurrentUser(account)
+            setShowSuccess(true)
+          }}
+          onFocus={() => setShowSuccess(false)}
+        
+        >
 
         
-        <Typography component={'h1'} sx={{width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600'}}>Update password</Typography>
+        <Typography component={'h1'} sx={{width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600'}}>Change password</Typography>
         
         <Box sx={{
           border:'1px solid black',
@@ -196,6 +259,7 @@ function ChangePasswordForm({setShowElement}: {setShowElement: Function}) {
 
         <TextField
           fullWidth
+          type='password'
           label={'old password'}
           value={oldPass}
           onChange={(e) => {setOldPass(e.target.value)}}
@@ -232,6 +296,12 @@ function ChangePasswordForm({setShowElement}: {setShowElement: Function}) {
         <Container sx={{width:'fit-content', marginBottom:'1em'}}>
           <Button variant='contained' type='submit'>Confirm</Button>
         </Container>
+        {
+          showSuccess &&         
+          <Alert severity="success" sx={{marginBottom: '1em'}}>
+            Password successfully changed.
+          </Alert>
+        }
         </form>
       </Container>
     </>
@@ -242,6 +312,9 @@ function ChangePasswordForm({setShowElement}: {setShowElement: Function}) {
 function DeleteAccountForm({setShowElement}: {setShowElement: Function}) {
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
+  const navigate = useNavigate()
 
   return (
     <>
@@ -292,8 +365,26 @@ function DeleteAccountForm({setShowElement}: {setShowElement: Function}) {
         </TextField>
 
         <Container sx={{display: 'flex', justifyContent: 'center'}}>
-          <Button variant='contained' type='submit' color='error' sx={{margin: '1em'}}>Delete</Button>
+          <Button variant='contained' type='submit' color='error' sx={{margin: '1em'}} onClick={async () => {
+            if (username != user!.username || pass != user!.password) {
+              window.alert('incorrect login')
+              return
+            }
+            let a = await logInAndGetUser(username, pass)
+            if (a == null) {
+              window.alert('incorrect login');
+              return;
+            }
+            let ret = await deleteAccount(username, pass)
+            if (ret == null) {
+              window.alert('error deleting account');
+              return;
+            }
+            authContext.setCurrentUser(null)
+            navigate('/thankyou')
 
+
+          }}>Delete</Button>
           <Button variant='contained' sx={{margin: '1em'}} onClick={() => setShowElement(false)}>Cancel</Button>
         </Container>
         </form>
@@ -325,16 +416,13 @@ export default function ProfileManagementPage() {
       <Container sx={{border:'1px solid #dddddd', backgroundColor: '#fcfcfc', marginTop: '1em', paddingTop: '1em'}} maxWidth='sm'>
         <Box sx={{ width: 'fit-content',  margin: 'auto', display: 'flex', alignItems: 'center'}}>
           <img src="/images/empty-profile.png" style={{width: '50px', marginRight: '0.5em'}}></img>
-        <Typography fontSize={20}>{user?.username}</Typography>
+        <Typography fontSize={20}>username: {user?.username}</Typography>
         </Box>
        
         <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail}/>} ></DropDown>
 
         <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass}/>} ></DropDown>
 
-        {/* <Box sx={{border: '1px solid black', width: '50%',  margin: 'auto', display: 'flex', justifyContent:'center'}}>
-          <Typography>Delete account</Typography>
-        </Box> */}
         <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc}/>} />
 
       </Container>

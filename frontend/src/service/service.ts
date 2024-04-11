@@ -201,6 +201,7 @@ export async function addInvoiceToUser(username: string, password: string, xmlFi
   })
 }
 
+
 export async function deleteInvoicesFromUser(username: string, password: string, invoiceNames: string[]) {
   try {
     const res = await axios({
@@ -232,6 +233,68 @@ export async function createInvoice(username: string, password: string, data: Cr
       }
     })
     return res.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function changeEmail(username: string, password: string, newEmail: string) {
+  try {
+    const res = await axios.put('/api/changeEmail', {newEmail: newEmail}, {
+      headers: {
+        username: username,
+        password: password
+      }
+    })
+    const acc = res.data;
+    console.log('service.ts')
+    console.log(acc)
+
+    const retUser: UserProfile = {
+      id: acc._id,
+      username: acc.username,
+      email: acc.email,
+      password: password
+    }
+
+    return retUser;
+
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function changePassword(username: string, password: string, newPassword: string) {
+  try {
+    const res = await axios.put('/api/changePassword', {newPassword: newPassword}, {
+      headers: {
+        username: username,
+        password: password
+      }
+    })
+    const acc = res.data;
+
+    const retUser: UserProfile = {
+      id: acc._id,
+      username: acc.username,
+      email: acc.email,
+      password: password
+    }
+    return retUser;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function deleteAccount(username: string, password: string) {
+  try {
+    const res = await axios.delete('/api/deleteAccount', {
+      headers: {
+        username: username,
+        password: password
+      }
+    })
+   return res.data
   } catch (err) {
     return null;
   }
