@@ -71,7 +71,7 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
   )
 }
 
-export default function SendButton() {
+export default function GetStartedButton() {
   const [Popup, setPopup] = useState(false);
 
   const openPopup = () => {
