@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import DownloadButton from "./buttons/DownloadButton";
 import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
@@ -15,13 +15,12 @@ import {
   Typography, Grid, Box,
 	TextField
 } from '@mui/material';
+import GetStartedButton from "./buttons/GetStartedButton";
 
 export default function InvoicesBox() {
-	const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-  // const [showSendUI, setShowSendUI] = useState(false);
 
 	const [deletedConfirmation, setDeleteConfirmation] = useState<{
     state: "hidden" | "shown" | "loading";
@@ -51,51 +50,81 @@ export default function InvoicesBox() {
     setInvoices(invoices_);
   }
 
+	const buttonWidth = "65%";
+
+	function Header() {
+		return (
+			<>
+				<Grid 
+					container 
+					justifyContent={"space-between"}
+					alignItems={"center"}
+					paddingBottom={"8px"}
+				>
+					<Grid item xs>
+						<Typography variant="h4">Invoices</Typography>
+					</Grid>
+					<Grid item width={buttonWidth}>
+						<GetStartedButton />
+					</Grid>
+				</Grid>
+			</>
+		);
+	}
+
+	function Buttons() {
+		return (
+			<>
+				<Grid 
+					container 
+					justifyContent={"space-between"}
+					alignItems={"center"}
+				>
+					<Grid 
+						item 
+						xs 
+						paddingRight={"8px"}
+					>
+						<TextField 
+							label="Search file" 
+							variant="outlined" 
+							fullWidth
+						/>
+					</Grid>
+
+					<Grid 
+						container 
+						width={buttonWidth}
+						gap={"8px"}
+					>
+						<Grid item xs>
+							<DownloadButton invoices={invoices}/>
+						</Grid>
+
+						<Grid item xs>
+							<SendButton invoices={invoices}/>
+						</Grid>
+						
+						<Grid item xs>
+							<Button variant="contained" fullWidth onClick={() => {
+								const numItems = invoices.filter((invoice) => invoice.checked).length;
+								if (numItems == 0) return;
+								setDeleteConfirmation({
+									state: "shown",
+									numItems: numItems,
+								});
+							}}>Delete</Button>
+						</Grid>
+					</Grid>
+				</Grid>
+			</>
+		);
+	}
+
 	return (
 		<>
-			<Grid container spacing={2} direction={"row"} justifyContent={"space-between"} wrap="nowrap" alignItems={"center"}>
-				<Grid item>
-					<Typography variant="h4">Invoices</Typography>
-				</Grid>
-				<Grid item width={"60%"}>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						sx={{ mt: 1, mb: 1 }}
-						onClick={() => {
-							navigate("/user/get-started");
-						}}
-					>
-						Get Started
-					</Button>
-				</Grid>
-			</Grid>
-			<Grid container spacing={2}>
-				<Grid item>
-					<TextField label="Search file" variant="outlined" />
-				</Grid>
-
-				<Grid item >
-					<Button variant="contained">Download</Button>
-				</Grid>
-
-				<Grid item >
-					<SendButton invoices={invoices}/>
-				</Grid>
-
-				<Grid item  >
-					<Button variant="contained" onClick={() => {
-						const numItems = invoices.filter((invoice) => invoice.checked).length;
-						if (numItems == 0) return;
-						setDeleteConfirmation({
-							state: "shown",
-							numItems: numItems,
-						});
-					}}>Delete</Button>
-				</Grid>
-			</Grid>
-
+			<Header />
+			<Buttons />
 			<Box sx={{ bgcolor: "#cde6f7", marginTop: 2, paddingTop: "10px", minHeight: "34.5%" }}>
 				{invoices.length === 0 ? (
 					<Typography>No Invoices!</Typography>
@@ -147,10 +176,6 @@ export default function InvoicesBox() {
 					))
 				)}
 			</Box>
-
-
-
-			{/* {showSendUI && <SendButton invoices={invoices} showSendUI={showSendUI} setShowSendUI={setShowSendUI} />} */}
 
 			{deletedConfirmation.state != "hidden" && (
 				<div>
