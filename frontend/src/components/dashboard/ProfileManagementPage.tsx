@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { DashBoardHeader } from "./DashboardPage";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser } from "../../service/service";
 
 
