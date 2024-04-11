@@ -106,14 +106,26 @@ export default function InvoicesBox() {
 						</Grid>
 						
 						<Grid item xs>
-							<Button variant="contained" fullWidth onClick={() => {
-								const numItems = invoices.filter((invoice) => invoice.checked).length;
-								if (numItems == 0) return;
-								setDeleteConfirmation({
-									state: "shown",
-									numItems: numItems,
-								});
-							}}>Delete</Button>
+							<Button 
+								variant="contained" 
+								fullWidth 
+								sx={{
+									backgroundColor: "#F22556",
+									'&:hover': {
+										backgroundColor: "#d71e4a",
+									}
+								}}
+								onClick={() => {
+									const numItems = invoices.filter((invoice) => invoice.checked).length;
+									if (numItems == 0) return;
+									setDeleteConfirmation({
+										state: "shown",
+										numItems: numItems,
+									});
+								}
+							}>
+								Delete
+							</Button>
 						</Grid>
 					</Grid>
 				</Grid>

@@ -1,31 +1,82 @@
 // import { useState } from "react";
 import {
   Button, Dialog,
+  Grid,
+  Typography,
 } from '@mui/material';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 
 
 function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) {
+  const navigate = useNavigate();
+  
   const closePopup = () => {
     setPopup(false);
   }
 
   return (
     <>
-      <Dialog onClose={closePopup} open>
+      <Dialog 
+        maxWidth={"md"}
+        onClose={closePopup} 
+        open
+      >
+        <Grid
+          container
+          padding={"20px"}
+          gap={"8px"}
+          wrap='nowrap'
+        >
+          <Grid
+            item
+            xs
+            justifyContent={"space-between"}
+          >
+            <Typography variant='h5'>
+              Starting a new eInvoice?
+            </Typography>
+            <Button variant="contained" onClick={() => navigate("/user/create/form")}>
+              Create
+            </Button>  
+          </Grid>
+
+          <Grid
+            item
+            xs
+          >
+            <Typography variant='h5'>
+              Have a document to convert to an eInvoice?
+            </Typography>
+            <Button variant="contained">
+              Convert
+            </Button>  
+          </Grid>
+          
+          <Grid
+            item
+            xs
+          >
+            <Typography variant='h5'>
+              Already prepared an eInvoice?
+            </Typography>
+            <Button variant="contained" onClick={() => navigate("/user/upload")}>
+              Validate
+            </Button>  
+          </Grid>
+        </Grid>
       </Dialog>
     </>
   )
 }
 
 export default function SendButton() {
-	const navigate = useNavigate();
-  // const [Popup, setPopup] = useState(false);
+  const [Popup, setPopup] = useState(false);
 
-  // const openPopup = () => {
-	// 	setPopup(true);
-  // }
+  const openPopup = () => {
+		setPopup(true);
+  }
 
   return ( 
     <>
@@ -39,18 +90,15 @@ export default function SendButton() {
 						backgroundColor: "#44e397",
 					}
 				}}
-				onClick={() => {
-					navigate("/user/get-started");
-				}}
+				// onClick={() => {
+				// 	navigate("/user/get-started");
+				// }}
+        onClick={openPopup}
 			>
 				Get Started
 			</Button>
 
-      {/* <Button variant="contained" onClick={openPopup}>
-        Get Started
-      </Button> */}
-      
-      {/* {Popup && <GetStartedPopup Popup={Popup} setPopup={setPopup} />} */}
+      {Popup && <GetStartedPopup Popup={Popup} setPopup={setPopup} />}
     </>
   );
 }
