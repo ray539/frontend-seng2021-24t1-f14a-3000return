@@ -25,9 +25,7 @@ function Dashboard() {
       <Grid 
         item
         height={"100vh"}
-        sx={{
-          backgroundColor: "#7B54E8"
-        }}
+        bgcolor={"#7B54E8"}
       >
         <Grid
           container
