@@ -13,12 +13,12 @@ import {
   Button, Typography, Grid, Link,
   Paper
 } from '@mui/material';
+import ProfileManagementPage from './ProfileManagementPage'
 // import { Container } from "react-bootstrap";
 
-function Dashboard() {
+export function DashBoardHeader() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
-
   return (
     <>
       <Grid 
@@ -104,6 +104,26 @@ function Dashboard() {
         </Grid>
       </Grid>
     </>
+  )
+}
+
+
+function Dashboard() {
+  // const navigate = useNavigate();
+  // const authContext = useContext(AuthContext);
+
+  return (
+    <>
+      <DashBoardHeader />
+      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
+        <Paper elevation={1} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
+          <ProfileBox />
+        </Paper>
+        <Paper elevation={1} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
+          <InvoicesBox />
+        </Paper>
+      </Grid >
+    </>
   );
 }
 
@@ -158,6 +178,7 @@ export default function DashboardPage() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="/upload" element={<ValidatePage />} />
           <Route path="/create/*" element={<CreationPage />} />
+          <Route path="/profile" element={<ProfileManagementPage />} />
           <Route
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}

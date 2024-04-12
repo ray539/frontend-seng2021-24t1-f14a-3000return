@@ -107,6 +107,80 @@ app.get('/api/login', async (req, res) => {
   }
 })
 
+app.put('/api/changePassword', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const newPassword = req.body.newPassword;
+
+  const users = await Account.find({
+    username: username
+  })
+
+  if (users.length == 0) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const user = users[0]
+  user.passwordEncrypted = hashPassword(newPassword)
+  await user.save();
+  res.json(user)
+})
+
+app.put('/api/changeEmail', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const newEmail = req.body.newEmail;
+
+  const users = await Account.find({
+    username: username
+  })
+
+  if (users.length == 0) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const user = users[0]
+  user.email = newEmail
+  await user.save();
+  res.json(user)
+})
+
+app.delete('/api/deleteAccount', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+  
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  // delete all invoices belonging to account
+  await EInvoice.deleteMany({
+    belongsTo: username
+  })
+
+  // delete account
+  await Account.deleteOne({
+    username: username
+  })
+
+  res.json('OK')
+})
+
+
+
 app.post('/api/validate', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
@@ -122,6 +196,9 @@ app.post('/api/validate', async (req, res) => {
   const data = await callValidationAPIJSON(xmlData)
   return res.json(data)
 })
+
+
+
 
 // //
 // // each item has
@@ -323,6 +400,7 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
   if (!account) {
     return res.status(403).json({ error: 'invalid username or password' })
   }
+
   const invoiceNames = await EInvoice.find({
     belongsTo: username
   }).select('name')
