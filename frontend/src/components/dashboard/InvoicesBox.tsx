@@ -86,10 +86,8 @@ export default function InvoicesBox() {
 								window.alert('No invoices are selected');
 								return;
 							}
-
 							try {
 								await downloadInvoices(user!.username, user!.password, invoiceNames);
-								// If download succeeds, no need to show any message, as the user will see the download prompt
 							} catch (error) {
 								console.error('Download failed:', error);
 								window.alert('Download failed. Please try again later.');

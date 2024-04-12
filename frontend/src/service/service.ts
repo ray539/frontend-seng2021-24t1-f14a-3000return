@@ -238,34 +238,47 @@ export async function createInvoice(username: string, password: string, data: Cr
 }
 
 export async function downloadInvoices(username: string, password: string, invoiceNames: string[]): Promise<void> {
-  console.log("HELLO?")
   try {
-    const response: AxiosResponse<Blob> = await axios.get('/api/downloadInvoicesByNames', {
-      params: {
-        invoiceNames: invoiceNames.join(',') // Convert array to comma-separated string
-      },
+    const response: AxiosResponse<Blob> = await axios.post('/api/downloadInvoicesByNames', {
+      invoiceNames: invoiceNames
+    }, {
       headers: {
         username: username,
         password: password,
       },
-      responseType: 'blob' // Set response type to blob to handle binary data (e.g., file)
+      responseType: 'blob'
     });
 
-    // Create a blob from the response data
-    const blob = new Blob([response.data], { type: 'application/zip' });
+    const contentType = response.headers['content-type'] || '';
+    const disposition = response.headers['content-disposition'];
 
-    // Create a temporary URL for the blob
-    const url = window.URL.createObjectURL(blob);
-
-    // Create a link element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'invoices.zip');
-
-    // Append the link to the document body and click it to start the download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (contentType.startsWith('application/zip')) {
+      // Multiple files, handle zip download
+      const blob = new Blob([response.data], { type: 'application/zip' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'invoices.zip');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (contentType.startsWith('application/xml') && disposition) {
+      // Single file, handle direct download
+      const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = fileNameRegex.exec(disposition);
+      const fileName = matches != null && matches[1] ? matches[1].replace(/['"]/g, '') : 'invoice.xml';
+      const blob = new Blob([response.data], { type: 'application/xml' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error('Unsupported content type:', contentType);
+      // Handle unsupported content type appropriately
+    }
   } catch (error) {
     console.error('Error downloading invoices:', error);
     // Handle error appropriately, e.g., display an error message to the user

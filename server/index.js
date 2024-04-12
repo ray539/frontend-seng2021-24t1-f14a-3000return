@@ -465,7 +465,7 @@ app.post('/api/createInvoice', async (req, res) => {
 
 import JSZip from 'jszip';
 
-app.get('/api/downloadInvoicesByNames', async (req, res) => {
+app.post('/api/downloadInvoicesByNames', async (req, res) => {
   try {
     console.log("Hello?");
     const username = req.headers.username;
@@ -476,7 +476,8 @@ app.get('/api/downloadInvoicesByNames', async (req, res) => {
       return res.status(403).json({ error: 'invalid username or password' });
     }
 
-    const invoiceNames = req.query.invoiceNames;
+    const invoiceNames = req.body.invoiceNames;
+    console.log(invoiceNames);
 
     const invoices = await EInvoice.find({
       belongsTo: username,
@@ -488,23 +489,29 @@ app.get('/api/downloadInvoicesByNames', async (req, res) => {
       return res.status(404).json({ error: 'no invoices found' }); // Changed status code to 404
     }
 
-    // Assuming invoice.data contains the XML content of the invoice
-    const xmlContents = invoices.map(invoice => invoice.data); // Fixed variable name and used map to get XML content of each invoice
+    if (invoices.length === 1) {
+      // If only one invoice is selected, send it as the response without zipping
+      const invoice = invoices[0];
+      res.set({
+        'Content-Type': 'application/xml', // Set Content-Type to application/xml for single XML file
+        'Content-Disposition': `attachment; filename="${invoice.name}.xml"` // Set filename to the name of the invoice
+      });
+      res.send(invoice.data); // Send the XML content of the invoice
+      return;
+    }
 
-    // Set response headers for file download
-    res.set({
-      'Content-Type': 'application/zip', // Changed Content-Type to application/zip for multiple XML files
-      'Content-Disposition': 'attachment; filename="invoices.zip"' // Changed filename to invoices.zip
-    });
-
-    // Create a zip file containing individual invoice XML content
+    // If multiple invoices are selected, create a zip file
     const zip = new JSZip();
-    xmlContents.forEach((xmlContent, index) => {
-      zip.file(`invoice_${index}.xml`, xmlContent); // Add each XML content as a file to the zip
+    invoices.forEach(invoice => {
+      zip.file(`${invoice.name}.xml`, invoice.data); // Add each XML content as a file to the zip with original filename
     });
 
     // Generate the zip file asynchronously and send it as the response
     zip.generateAsync({ type: 'nodebuffer' }).then((content) => {
+      res.set({
+        'Content-Type': 'application/zip',
+        'Content-Disposition': 'attachment; filename="invoices.zip"'
+      });
       res.send(content);
     }).catch((err) => {
       console.error('Error generating zip file:', err);
