@@ -5,51 +5,52 @@ import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
-  deleteInvoicesFromUser,
-  getInvoicesBelongingTo,
-  getPdfLink,
-  getXmlData,
+	deleteInvoicesFromUser,
+	getInvoicesBelongingTo,
+	getPdfLink,
+	getXmlData,
+	downloadInvoices
 } from "../../service/service";
 import {
-  Button, Checkbox, FormControlLabel,
-  Typography, Grid, Box,
+	Button, Checkbox, FormControlLabel,
+	Typography, Grid, Box,
 	TextField
 } from '@mui/material';
 
 export default function InvoicesBox() {
 	const navigate = useNavigate();
-  const authContext = useContext(AuthContext);
-  const user = authContext.currentUser;
-  const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-  // const [showSendUI, setShowSendUI] = useState(false);
+	const authContext = useContext(AuthContext);
+	const user = authContext.currentUser;
+	const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+	// const [showSendUI, setShowSendUI] = useState(false);
 
 	const [deletedConfirmation, setDeleteConfirmation] = useState<{
-    state: "hidden" | "shown" | "loading";
-    numItems: number;
-  }>({
-    state: "hidden",
-    numItems: 0,
-  });
+		state: "hidden" | "shown" | "loading";
+		numItems: number;
+	}>({
+		state: "hidden",
+		numItems: 0,
+	});
 
-  useEffect(() => {
-    console.log(user?.username, user?.password);
-    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-      setInvoices(invoices)
-    );
-  }, []);
+	useEffect(() => {
+		console.log(user?.username, user?.password);
+		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+			setInvoices(invoices)
+		);
+	}, []);
 
 	function changePdfButtonMsg(
-    msg:
-      | "generate pdf"
-      | "fetching xml..."
-      | "generating..."
-      | "an error occured :(",
-    i: number
-  ) {
-    const invoices_ = [...invoices];
-    invoices_[i].pdfGenMsg = msg;
-    setInvoices(invoices_);
-  }
+		msg:
+			| "generate pdf"
+			| "fetching xml..."
+			| "generating..."
+			| "an error occured :(",
+		i: number
+	) {
+		const invoices_ = [...invoices];
+		invoices_[i].pdfGenMsg = msg;
+		setInvoices(invoices_);
+	}
 
 	return (
 		<>
@@ -77,11 +78,31 @@ export default function InvoicesBox() {
 				</Grid>
 
 				<Grid item >
-					<Button variant="contained">Download</Button>
+					<Button
+						variant="contained"
+						onClick={async () => {
+							const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
+							if (invoiceNames.length === 0) {
+								window.alert('No invoices are selected');
+								return;
+							}
+
+							try {
+								await downloadInvoices(user!.username, user!.password, invoiceNames);
+								// If download succeeds, no need to show any message, as the user will see the download prompt
+							} catch (error) {
+								console.error('Download failed:', error);
+								window.alert('Download failed. Please try again later.');
+							}
+						}}
+					>
+						Download
+					</Button>
+
 				</Grid>
 
 				<Grid item >
-					<SendButton invoices={invoices}/>
+					<SendButton invoices={invoices} />
 				</Grid>
 
 				<Grid item  >

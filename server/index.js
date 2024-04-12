@@ -448,17 +448,70 @@ app.post('/api/sendInvoicesByNames', async (req, res) => {
   res.json(apiResponse.data)
 })
 
-app.post('/api/createInvoice', async(req, res) => {
+app.post('/api/createInvoice', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
 
   const account = await loginUser(username, password)
   if (!account) {
-    return res.status(403).json({error: 'invalid username or password'})
+    return res.status(403).json({ error: 'invalid username or password' })
   }
 
   const data = req.body;
   const xmlString = convertDataToInvoice(data);
   res.send(xmlString);
 })
+
+import JSZip from 'jszip';
+
+app.get('/api/downloadInvoicesByNames', async (req, res) => {
+  try {
+    console.log("Hello?");
+    const username = req.headers.username;
+    const password = req.headers.password;
+
+    const account = await loginUser(username, password);
+    if (!account) {
+      return res.status(403).json({ error: 'invalid username or password' });
+    }
+
+    const invoiceNames = req.query.invoiceNames;
+
+    const invoices = await EInvoice.find({
+      belongsTo: username,
+      name: { $in: invoiceNames }
+    });
+
+    if (invoices.length === 0) {
+      console.log("SHOULD NOT APPEAR");
+      return res.status(404).json({ error: 'no invoices found' }); // Changed status code to 404
+    }
+
+    // Assuming invoice.data contains the XML content of the invoice
+    const xmlContents = invoices.map(invoice => invoice.data); // Fixed variable name and used map to get XML content of each invoice
+
+    // Set response headers for file download
+    res.set({
+      'Content-Type': 'application/zip', // Changed Content-Type to application/zip for multiple XML files
+      'Content-Disposition': 'attachment; filename="invoices.zip"' // Changed filename to invoices.zip
+    });
+
+    // Create a zip file containing individual invoice XML content
+    const zip = new JSZip();
+    xmlContents.forEach((xmlContent, index) => {
+      zip.file(`invoice_${index}.xml`, xmlContent); // Add each XML content as a file to the zip
+    });
+
+    // Generate the zip file asynchronously and send it as the response
+    zip.generateAsync({ type: 'nodebuffer' }).then((content) => {
+      res.send(content);
+    }).catch((err) => {
+      console.error('Error generating zip file:', err);
+      res.status(500).json({ error: 'Failed to generate zip file' });
+    });
+  } catch (error) {
+    console.error('Error downloading invoices:', error);
+    res.status(500).json({ error: 'Failed to download invoices' });
+  }
+});

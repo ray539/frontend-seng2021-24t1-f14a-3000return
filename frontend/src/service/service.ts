@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { EInvoiceItem, UserProfile } from '../data';
 import { CreationFormData } from '../components/dashboard/get_started/formTypes';
 
@@ -234,5 +234,40 @@ export async function createInvoice(username: string, password: string, data: Cr
     return res.data;
   } catch (err) {
     return null;
+  }
+}
+
+export async function downloadInvoices(username: string, password: string, invoiceNames: string[]): Promise<void> {
+  console.log("HELLO?")
+  try {
+    const response: AxiosResponse<Blob> = await axios.get('/api/downloadInvoicesByNames', {
+      params: {
+        invoiceNames: invoiceNames.join(',') // Convert array to comma-separated string
+      },
+      headers: {
+        username: username,
+        password: password,
+      },
+      responseType: 'blob' // Set response type to blob to handle binary data (e.g., file)
+    });
+
+    // Create a blob from the response data
+    const blob = new Blob([response.data], { type: 'application/zip' });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'invoices.zip');
+
+    // Append the link to the document body and click it to start the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error downloading invoices:', error);
+    // Handle error appropriately, e.g., display an error message to the user
   }
 }
