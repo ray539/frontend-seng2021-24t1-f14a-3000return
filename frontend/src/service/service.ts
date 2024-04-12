@@ -299,3 +299,51 @@ export async function deleteAccount(username: string, password: string) {
     return null;
   }
 }
+
+export async function downloadInvoices(username: string, password: string, invoiceNames: string[]): Promise<void> {
+  try {
+    const response: AxiosResponse<Blob> = await axios.post('/api/downloadInvoicesByNames', {
+      invoiceNames: invoiceNames
+    }, {
+      headers: {
+        username: username,
+        password: password,
+      },
+      responseType: 'blob'
+    });
+
+    const contentType = response.headers['content-type'] || '';
+    const disposition = response.headers['content-disposition'];
+
+    if (contentType.startsWith('application/zip')) {
+      // Multiple files, handle zip download
+      const blob = new Blob([response.data], { type: 'application/zip' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'invoices.zip');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (contentType.startsWith('application/xml') && disposition) {
+      // Single file, handle direct download
+      const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = fileNameRegex.exec(disposition);
+      const fileName = matches != null && matches[1] ? matches[1].replace(/['"]/g, '') : 'invoice.xml';
+      const blob = new Blob([response.data], { type: 'application/xml' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error('Unsupported content type:', contentType);
+      // Handle unsupported content type appropriately
+    }
+  } catch (error) {
+    console.error('Error downloading invoices:', error);
+    // Handle error appropriately, e.g., display an error message to the user
+  }
+}

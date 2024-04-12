@@ -9,13 +9,9 @@ import {
 	getInvoicesBelongingTo,
 	getPdfLink,
 	getXmlData,
-	downloadInvoices
 } from "../../service/service";
 import {
 	Button, Checkbox, FormControlLabel,
-	Typography, Grid, Box,
-	TextField
-  Button, Checkbox, FormControlLabel,
 	Typography, Grid, Box,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
