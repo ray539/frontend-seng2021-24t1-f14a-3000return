@@ -85,7 +85,8 @@ export default function GetStartedButton() {
 				fullWidth
 				variant="contained"
 				sx={{
-					backgroundColor: "#33F497",
+          fontWeight: "bold",
+					backgroundColor: "#28ed8e",
 					'&:hover': {
 						backgroundColor: "#44e397",
 					}

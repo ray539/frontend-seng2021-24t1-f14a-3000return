@@ -10,7 +10,7 @@ import {
   getXmlData,
 } from "../../service/service";
 import {
-  Button, Typography, Grid, AppBar, Toolbar, Link,
+  Button, Typography, Grid, Link,
   Paper
 } from '@mui/material';
 // import { Container } from "react-bootstrap";
@@ -21,11 +21,25 @@ function Dashboard() {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
+      <Grid 
+        item
+        height={"100vh"}
+        sx={{
+          backgroundColor: "#7B54E8"
+        }}
+      >
+        <Grid
+          container
+          justifyContent={"space-between"} 
+          height={"5%"}
+          paddingTop={1}
+          paddingLeft={4}
+          paddingRight={4}
+        >
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>
+
           {authContext.currentUser == null ? (
             <>
               <Button variant="contained" color="primary" href="/login" role="button">
@@ -37,24 +51,53 @@ function Dashboard() {
             </>
           ) : (
             // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button color="inherit" href="/" role="button" onClick={() => {
-              authContext.setCurrentUser(null);
-              navigate("/");
-            }}>
-              Logout
+            <Button 
+              variant="contained"
+              href="/" 
+              role="button"
+              sx={{
+                backgroundColor: "#060C2A",
+                borderRadius: "100px"
+              }}
+              onClick={() => {
+                authContext.setCurrentUser(null);
+                navigate("/");
+              }}
+            >
+              Sign Out
             </Button>
           )}
-        </Toolbar>
-      </AppBar>
-      <div style={{ marginBottom: 25 }}></div>
-      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
-        <Paper elevation={0} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
-          <ProfileBox />
-        </Paper>
-        <Paper elevation={0} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
-          <InvoicesBox />
-        </Paper>
-      </Grid >
+        </Grid>
+
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          wrap="nowrap"
+          height={"95%"}
+          padding={"20px"}
+          gap={"20px"}
+        >
+
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              padding: "20px"
+            }}
+          >
+            <ProfileBox />
+          </Paper>
+          <Paper 
+            elevation={0} 
+            color="black" 
+            sx={{ 
+              width: "96%", 
+              padding: "20px"
+            }}
+          >
+            <InvoicesBox />
+          </Paper>
+        </Grid>
+      </Grid>
     </>
   );
 }

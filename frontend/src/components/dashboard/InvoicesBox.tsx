@@ -13,9 +13,9 @@ import {
 import {
   Button, Checkbox, FormControlLabel,
   Typography, Grid, Box,
-	TextField
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
+import SearchBar from "./buttons/SearchBar";
 
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
@@ -33,7 +33,7 @@ export default function InvoicesBox() {
   useEffect(() => {
     console.log(user?.username, user?.password);
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-      setInvoices(invoices)
+			setInvoices(invoices)
     );
   }, []);
 
@@ -62,7 +62,7 @@ export default function InvoicesBox() {
 					paddingBottom={"8px"}
 				>
 					<Grid item xs>
-						<Typography variant="h4">Invoices</Typography>
+						<Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
 					</Grid>
 					<Grid item width={buttonWidth}>
 						<GetStartedButton />
@@ -85,11 +85,7 @@ export default function InvoicesBox() {
 						xs 
 						paddingRight={"8px"}
 					>
-						<TextField 
-							label="Search file" 
-							variant="outlined" 
-							fullWidth
-						/>
+						<SearchBar />
 					</Grid>
 
 					<Grid 
@@ -133,61 +129,69 @@ export default function InvoicesBox() {
 		);
 	}
 
+	function Invoices() {
+		return (
+			<>
+				<Box sx={{ bgcolor: "#cde6f7", marginTop: "8px", minHeight: "34.5%" }}>
+					{invoices.length === 0 ? (
+						<Typography>No Invoices!</Typography>
+					) : (
+						invoices.map((invoice, i) => (
+							<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
+								<Box>
+									<FormControlLabel
+										control={<Checkbox
+											checked={invoice.checked}
+											onChange={(e) => {
+												const invoices_ = [...invoices];
+												invoices_[i].checked = e.target.checked;
+												setInvoices(invoices_);
+											}}
+										/>}
+										label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+										labelPlacement="end" // Align the label to the start of the checkbox
+									/>
+								</Box>
+								<Box>
+									<Button variant="outlined" onClick={() => {
+										window.open(`/user/view-invoice/${invoice.name}`);
+									}}>View XML</Button>
+									<Button variant="outlined" onClick={async () => {
+										changePdfButtonMsg("fetching xml...", i);
+										const xmlData = await getXmlData(
+											user!.username,
+											user!.password,
+											invoice.name
+										);
+										console.log(xmlData);
+										changePdfButtonMsg("generating...", i);
+										const link = await getPdfLink(
+											user!.username,
+											user!.password,
+											xmlData
+										);
+										if (!link) {
+											changePdfButtonMsg("an error occured :(", i);
+											setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+											return;
+										}
+										changePdfButtonMsg("generate pdf", i);
+										setTimeout(() => window.open(link), 100);
+									}}>{invoice.pdfGenMsg}</Button>
+								</Box>
+							</Box>
+						))
+					)}
+				</Box>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<Header />
 			<Buttons />
-			<Box sx={{ bgcolor: "#cde6f7", marginTop: 2, paddingTop: "10px", minHeight: "34.5%" }}>
-				{invoices.length === 0 ? (
-					<Typography>No Invoices!</Typography>
-				) : (
-					invoices.map((invoice, i) => (
-						<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
-							<Box>
-								<FormControlLabel
-									control={<Checkbox
-										checked={invoice.checked}
-										onChange={(e) => {
-											const invoices_ = [...invoices];
-											invoices_[i].checked = e.target.checked;
-											setInvoices(invoices_);
-										}}
-									/>}
-									label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-									labelPlacement="end" // Align the label to the start of the checkbox
-								/>
-							</Box>
-							<Box>
-								<Button variant="outlined" onClick={() => {
-									window.open(`/user/view-invoice/${invoice.name}`);
-								}}>View XML</Button>
-								<Button variant="outlined" onClick={async () => {
-									changePdfButtonMsg("fetching xml...", i);
-									const xmlData = await getXmlData(
-										user!.username,
-										user!.password,
-										invoice.name
-									);
-									console.log(xmlData);
-									changePdfButtonMsg("generating...", i);
-									const link = await getPdfLink(
-										user!.username,
-										user!.password,
-										xmlData
-									);
-									if (!link) {
-										changePdfButtonMsg("an error occured :(", i);
-										setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-										return;
-									}
-									changePdfButtonMsg("generate pdf", i);
-									setTimeout(() => window.open(link), 100);
-								}}>{invoice.pdfGenMsg}</Button>
-							</Box>
-						</Box>
-					))
-				)}
-			</Box>
+			<Invoices />
 
 			{deletedConfirmation.state != "hidden" && (
 				<div>
