@@ -2,8 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { DashBoardHeader } from "./DashboardPage";
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser } from "../../service/service";
 
@@ -396,6 +395,7 @@ function DeleteAccountForm({setShowElement}: {setShowElement: Function}) {
 
 export default function ProfileManagementPage() {
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
   const user = authContext.currentUser
 
   const [showChangeEmail, setShowChangeEmail] = useState(false)
@@ -404,7 +404,52 @@ export default function ProfileManagementPage() {
 
   return (
     <>
-      <DashBoardHeader />
+      <Grid
+          container
+          justifyContent={"space-between"} 
+          height={"5%"}
+          padding={1}
+          paddingLeft={4}
+          paddingRight={4}
+        >
+          <Typography 
+            variant="h5" 
+            alignContent={"center"} 
+            sx={{ 
+              flexGrow: 1 
+            }}
+          >
+            Dashboard
+          </Typography>
+
+          {authContext.currentUser == null ? (
+            <>
+              <Button variant="contained" color="primary" href="/login" role="button">
+                Sign In
+              </Button>
+              <Button variant="contained" color="primary" href="/register" role="button">
+                Sign Up
+              </Button>
+            </>
+          ) : (
+            // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
+            <Button 
+              variant="contained"
+              href="/" 
+              role="button"
+              sx={{
+                backgroundColor: "#060C2A",
+                borderRadius: "100px"
+              }}
+              onClick={() => {
+                authContext.setCurrentUser(null);
+                navigate("/");
+              }}
+            >
+              Sign Out
+            </Button>
+          )}
+        </Grid>
       <Box sx={{
         display: 'flex',
         margin: '1em',
@@ -418,7 +463,7 @@ export default function ProfileManagementPage() {
           <img src="/images/empty-profile.png" style={{width: '50px', marginRight: '0.5em'}}></img>
         <Typography fontSize={20}>username: {user?.username}</Typography>
         </Box>
-       
+      
         <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail}/>} ></DropDown>
 
         <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass}/>} ></DropDown>
@@ -426,8 +471,6 @@ export default function ProfileManagementPage() {
         <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc}/>} />
 
       </Container>
-
-        
     </>
   )
 }

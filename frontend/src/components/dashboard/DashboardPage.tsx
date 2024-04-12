@@ -16,9 +16,10 @@ import {
 import ProfileManagementPage from './ProfileManagementPage'
 // import { Container } from "react-bootstrap";
 
-export function DashBoardHeader() {
+function Dashboard() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+
   return (
     <>
       <Grid 
@@ -103,26 +104,6 @@ export function DashBoardHeader() {
           </Paper>
         </Grid>
       </Grid>
-    </>
-  )
-}
-
-
-function Dashboard() {
-  // const navigate = useNavigate();
-  // const authContext = useContext(AuthContext);
-
-  return (
-    <>
-      <DashBoardHeader />
-      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
-        <Paper elevation={1} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
-          <ProfileBox />
-        </Paper>
-        <Paper elevation={1} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
-          <InvoicesBox />
-        </Paper>
-      </Grid >
     </>
   );
 }
