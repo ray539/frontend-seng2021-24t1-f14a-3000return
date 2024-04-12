@@ -10,22 +10,41 @@ import {
   getXmlData,
 } from "../../service/service";
 import {
-  Button, Typography, Grid, AppBar, Toolbar, Link,
+  Button, Typography, Grid, Link,
   Paper
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
 // import { Container } from "react-bootstrap";
 
-export function DashBoardHeader() {
+function Dashboard() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+
   return (
     <>
-          <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+      <Grid 
+        item
+        height={"100vh"}
+        bgcolor={"#7B54E8"}
+      >
+        <Grid
+          container
+          justifyContent={"space-between"} 
+          height={"5%"}
+          padding={1}
+          paddingLeft={4}
+          paddingRight={4}
+        >
+          <Typography 
+            variant="h5" 
+            alignContent={"center"} 
+            sx={{ 
+              flexGrow: 1 
+            }}
+          >
             Dashboard
           </Typography>
+
           {authContext.currentUser == null ? (
             <>
               <Button variant="contained" color="primary" href="/login" role="button">
@@ -37,36 +56,52 @@ export function DashBoardHeader() {
             </>
           ) : (
             // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button color="inherit" href="/" role="button" onClick={() => {
-              authContext.setCurrentUser(null);
-              navigate("/");
-            }}>
-              Logout
+            <Button 
+              variant="contained"
+              href="/" 
+              role="button"
+              sx={{
+                backgroundColor: "#060C2A",
+                borderRadius: "100px"
+              }}
+              onClick={() => {
+                authContext.setCurrentUser(null);
+                navigate("/");
+              }}
+            >
+              Sign Out
             </Button>
           )}
-        </Toolbar>
-      </AppBar>
-      <div style={{ marginBottom: 25 }}></div>
-    </>
-  )
-}
+        </Grid>
 
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          wrap="nowrap"
+          height={"95%"}
+          padding={"20px"}
+          gap={"20px"}
+        >
 
-function Dashboard() {
-  // const navigate = useNavigate();
-  // const authContext = useContext(AuthContext);
-
-  return (
-    <>
-      <DashBoardHeader />
-      <Grid container spacing={0} marginLeft={0} marginRight={0} justifyContent={"space-between"} marginTop={5} wrap="nowrap">
-        <Paper elevation={1} sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, paddingRight: 3, height: "100%", marginTop: -3 }}>
-          <ProfileBox />
-        </Paper>
-        <Paper elevation={1} color="black" sx={{ paddingLeft: 3, paddingTop: 2, paddingBottom: 1, height: "100%", width: "96%", paddingRight: 7, marginTop: -3 }}>
-          <InvoicesBox />
-        </Paper>
-      </Grid >
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              padding: "20px"
+            }}
+          >
+            <ProfileBox />
+          </Paper>
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              width: "100%", 
+              padding: "20px"
+            }}
+          >
+            <InvoicesBox />
+          </Paper>
+        </Grid>
+      </Grid>
     </>
   );
 }
@@ -122,7 +157,7 @@ export default function DashboardPage() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="/upload" element={<ValidatePage />} />
           <Route path="/create/*" element={<CreationPage />} />
-          <Route path="/profile" element={<ProfileManagementPage/>}></Route>
+          <Route path="/profile" element={<ProfileManagementPage />} />
           <Route
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}
