@@ -86,7 +86,17 @@ export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
 
   return ( 
     <>
-      <Button variant="contained" onClick={openPopup}>
+      <Button 
+        variant="contained" 
+        fullWidth 
+				sx={{
+					backgroundColor: "#7B54E8",
+					'&:hover': {
+						backgroundColor: "#6a47cd",
+					}
+				}}
+        onClick={openPopup}
+      >
         Send
       </Button>
       

@@ -1,7 +1,7 @@
 import { Typography, Button, Grid, AppBar, Toolbar } from "@mui/material";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
-import CreationFormPage from "./CreationFormPage";
+import CreationFormPage from "../dashboard/get_started/CreationFormPage";
 
 function Options() {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ function Options() {
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
             3000Return e-invoice application
           </Typography>
-          <Button color="inherit" onClick={() => navigate("/user/get-started")}>
+          <Button color="inherit" onClick={() => navigate("/user")}>
             Back
           </Button>
         </Toolbar>

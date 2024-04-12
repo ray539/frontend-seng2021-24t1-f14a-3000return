@@ -114,7 +114,7 @@ export default function ValidatePage() {
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
             3000Return e-invoice application
           </Typography>
-          <Button color="inherit" component={Link} to="/user/get-started">
+          <Button color="inherit" component={Link} to="/user">
             Back
           </Button>
         </Toolbar>
