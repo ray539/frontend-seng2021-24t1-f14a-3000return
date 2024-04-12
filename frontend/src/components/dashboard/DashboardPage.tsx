@@ -94,9 +94,8 @@ function Dashboard() {
           </Paper>
           <Paper 
             elevation={0} 
-            color="black" 
             sx={{ 
-              width: "96%", 
+              width: "100%", 
               padding: "20px"
             }}
           >

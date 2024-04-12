@@ -1,22 +1,21 @@
 import { TextField } from "@mui/material";
-import { EInvoiceItem } from "../../../data";
-import { useContext, useEffect, useState } from "react";
-import { getInvoicesBelongingTo } from "../../../service/service";
-import { AuthContext } from "../../../context/AuthContextProvider";
-
+// import { useEffect, useState } from "react";
+// import { useEffect } from "react";
+// import { getInvoicesBelongingTo } from "../../../service/service";
+// import { AuthContext } from "../../../context/AuthContextProvider";
 
 export default function SearchBar() {
-  const authContext = useContext(AuthContext);
-  const user = authContext.currentUser;
-	const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+	// const [search, setSearch] = useState('')
 
-	useEffect(() => {
-    console.log(user?.username, user?.password);
-    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-			setInvoices(invoices)
-    );
-  }, []);
-	
+	// const handleInputChange = (input:any) => {
+	// 	setSearch(input.target.value);
+
+	// }
+
+	// useEffect(() => {
+
+	// });
+
 	return (
 		<>
 			<TextField 
@@ -25,6 +24,7 @@ export default function SearchBar() {
 				variant="outlined" 
 				size="small"
 				fullWidth
+				// onChange={handleInputChange}
 			/>
 		</>
 	);

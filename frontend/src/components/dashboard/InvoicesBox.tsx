@@ -147,14 +147,16 @@ export default function InvoicesBox() {
 							<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
 								<Box>
 									<FormControlLabel
-										control={<Checkbox
-											checked={invoice.checked}
-											onChange={(e) => {
-												const invoices_ = [...invoices];
-												invoices_[i].checked = e.target.checked;
-												setInvoices(invoices_);
-											}}
-										/>}
+										control={
+											<Checkbox
+												checked={invoice.checked}
+												onChange={(e) => {
+													const invoices_ = [...invoices];
+													invoices_[i].checked = e.target.checked;
+													setInvoices(invoices_);
+												}}
+											/>
+										}
 										label={invoice.name} // Set the label of the checkbox to be the name of the invoice
 										labelPlacement="end" // Align the label to the start of the checkbox
 									/>
