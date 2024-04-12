@@ -32,11 +32,17 @@ function Dashboard() {
           container
           justifyContent={"space-between"} 
           height={"5%"}
-          paddingTop={1}
+          padding={1}
           paddingLeft={4}
           paddingRight={4}
         >
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+          <Typography 
+            variant="h5" 
+            alignContent={"center"} 
+            sx={{ 
+              flexGrow: 1 
+            }}
+          >
             Dashboard
           </Typography>
 

@@ -26,7 +26,7 @@ export default function ProfileBox() {
 				<Typography variant="h6">
 					Your team:
 				</Typography>
-				<Box bgcolor={"#cde6f7"} minHeight={250} display="flex" justifyContent="center" alignItems="center">
+				<Box bgcolor={"#F1E8FF"} minHeight={250} display="flex" justifyContent="center" alignItems="center">
 					<Typography variant="body2">
 						You are currently not in a team
 					</Typography>

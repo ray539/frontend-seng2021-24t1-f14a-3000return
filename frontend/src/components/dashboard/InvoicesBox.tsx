@@ -59,7 +59,6 @@ export default function InvoicesBox() {
 					container 
 					justifyContent={"space-between"}
 					alignItems={"center"}
-					paddingBottom={"8px"}
 				>
 					<Grid item xs>
 						<Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
@@ -79,6 +78,9 @@ export default function InvoicesBox() {
 					container 
 					justifyContent={"space-between"}
 					alignItems={"center"}
+					margin={"8px"}
+					marginLeft={0}
+					marginRight={0}
 				>
 					<Grid 
 						item 
@@ -132,7 +134,12 @@ export default function InvoicesBox() {
 	function Invoices() {
 		return (
 			<>
-				<Box sx={{ bgcolor: "#cde6f7", marginTop: "8px", minHeight: "34.5%" }}>
+				<Box 
+					padding={"10px"}
+					sx={{ 
+						bgcolor: "#F1E8FF", 
+					}}
+				>
 					{invoices.length === 0 ? (
 						<Typography>No Invoices!</Typography>
 					) : (
