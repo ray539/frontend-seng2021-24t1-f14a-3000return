@@ -302,7 +302,8 @@ app.post('/api/addInvoice', async (req, res) => {
   const newInvoice = new EInvoice({
     belongsTo: username,
     name: name,
-    data: xmlData
+    data: xmlData,
+    tags: ['test']
   })
 
   let invoice = newInvoice.save();
@@ -401,12 +402,18 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
     return res.status(403).json({ error: 'invalid username or password' })
   }
 
-  const invoiceNames = await EInvoice.find({
+  const invoices = await EInvoice.find({
     belongsTo: username
-  }).select('name')
+  }).select('name tags')
 
-  res.json(invoiceNames)
+
+  res.json(invoices)
 })
+
+app.post('/api/addTagToInvoice', async(req, res) => {
+  
+})
+
 
 // get data of certain invoice
 // headers:

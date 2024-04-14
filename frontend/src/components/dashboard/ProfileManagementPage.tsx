@@ -10,22 +10,18 @@ import { changeEmail, changePassword, deleteAccount, logInAndGetUser } from "../
 function BackButton() {
   const navigate = useNavigate();
   return (
-    <Box sx={{
-        background: 'black',
-        color: 'white',
-        padding: '0.5em',
-        borderRadius: '1em',
-        display: 'flex',
-        userSelect: 'none',
-        '&:hover': {
-          cursor: 'pointer'
-        }
+    <Button 
+      variant="contained"
+      role="button"
+      sx={{
+        backgroundColor: "#060C2A",
+        borderRadius: "100px"
       }}
-      onClick={()=>navigate('/user')}  
+      onClick={() => navigate('/user')}
     >
       <img src="/images/back-arrow.png" style={{width: '30px', marginRight: '0.5em'}}></img>
       <Typography sx={{display: 'inline'}}>Back</Typography>
-    </Box>
+    </Button>
   )
 }
 
@@ -436,7 +432,7 @@ export default function ProfileManagementPage() {
                 </Button>
               </>
             ) : (
-              // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
+
               <Button 
                 variant="contained"
                 href="/" 
@@ -454,27 +450,44 @@ export default function ProfileManagementPage() {
               </Button>
             )}
           </Grid>
-        <Box sx={{
-          display: 'flex',
-          margin: '1em',
-          justifyContent: 'space-between'
-        }}>
-          <BackButton></BackButton>
-        </Box>
 
-        <Container sx={{border:'1px solid #dddddd', backgroundColor: '#fcfcfc', marginTop: '1em', paddingTop: '1em'}} maxWidth='sm'>
-          <Box sx={{ width: 'fit-content',  margin: 'auto', display: 'flex', alignItems: 'center'}}>
-            <img src="/images/empty-profile.png" style={{width: '50px', marginRight: '0.5em'}}></img>
-          <Typography fontSize={20}>username: {user?.username}</Typography>
-          </Box>
+
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          wrap="nowrap"
+          height={"95%"}
+          padding={"20px"}
+          gap={"20px"}
+        >
+
+          <Grid item xs={12} sx={{backgroundColor: 'white'}}>
+            <Box sx={{
+              display: 'flex',
+              margin: '1em',
+              justifyContent: 'space-between'
+            }}>
+              <BackButton></BackButton>
+            </Box>
+
+            <Container sx={{border:'1px solid #dddddd', backgroundColor: '#fcfcfc', marginTop: '1em', paddingTop: '1em'}} maxWidth='sm'>
+              <Box sx={{ width: 'fit-content',  margin: 'auto', display: 'flex', alignItems: 'center'}}>
+                <img src="/images/empty-profile.png" style={{width: '50px', marginRight: '0.5em'}}></img>
+                <Typography fontSize={20}>username: {user?.username}</Typography>
+              </Box>
+            
+              <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail}/>} ></DropDown>
+
+              <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass}/>} ></DropDown>
+
+              <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc}/>} />
+
+            </Container>
+          </Grid>
+
         
-          <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail}/>} ></DropDown>
 
-          <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass}/>} ></DropDown>
-
-          <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc}/>} />
-
-        </Container>
+        </Grid>
       </Box>
     </>
   )

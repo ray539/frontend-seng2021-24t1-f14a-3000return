@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";
+import ManageTagButton from "./buttons/ManageTagButton";
 
 export default function InvoicesBox() {
 	const authContext = useContext(AuthContext);
@@ -167,11 +168,47 @@ export default function InvoicesBox() {
 										labelPlacement="end" // Align the label to the start of the checkbox
 									/>
 								</Box>
-								<Box>
+								<Box sx={{display:'flex', alignItems: 'center'}}>
+									<ManageTagButton invoices={invoices} index={i}/>
+
+									<Box sx={{
+										marginLeft: '0.5em',
+										marginRight: '0.5em', 
+										border: '1px solid grey', 
+										maxWidth:"85px", 
+										display: 'flex', 
+										padding: '0.25em', 
+										borderRadius: '5px',
+										backgroundColor: '#efefef',
+										
+									}}>
+										<Box sx={{overflow: 'hidden', display: 'flex'}}>
+											{
+												invoice.tags.length == 0 ?
+												<Typography sx={{color: 'grey'}}>no tags</Typography>
+												:
+
+												invoice.tags.map((tag) => 
+													<Typography fontSize={15} sx={{
+														marginRight: '0.5em',
+														borderRadius: '5px', 
+														padding: '0.1em', 
+														backgroundColor: 'grey',
+														color: 'white',
+														textWrap: 'nowrap'
+													}}>{tag}</Typography>
+												)
+
+											}
+
+
+										</Box>
+									</Box>
+									
 									<Button variant="outlined" onClick={() => {
 										window.open(`/user/view-invoice/${invoice.name}`);
 									}}>View XML</Button>
-									<Button variant="outlined" onClick={async () => {
+									<Button variant="outlined" disabled={invoice.pdfGenMsg != 'generate pdf'} onClick={async () => {
 										changePdfButtonMsg("fetching xml...", i);
 										const xmlData = await getXmlData(
 											user!.username,

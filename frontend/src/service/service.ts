@@ -40,7 +40,8 @@ export async function getInvoicesBelongingTo(username: string, password: string)
       id: invoice._id,
       name: invoice.name,
       checked: false,
-      pdfGenMsg: 'generate pdf'
+      pdfGenMsg: 'generate pdf',
+      tags: invoice.tags ? invoice.tags : []
     }
   })
   return einvoices
