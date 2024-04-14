@@ -13,6 +13,7 @@ import {
 import {
 	Button, Checkbox, FormControlLabel,
 	Typography, Grid, Box,
+	TextField,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";

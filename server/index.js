@@ -410,10 +410,25 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
   res.json(invoices)
 })
 
-app.post('/api/addTagToInvoice', async(req, res) => {
+// add a list of tags to an invoice in one request
+// headers:
+//   username
+//   password
+// body:
+//   tags: string[]
+app.post('/api/addTagsToInvoice', async(req, res) => {
   
 })
 
+// add a list of tags from an invoice in one request
+// headers:
+//   username
+//   password
+// body:
+//   tags: string[]
+app.delete('/api/deleteTagsFromInvoice', async(req, res) => {
+  
+})
 
 // get data of certain invoice
 // headers:

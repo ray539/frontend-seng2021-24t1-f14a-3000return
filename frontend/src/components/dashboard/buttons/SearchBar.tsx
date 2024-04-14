@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Box, Link, TextField, Typography } from "@mui/material";
 // import { useEffect, useState } from "react";
 // import { useEffect } from "react";
 // import { getInvoicesBelongingTo } from "../../../service/service";
@@ -18,14 +18,21 @@ export default function SearchBar() {
 
 	return (
 		<>
-			<TextField 
-				label="Search invoices" 
-				type="search"
-				variant="outlined" 
-				size="small"
-				fullWidth
-				// onChange={handleInputChange}
-			/>
+			<Box sx={{display:'flex', justifyContent: 'space-between'}}>
+				<TextField 
+					label="search invoices" 
+					type="search"
+					variant="outlined" 
+					size="small"
+					fullWidth
+					sx={{marginRight: '1em'}}
+				/>
+				<TextField fullWidth sx={{marginRight: '1em'}} label="tag selection string" size='small'></TextField>
+			</Box>
+
+			<Box sx={{display: 'flex', justifyContent: 'right'}}>
+				<Typography sx={{marginRight: '1em'}}>what's this?</Typography>
+			</Box>
 		</>
 	);
 }
