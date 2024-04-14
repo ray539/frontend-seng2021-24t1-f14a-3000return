@@ -5,58 +5,64 @@ import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
-  deleteInvoicesFromUser,
-  getInvoicesBelongingTo,
-  getPdfLink,
-  getXmlData,
+	deleteInvoicesFromUser,
+	getInvoicesBelongingTo,
+	getPdfLink,
+	getXmlData,
 } from "../../service/service";
 import {
-  Button, Checkbox, FormControlLabel,
-  Typography, Grid, Box,
+	Button, Checkbox, FormControlLabel,
+	Typography, Grid, Box,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";
 
 export default function InvoicesBox() {
-  const authContext = useContext(AuthContext);
-  const user = authContext.currentUser;
-  const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+	const authContext = useContext(AuthContext);
+	const user = authContext.currentUser;
+	const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
 
 	const [deletedConfirmation, setDeleteConfirmation] = useState<{
-    state: "hidden" | "shown" | "loading";
-    numItems: number;
-  }>({
-    state: "hidden",
-    numItems: 0,
-  });
+		state: "hidden" | "shown" | "loading";
+		numItems: number;
+	}>({
+		state: "hidden",
+		numItems: 0,
+	});
 
-  useEffect(() => {
-    console.log(user?.username, user?.password);
-    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+	useEffect(() => {
+		console.log(user?.username, user?.password);
+		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
 			setInvoices(invoices)
-    );
-  }, []);
+		);
+	}, []);
+	useEffect(() => {
+		console.log(user?.username, user?.password);
+		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+			setInvoices(invoices)
+		);
+	}, []);
 
 	function changePdfButtonMsg(
-    msg:
-      | "generate pdf"
-      | "fetching xml..."
-      | "generating..."
-      | "an error occured :(",
-    i: number
-  ) {
-    const invoices_ = [...invoices];
-    invoices_[i].pdfGenMsg = msg;
-    setInvoices(invoices_);
-  }
+		msg:
+			| "generate pdf"
+			| "fetching xml..."
+			| "generating..."
+			| "an error occured :(",
+		i: number
+	) {
+		const invoices_ = [...invoices];
+		invoices_[i].pdfGenMsg = msg;
+		setInvoices(invoices_);
+	}
 
 	const buttonWidth = "65%";
 
 	function Header() {
 		return (
 			<>
-				<Grid 
-					container 
+				<Grid
+					container
 					justifyContent={"space-between"}
 					alignItems={"center"}
 				>
@@ -74,39 +80,39 @@ export default function InvoicesBox() {
 	function Buttons() {
 		return (
 			<>
-				<Grid 
-					container 
+				<Grid
+					container
 					justifyContent={"space-between"}
 					alignItems={"center"}
 					margin={"8px"}
 					marginLeft={0}
 					marginRight={0}
 				>
-					<Grid 
-						item 
-						xs 
+					<Grid
+						item
+						xs
 						paddingRight={"8px"}
 					>
 						<SearchBar />
 					</Grid>
 
-					<Grid 
-						container 
+					<Grid
+						container
 						width={buttonWidth}
 						gap={"8px"}
 					>
 						<Grid item xs>
-							<DownloadButton invoices={invoices}/>
+							<DownloadButton invoices={invoices} />
 						</Grid>
 
 						<Grid item xs>
-							<SendButton invoices={invoices}/>
+							<SendButton invoices={invoices} />
 						</Grid>
-						
+
 						<Grid item xs>
-							<Button 
-								variant="contained" 
-								fullWidth 
+							<Button
+								variant="contained"
+								fullWidth
 								sx={{
 									backgroundColor: "#F22556",
 									'&:hover': {
@@ -121,7 +127,7 @@ export default function InvoicesBox() {
 										numItems: numItems,
 									});
 								}
-							}>
+								}>
 								Delete
 							</Button>
 						</Grid>
@@ -134,10 +140,10 @@ export default function InvoicesBox() {
 	function Invoices() {
 		return (
 			<>
-				<Box 
+				<Box
 					padding={"10px"}
-					sx={{ 
-						bgcolor: "#F1E8FF", 
+					sx={{
+						bgcolor: "#F1E8FF",
 					}}
 				>
 					{invoices.length === 0 ? (
