@@ -5,6 +5,7 @@ export interface UserProfile {
   username: string,
   email: string,
   password: string,
+  accountType: string
 }
 
 export interface EInvoice {
@@ -25,13 +26,15 @@ export const USERS: UserProfile[] = [
     id: '0',
     username: 'user1',
     email: 'user1@example.com',
-    password: 'pass1'
+    password: 'pass1',
+    accountType: ""
   },
   {
     id: '1',
     username: 'user2',
     email: 'user2@example.com',
-    password: 'pass2'
+    password: 'pass2',
+    accountType: ""
   },
 ];
 

@@ -37,7 +37,7 @@ export default function InvoicesBox() {
 		);
 	}, []);
 	useEffect(() => {
-		console.log(user?.username, user?.password);
+		console.log(user?.username, user?.password, user?.accountType);
 		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
 			setInvoices(invoices)
 		);

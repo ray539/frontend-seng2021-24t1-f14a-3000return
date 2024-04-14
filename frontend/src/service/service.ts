@@ -17,7 +17,8 @@ export async function logInAndGetUser(username: string, password: string) {
       id: acct._id,
       username: acct.username,
       email: acct.email,
-      password: password
+      password: password,
+      accountType: acct.accountType
     }
 
     return retUser
@@ -153,20 +154,23 @@ export async function getXmlData(username: string, password: string, filename: s
   }
 }
 
-export async function registerUser(username: string, email: string, password: string) {
+export async function registerUser(username: string, email: string, password: string, accountType: string) {
   try {
     const res = await axios.post('/api/newAccount', {
       username: username,
       email: email,
       password: password,
+      accountType: accountType
     })
     const acct = res.data
+    console.log("Inside axios: ", acct.accountType)
 
     const retUser: UserProfile = {
       id: acct._id,
       username: acct.username,
       password: password,
-      email: acct.email
+      email: acct.email,
+      accountType: acct.accountType
     }
     return retUser
   } catch (err) {

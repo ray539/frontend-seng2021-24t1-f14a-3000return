@@ -69,6 +69,8 @@ app.post('/api/newAccount', async (req, res) => {
   const usernameNew = body.username
   const passwordNew = body.password
   const emailNew = body.email
+  const accountTypeNew = body.accountType
+  console.log("inside index, ", accountTypeNew)
 
   const existing = await Account.find({
     username: usernameNew
@@ -82,6 +84,7 @@ app.post('/api/newAccount', async (req, res) => {
     username: usernameNew,
     email: emailNew,
     passwordEncrypted: hashPassword(passwordNew),
+    accountType: accountTypeNew
   })
 
 
@@ -107,10 +110,10 @@ app.get('/api/login', async (req, res) => {
   }
 })
 
-app.put('/api/changePassword', async(req, res) => {
+app.put('/api/changePassword', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
   const account = await loginUser(username, password)
   if (!account) {
     return res.status(403).json({ error: 'invalid username or password' })
@@ -132,10 +135,10 @@ app.put('/api/changePassword', async(req, res) => {
   res.json(user)
 })
 
-app.put('/api/changeEmail', async(req, res) => {
+app.put('/api/changeEmail', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
   const account = await loginUser(username, password)
   if (!account) {
     return res.status(403).json({ error: 'invalid username or password' })
@@ -157,10 +160,10 @@ app.put('/api/changeEmail', async(req, res) => {
   res.json(user)
 })
 
-app.delete('/api/deleteAccount', async(req, res) => {
+app.delete('/api/deleteAccount', async (req, res) => {
   const username = req.headers.username;
   const password = req.headers.password;
-  
+
   const account = await loginUser(username, password)
   if (!account) {
     return res.status(403).json({ error: 'invalid username or password' })
