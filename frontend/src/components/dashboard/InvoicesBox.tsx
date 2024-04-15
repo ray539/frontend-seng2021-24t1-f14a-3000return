@@ -277,7 +277,13 @@ export default function InvoicesBox() {
 		);
 	}, []);
 
-
+	const shownInvoices = invoices.filter(invoice => {
+		const res = evaluateString(invoice, tagSelectionTxt)
+		if (res == 'true') {
+			return true
+		}
+		return false
+	})
 
 	return (
 		<>
@@ -293,7 +299,7 @@ export default function InvoicesBox() {
 				setDeleteConfirmation={setDeleteConfirmation} 
 			/>
 			<Invoices 
-				invoices={invoices}
+				invoices={shownInvoices}
 				setInvoices={setInvoices}
 				changePdfButtonMsg={changePdfButtonMsg} 
 			/>

@@ -36,7 +36,13 @@ export default function SearchBar({invoiceSearchTxt, setInvoiceSearchTxt, tagSel
 					label="tag selection string" 
 					size='small'
 					value={tagSelectionTxt}
-					onChange={(e) => setTagSelectionText(e.target.value)}
+					onChange={(e) => {
+						let newVal = e.target.value.toUpperCase()
+						if (!/^[A-Z0-9_\-,|\(\)]*$/.test(newVal)) {
+							console.log('here');
+							return;
+						}
+						setTagSelectionText(newVal)}}
 				/>
 			</Box>
 
