@@ -5,7 +5,6 @@ import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
-  deleteInvoicesFromUser,
   getInvoicesBelongingTo,
   getPdfLink,
   getXmlData,
@@ -13,23 +12,19 @@ import {
 import {
   Button, Checkbox, FormControlLabel,
   Typography, Grid, Box,
+	IconButton,
+	Tooltip,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";
 import DeleteButton from "./buttons/DeleteButton";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-
-	const [deletedConfirmation, setDeleteConfirmation] = useState<{
-    state: "hidden" | "shown" | "loading";
-    numItems: number;
-  }>({
-    state: "hidden",
-    numItems: 0,
-  });
 
   useEffect(() => {
     console.log(user?.username, user?.password);
@@ -111,10 +106,42 @@ export default function InvoicesBox() {
 	}
 
 	function Invoice(invoice: EInvoiceItem, i: number) {
+		async function getPDF() {
+			changePdfButtonMsg("fetching xml...", i);
+			const xmlData = await getXmlData(
+				user!.username,
+				user!.password,
+				invoice.name
+			);
+
+			console.log(xmlData);
+			changePdfButtonMsg("generating...", i);
+			const link = await getPdfLink(
+				user!.username,
+				user!.password,
+				xmlData
+			);
+
+			if (!link) {
+				changePdfButtonMsg("an error occured :(", i);
+				setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+				return;
+			}
+
+			changePdfButtonMsg("generate pdf", i);
+			setTimeout(() => window.open(link), 100);
+		}
+
 		return (
 			<>
-				<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
-					<Box>
+				<Grid 
+					container 
+					key={invoice.id} 
+					wrap="nowrap"
+					paddingLeft={2}
+					paddingRight={2}
+				>
+					<Box width={"100%"}>
 						<FormControlLabel
 							control={
 								<Checkbox
@@ -130,47 +157,31 @@ export default function InvoicesBox() {
 							labelPlacement="end" // Align the label to the start of the checkbox
 						/>
 					</Box>
-					<Box>
-						<Button 
-							variant="outlined" 
-							onClick={() => {
-								window.open(`/user/view-invoice/${invoice.name}`);
-							}}
-						>
-								View XML
-						</Button>
-						<Button 
-							variant="outlined" 
-							onClick={async () => {
-								changePdfButtonMsg("fetching xml...", i);
-								const xmlData = await getXmlData(
-									user!.username,
-									user!.password,
-									invoice.name
-								);
-
-								console.log(xmlData);
-								changePdfButtonMsg("generating...", i);
-								const link = await getPdfLink(
-									user!.username,
-									user!.password,
-									xmlData
-								);
-
-								if (!link) {
-									changePdfButtonMsg("an error occured :(", i);
-									setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-									return;
-								}
-
-								changePdfButtonMsg("generate pdf", i);
-								setTimeout(() => window.open(link), 100);
-							}}
-						>
-							{invoice.pdfGenMsg}
-						</Button>
-					</Box>
-				</Box>
+					<Grid 
+						container
+						justifyContent={"flex-end"}
+						gap={1}
+					>
+						<Tooltip title="View eInvoice">
+							<IconButton 
+								aria-label="View"
+								onClick={() => {
+									window.open(`/user/view-invoice/${invoice.name}`);
+								}}
+							>
+								<VisibilityIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Generate PDF">
+							<IconButton 
+								aria-label="PDF"
+								onClick={getPDF}
+							>
+								<PictureAsPdfIcon />
+							</IconButton>
+						</Tooltip>
+					</Grid>
+				</Grid>
 			</>
 		)
 	}

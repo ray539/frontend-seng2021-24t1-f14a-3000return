@@ -6,7 +6,8 @@ import {
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
-  Button, Dialog, DialogTitle,
+  Button, Dialog,
+	Grid,
 	Typography
 } from '@mui/material';
 
@@ -18,49 +19,58 @@ function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceIt
     setPopup(false);
   }
 
+	async function deleteInvoice() {
+		const names = invoices
+			.filter((invoice) => invoice.checked)
+			.map((invoice) => invoice.name);
+		await deleteInvoicesFromUser(
+			user!.username,
+			user!.password,
+			names
+		);
+
+		setInvoices(invoices.filter((invoice) => !invoice.checked));
+	}
+
   return (
     <>
       <Dialog onClose={closePopup} open>
-        <DialogTitle>Delete eInvoice</DialogTitle>
-				<Typography variant="subtitle1">
-					Are you sure you want to delete? Invoices will be permanently removed
-				</Typography>
-				<Button 
-					variant="contained"
-					sx={{
-						backgroundColor: "#F22556",
-						'&:hover': {
-							backgroundColor: "#d71e4a",
-						}
-					}}
-					onClick={async () => {
-						const names = invoices
-							.filter((invoice) => invoice.checked)
-							.map((invoice) => invoice.name);
-						await deleteInvoicesFromUser(
-							user!.username,
-							user!.password,
-							names
-						);
-
-						setInvoices(invoices.filter((invoice) => !invoice.checked));
-					}}
+				<Grid 
+					container
+					justifyContent={"center"}
+					alignContent={"center"}
+					padding={3}
+					gap={2}
 				>
-					Delete
-				</Button>
-				<Button 
-					variant="contained"
-					sx={{
-						backgroundColor: "#7B54E8",
-						'&:hover': {
-							backgroundColor: "#6a47cd",
-						}
-					}}
-					onClick={closePopup}
-				>
-					Cancel
-				</Button>
-
+					<Typography variant="h4">Delete eInvoice</Typography>
+					<Typography variant="subtitle1">
+						Are you sure you want to delete? Invoices will be permanently removed
+					</Typography>
+					<Button 
+						variant="contained"
+						sx={{
+							backgroundColor: "#F22556",
+							'&:hover': {
+								backgroundColor: "#d71e4a",
+							}
+						}}
+						onClick={deleteInvoice}
+					>
+						Delete
+					</Button>
+					<Button 
+						variant="contained"
+						sx={{
+							backgroundColor: "#7B54E8",
+							'&:hover': {
+								backgroundColor: "#6a47cd",
+							}
+						}}
+						onClick={closePopup}
+					>
+						Cancel
+					</Button>
+				</Grid>
       </Dialog>
     </>
   )
