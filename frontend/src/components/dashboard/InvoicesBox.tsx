@@ -10,13 +10,13 @@ import {
   getXmlData,
 } from "../../service/service";
 import {
-  Button, Checkbox, FormControlLabel,
+  Checkbox, FormControlLabel,
   Typography, Grid, Box,
 	IconButton,
 	Tooltip,
+	TextField,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
-import SearchBar from "./buttons/SearchBar";
 import DeleteButton from "./buttons/DeleteButton";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -25,6 +25,7 @@ export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+	const [search, setSearch] = useState("");
 
   useEffect(() => {
     console.log(user?.username, user?.password);
@@ -33,18 +34,18 @@ export default function InvoicesBox() {
     );
   }, []);
 
-	function changePdfButtonMsg(
-    msg:
-			| "generate pdf"
-      | "fetching xml..."
-      | "generating..."
-      | "an error occured :(",
-    i: number
-  ) {
-    const invoices_ = [...invoices];
-    invoices_[i].pdfGenMsg = msg;
-    setInvoices(invoices_);
-  }
+	// function changePdfButtonMsg(
+  //   msg:
+	// 		| "generate pdf"
+  //     | "fetching xml..."
+  //     | "generating..."
+  //     | "an error occured :(",
+  //   i: number
+  // ) {
+  //   const invoices_ = [...invoices];
+  //   invoices_[i].pdfGenMsg = msg;
+  //   setInvoices(invoices_);
+  // }
 
 	const buttonWidth = "65%";
 
@@ -83,7 +84,16 @@ export default function InvoicesBox() {
 						xs 
 						paddingRight={"8px"}
 					>
-						<SearchBar />
+						<TextField 
+							label="Search invoices" 
+							variant="outlined" 
+							size="small"
+							fullWidth
+							value={search}
+							onChange={(e) => {
+								setSearch(e.target.value)
+							}}
+						/>
 					</Grid>
 					<Grid 
 						container 
@@ -107,28 +117,19 @@ export default function InvoicesBox() {
 
 	function Invoice(invoice: EInvoiceItem, i: number) {
 		async function getPDF() {
-			changePdfButtonMsg("fetching xml...", i);
 			const xmlData = await getXmlData(
 				user!.username,
 				user!.password,
 				invoice.name
 			);
 
-			console.log(xmlData);
-			changePdfButtonMsg("generating...", i);
+			// console.log(xmlData);
 			const link = await getPdfLink(
 				user!.username,
 				user!.password,
 				xmlData
 			);
 
-			if (!link) {
-				changePdfButtonMsg("an error occured :(", i);
-				setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-				return;
-			}
-
-			changePdfButtonMsg("generate pdf", i);
 			setTimeout(() => window.open(link), 100);
 		}
 
@@ -195,13 +196,19 @@ export default function InvoicesBox() {
 						bgcolor: "#F1E8FF", 
 					}}
 				>
-					{invoices.length === 0 ? (
-						<Typography>No Invoices!</Typography>
-					) : (
-						invoices.map((invoice, i) => (
-							Invoice(invoice, i)
-						))
-					)}
+					{
+						invoices.length === 0 ? (
+							<Typography>No Invoices!</Typography>
+						) : (
+							invoices
+								.filter((invoice) => {
+									return invoice.name.match(new RegExp(search, 'i'))
+								})
+								.map((invoice, i) => (
+									Invoice(invoice, i)
+								))
+						)
+					}
 				</Box>
 			</>
 		);
