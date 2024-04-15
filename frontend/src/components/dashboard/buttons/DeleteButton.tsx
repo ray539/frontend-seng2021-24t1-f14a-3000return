@@ -2,13 +2,13 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../../data";
 import {
-	deleteInvoicesFromUser,
+  deleteInvoicesFromUser,
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
   Button, Dialog,
-	Grid,
-	Typography
+  Grid,
+  Typography
 } from '@mui/material';
 
 function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function, setInvoices: Function }) {
@@ -19,58 +19,58 @@ function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceIt
     setPopup(false);
   }
 
-	async function deleteInvoice() {
-		const names = invoices
-			.filter((invoice) => invoice.checked)
-			.map((invoice) => invoice.name);
-		await deleteInvoicesFromUser(
-			user!.username,
-			user!.password,
-			names
-		);
+  async function deleteInvoice() {
+    const names = invoices
+      .filter((invoice) => invoice.checked)
+      .map((invoice) => invoice.name);
+    await deleteInvoicesFromUser(
+      user!.username,
+      user!.password,
+      names
+    );
 
-		setInvoices(invoices.filter((invoice) => !invoice.checked));
-	}
+    setInvoices(invoices.filter((invoice) => !invoice.checked));
+  }
 
   return (
     <>
       <Dialog onClose={closePopup} open>
-				<Grid 
-					container
-					justifyContent={"center"}
-					alignContent={"center"}
-					padding={3}
-					gap={2}
-				>
-					<Typography variant="h4">Delete eInvoice</Typography>
-					<Typography variant="subtitle1">
-						Are you sure you want to delete? Invoices will be permanently removed
-					</Typography>
-					<Button 
-						variant="contained"
-						sx={{
-							backgroundColor: "#F22556",
-							'&:hover': {
-								backgroundColor: "#d71e4a",
-							}
-						}}
-						onClick={deleteInvoice}
-					>
-						Delete
-					</Button>
-					<Button 
-						variant="contained"
-						sx={{
-							backgroundColor: "#7B54E8",
-							'&:hover': {
-								backgroundColor: "#6a47cd",
-							}
-						}}
-						onClick={closePopup}
-					>
-						Cancel
-					</Button>
-				</Grid>
+        <Grid 
+          container
+          justifyContent={"center"}
+          alignContent={"center"}
+          padding={3}
+          gap={2}
+        >
+          <Typography variant="h4">Delete eInvoice</Typography>
+          <Typography variant="subtitle1">
+            Are you sure you want to delete? Invoices will be permanently removed
+          </Typography>
+          <Button 
+            variant="contained"
+            sx={{
+              backgroundColor: "#F22556",
+              '&:hover': {
+                backgroundColor: "#d71e4a",
+              }
+            }}
+            onClick={deleteInvoice}
+          >
+            Delete
+          </Button>
+          <Button 
+            variant="contained"
+            sx={{
+              backgroundColor: "#7B54E8",
+              '&:hover': {
+                backgroundColor: "#6a47cd",
+              }
+            }}
+            onClick={closePopup}
+          >
+            Cancel
+          </Button>
+        </Grid>
       </Dialog>
     </>
   )
@@ -91,18 +91,18 @@ export default function DeleteButton({invoices, setInvoices}: {invoices : EInvoi
   return ( 
     <>
       <Button 
-				variant="contained" 
-				fullWidth 
-				sx={{
-					backgroundColor: "#F22556",
-					'&:hover': {
-						backgroundColor: "#d71e4a",
-					}
-				}}
-				onClick={openPopup}
-			>
-				Delete
-			</Button>
+        variant="contained" 
+        fullWidth 
+        sx={{
+          backgroundColor: "#F22556",
+          '&:hover': {
+            backgroundColor: "#d71e4a",
+          }
+        }}
+        onClick={openPopup}
+      >
+        Delete
+      </Button>
       
       {Popup && <DeletePopup invoices={invoices} Popup={Popup} setPopup={setPopup} setInvoices={setInvoices} />}
       {Error && <ErrorPopup Popup={Error} setPopup={setError}/>}

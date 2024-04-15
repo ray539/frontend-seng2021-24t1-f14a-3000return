@@ -12,9 +12,9 @@ import {
 import {
   Checkbox, FormControlLabel,
   Typography, Grid, Box,
-	IconButton,
-	Tooltip,
-	TextField,
+  IconButton,
+  Tooltip,
+  TextField,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import DeleteButton from "./buttons/DeleteButton";
@@ -25,18 +25,18 @@ export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-	const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
 
-	useEffect(() => {
-		console.log(user?.username, user?.password);
-		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-			setInvoices(invoices)
-		);
-	}, []);
-	
-	// function changePdfButtonMsg(
+  useEffect(() => {
+    console.log(user?.username, user?.password);
+    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+      setInvoices(invoices)
+    );
+  }, []);
+  
+  // function changePdfButtonMsg(
   //   msg:
-	// 		| "generate pdf"
+  // 		| "generate pdf"
   //     | "fetching xml..."
   //     | "generating..."
   //     | "an error occured :(",
@@ -47,178 +47,178 @@ export default function InvoicesBox() {
   //   setInvoices(invoices_);
   // }
 
-	const buttonWidth = "65%";
+  const buttonWidth = "65%";
 
-	function Header() {
-		return (
-			<>
-				<Grid
-					container
-					justifyContent={"space-between"}
-					alignItems={"center"}
-				>
-					<Grid item xs>
-						<Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
-					</Grid>
-					<Grid item width={buttonWidth}>
-						<GetStartedButton />
-					</Grid>
-				</Grid>
-			</>
-		);
-	}
+  function Header() {
+    return (
+      <>
+        <Grid
+          container
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <Grid item xs>
+            <Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
+          </Grid>
+          <Grid item width={buttonWidth}>
+            <GetStartedButton />
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
 
-	function Buttons() {
-		return (
-			<>
-				<Grid
-					container
-					justifyContent={"space-between"}
-					alignItems={"center"}
-					margin={"8px"}
-					marginLeft={0}
-					marginRight={0}
-				>
-					<Grid
-						item
-						xs
-						paddingRight={"8px"}
-					>
-						<TextField 
-							label="Search invoices" 
-							variant="outlined" 
-							size="small"
-							fullWidth
-							value={search}
-							onChange={(e) => {
-								setSearch(e.target.value)
-							}}
-						/>
-					</Grid>
-					<Grid 
-						container 
-						width={buttonWidth}
-						gap={"8px"}
-					>
-						<Grid item xs>
-							<DownloadButton invoices={invoices} />
-						</Grid>
-						<Grid item xs>
-							<SendButton invoices={invoices} />
-						</Grid>
-						<Grid item xs>
-							<DeleteButton invoices={invoices} setInvoices={setInvoices}/>
-						</Grid>
-					</Grid>
-				</Grid>
-			</>
-		);
-	}
+  function Buttons() {
+    return (
+      <>
+        <Grid
+          container
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          margin={"8px"}
+          marginLeft={0}
+          marginRight={0}
+        >
+          <Grid
+            item
+            xs
+            paddingRight={"8px"}
+          >
+            <TextField 
+              label="Search invoices" 
+              variant="outlined" 
+              size="small"
+              fullWidth
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+              }}
+            />
+          </Grid>
+          <Grid 
+            container 
+            width={buttonWidth}
+            gap={"8px"}
+          >
+            <Grid item xs>
+              <DownloadButton invoices={invoices} />
+            </Grid>
+            <Grid item xs>
+              <SendButton invoices={invoices} />
+            </Grid>
+            <Grid item xs>
+              <DeleteButton invoices={invoices} setInvoices={setInvoices}/>
+            </Grid>
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
 
-	function Invoice(invoice: EInvoiceItem, i: number) {
-		async function getPDF() {
-			const xmlData = await getXmlData(
-				user!.username,
-				user!.password,
-				invoice.name
-			);
+  function Invoice(invoice: EInvoiceItem, i: number) {
+    async function getPDF() {
+      const xmlData = await getXmlData(
+        user!.username,
+        user!.password,
+        invoice.name
+      );
 
-			// console.log(xmlData);
-			const link = await getPdfLink(
-				user!.username,
-				user!.password,
-				xmlData
-			);
+      // console.log(xmlData);
+      const link = await getPdfLink(
+        user!.username,
+        user!.password,
+        xmlData
+      );
 
-			setTimeout(() => window.open(link), 100);
-		}
+      setTimeout(() => window.open(link), 100);
+    }
 
-		return (
-			<>
-				<Grid 
-					container 
-					key={invoice.id} 
-					wrap="nowrap"
-					paddingLeft={2}
-					paddingRight={2}
-				>
-					<Box width={"100%"}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={invoice.checked}
-									onChange={(e) => {
-										const invoices_ = [...invoices];
-										invoices_[i].checked = e.target.checked;
-										setInvoices(invoices_);
-									}}
-								/>
-							}
-							label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-							labelPlacement="end" // Align the label to the start of the checkbox
-						/>
-					</Box>
-					<Grid 
-						container
-						justifyContent={"flex-end"}
-						gap={1}
-					>
-						<Tooltip title="View eInvoice">
-							<IconButton 
-								aria-label="View"
-								onClick={() => {
-									window.open(`/user/view-invoice/${invoice.name}`);
-								}}
-							>
-								<VisibilityIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Generate PDF">
-							<IconButton 
-								aria-label="PDF"
-								onClick={getPDF}
-							>
-								<PictureAsPdfIcon />
-							</IconButton>
-						</Tooltip>
-					</Grid>
-				</Grid>
-			</>
-		)
-	}
+    return (
+      <>
+        <Grid 
+          container 
+          key={invoice.id} 
+          wrap="nowrap"
+          paddingLeft={2}
+          paddingRight={2}
+        >
+          <Box width={"100%"}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={invoice.checked}
+                  onChange={(e) => {
+                    const invoices_ = [...invoices];
+                    invoices_[i].checked = e.target.checked;
+                    setInvoices(invoices_);
+                  }}
+                />
+              }
+              label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+              labelPlacement="end" // Align the label to the start of the checkbox
+            />
+          </Box>
+          <Grid 
+            container
+            justifyContent={"flex-end"}
+            gap={1}
+          >
+            <Tooltip title="View eInvoice">
+              <IconButton 
+                aria-label="View"
+                onClick={() => {
+                  window.open(`/user/view-invoice/${invoice.name}`);
+                }}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Generate PDF">
+              <IconButton 
+                aria-label="PDF"
+                onClick={getPDF}
+              >
+                <PictureAsPdfIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+        </Grid>
+      </>
+    )
+  }
 
-	function Invoices() {
-		return (
-			<>
-				<Box
-					padding={"10px"}
-					sx={{
-						bgcolor: "#F1E8FF",
-					}}
-				>
-					{
-						invoices.length === 0 ? (
-							<Typography>No Invoices!</Typography>
-						) : (
-							invoices
-								.filter((invoice) => {
-									return invoice.name.match(new RegExp(search, 'i'))
-								})
-								.map((invoice, i) => (
-									Invoice(invoice, i)
-								))
-						)
-					}
-				</Box>
-			</>
-		);
-	}
+  function Invoices() {
+    return (
+      <>
+        <Box
+          padding={"10px"}
+          sx={{
+            bgcolor: "#F1E8FF",
+          }}
+        >
+          {
+            invoices.length === 0 ? (
+              <Typography>No Invoices!</Typography>
+            ) : (
+              invoices
+                .filter((invoice) => {
+                  return invoice.name.match(new RegExp(search, 'i'))
+                })
+                .map((invoice, i) => (
+                  Invoice(invoice, i)
+                ))
+            )
+          }
+        </Box>
+      </>
+    );
+  }
 
-	return (
-		<>
-			<Header />
-			<Buttons />
-			<Invoices />
-		</>
-	);
+  return (
+    <>
+      <Header />
+      <Buttons />
+      <Invoices />
+    </>
+  );
 }
