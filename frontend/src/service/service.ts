@@ -258,7 +258,8 @@ export async function changeEmail(username: string, password: string, newEmail: 
       id: acc._id,
       username: acc.username,
       email: acc.email,
-      password: password
+      password: password,
+      accountType: acc.accountType
     }
 
     return retUser;
@@ -282,7 +283,8 @@ export async function changePassword(username: string, password: string, newPass
       id: acc._id,
       username: acc.username,
       email: acc.email,
-      password: password
+      password: password,
+      accountType: acc.accountType
     }
     return retUser;
   } catch (err) {
