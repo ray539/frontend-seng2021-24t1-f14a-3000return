@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";
+import LockIcon from '@mui/icons-material/Lock';
 
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
@@ -70,7 +71,7 @@ export default function InvoicesBox() {
             <Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
           </Grid>
           <Grid item width={buttonWidth}>
-            <GetStartedButton />
+            <GetStartedButton invoices={invoices} />
           </Grid>
         </Grid>
       </>
@@ -171,28 +172,24 @@ export default function InvoicesBox() {
                   <Button variant="outlined" onClick={() => {
                     window.open(`/user/view-invoice/${invoice.name}`);
                   }}>View XML</Button>
-                  <Button variant="outlined" onClick={async () => {
-                    changePdfButtonMsg("fetching xml...", i);
-                    const xmlData = await getXmlData(
-                      user!.username,
-                      user!.password,
-                      invoice.name
-                    );
-                    console.log(xmlData);
-                    changePdfButtonMsg("generating...", i);
-                    const link = await getPdfLink(
-                      user!.username,
-                      user!.password,
-                      xmlData
-                    );
-                    if (!link) {
-                      changePdfButtonMsg("an error occured :(", i);
-                      setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-                      return;
-                    }
-                    changePdfButtonMsg("generate pdf", i);
-                    setTimeout(() => window.open(link), 100);
-                  }}>{invoice.pdfGenMsg}</Button>
+                  {user && user.accountType === "Free" ? (
+                    <Button variant="outlined" disabled endIcon={<LockIcon />}>
+                      Generate PDF
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" onClick={async () => {
+                      changePdfButtonMsg("fetching xml...", i);
+                      const xmlData = await getXmlData(user!.username, user!.password, invoice.name);
+                      changePdfButtonMsg("generating...", i);
+                      const link = await getPdfLink(user!.username, user!.password, xmlData);
+                      if (!link) {
+                        changePdfButtonMsg("an error occured :(", i);
+                        setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+                        return;
+                      }
+                      changePdfButtonMsg("generate pdf", i);
+                      setTimeout(() => window.open(link), 100);
+                    }}>{invoice.pdfGenMsg}</Button>)}
                 </Box>
               </Box>
             ))

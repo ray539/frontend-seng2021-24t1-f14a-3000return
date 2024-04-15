@@ -96,7 +96,7 @@ export function logInAndGetUser(username: string, password: string) {
   return { ...u };
 }
 
-export function registerUser(username: string, email: string, password: string): UserProfile | null {
+export function registerUser(username: string, email: string, password: string, accountType: string): UserProfile | null {
   // Check if the username or email is already taken
   if (USERS.some(user => user.username === username || user.email === email)) {
     return null; // Return null if username or email is already taken
@@ -111,7 +111,8 @@ export function registerUser(username: string, email: string, password: string):
     id,
     username,
     email,
-    password
+    password,
+    accountType,
   };
 
   USERS.push(newUser);
