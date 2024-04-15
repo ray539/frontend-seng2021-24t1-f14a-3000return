@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import SearchBar from "./buttons/SearchBar";
+import DeleteButton from "./buttons/DeleteButton";
 
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
@@ -39,7 +40,7 @@ export default function InvoicesBox() {
 
 	function changePdfButtonMsg(
     msg:
-      | "generate pdf"
+			| "generate pdf"
       | "fetching xml..."
       | "generating..."
       | "an error occured :(",
@@ -89,7 +90,6 @@ export default function InvoicesBox() {
 					>
 						<SearchBar />
 					</Grid>
-
 					<Grid 
 						container 
 						width={buttonWidth}
@@ -98,37 +98,81 @@ export default function InvoicesBox() {
 						<Grid item xs>
 							<DownloadButton invoices={invoices}/>
 						</Grid>
-
 						<Grid item xs>
 							<SendButton invoices={invoices}/>
 						</Grid>
-						
 						<Grid item xs>
-							<Button 
-								variant="contained" 
-								fullWidth 
-								sx={{
-									backgroundColor: "#F22556",
-									'&:hover': {
-										backgroundColor: "#d71e4a",
-									}
-								}}
-								onClick={() => {
-									const numItems = invoices.filter((invoice) => invoice.checked).length;
-									if (numItems == 0) return;
-									setDeleteConfirmation({
-										state: "shown",
-										numItems: numItems,
-									});
-								}
-							}>
-								Delete
-							</Button>
+							<DeleteButton invoices={invoices} setInvoices={setInvoices}/>
 						</Grid>
 					</Grid>
 				</Grid>
 			</>
 		);
+	}
+
+	function Invoice(invoice: EInvoiceItem, i: number) {
+		return (
+			<>
+				<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
+					<Box>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={invoice.checked}
+									onChange={(e) => {
+										const invoices_ = [...invoices];
+										invoices_[i].checked = e.target.checked;
+										setInvoices(invoices_);
+									}}
+								/>
+							}
+							label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+							labelPlacement="end" // Align the label to the start of the checkbox
+						/>
+					</Box>
+					<Box>
+						<Button 
+							variant="outlined" 
+							onClick={() => {
+								window.open(`/user/view-invoice/${invoice.name}`);
+							}}
+						>
+								View XML
+						</Button>
+						<Button 
+							variant="outlined" 
+							onClick={async () => {
+								changePdfButtonMsg("fetching xml...", i);
+								const xmlData = await getXmlData(
+									user!.username,
+									user!.password,
+									invoice.name
+								);
+
+								console.log(xmlData);
+								changePdfButtonMsg("generating...", i);
+								const link = await getPdfLink(
+									user!.username,
+									user!.password,
+									xmlData
+								);
+
+								if (!link) {
+									changePdfButtonMsg("an error occured :(", i);
+									setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
+									return;
+								}
+
+								changePdfButtonMsg("generate pdf", i);
+								setTimeout(() => window.open(link), 100);
+							}}
+						>
+							{invoice.pdfGenMsg}
+						</Button>
+					</Box>
+				</Box>
+			</>
+		)
 	}
 
 	function Invoices() {
@@ -144,51 +188,7 @@ export default function InvoicesBox() {
 						<Typography>No Invoices!</Typography>
 					) : (
 						invoices.map((invoice, i) => (
-							<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
-								<Box>
-									<FormControlLabel
-										control={
-											<Checkbox
-												checked={invoice.checked}
-												onChange={(e) => {
-													const invoices_ = [...invoices];
-													invoices_[i].checked = e.target.checked;
-													setInvoices(invoices_);
-												}}
-											/>
-										}
-										label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-										labelPlacement="end" // Align the label to the start of the checkbox
-									/>
-								</Box>
-								<Box>
-									<Button variant="outlined" onClick={() => {
-										window.open(`/user/view-invoice/${invoice.name}`);
-									}}>View XML</Button>
-									<Button variant="outlined" onClick={async () => {
-										changePdfButtonMsg("fetching xml...", i);
-										const xmlData = await getXmlData(
-											user!.username,
-											user!.password,
-											invoice.name
-										);
-										console.log(xmlData);
-										changePdfButtonMsg("generating...", i);
-										const link = await getPdfLink(
-											user!.username,
-											user!.password,
-											xmlData
-										);
-										if (!link) {
-											changePdfButtonMsg("an error occured :(", i);
-											setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-											return;
-										}
-										changePdfButtonMsg("generate pdf", i);
-										setTimeout(() => window.open(link), 100);
-									}}>{invoice.pdfGenMsg}</Button>
-								</Box>
-							</Box>
+							Invoice(invoice, i)
 						))
 					)}
 				</Box>
@@ -201,43 +201,6 @@ export default function InvoicesBox() {
 			<Header />
 			<Buttons />
 			<Invoices />
-
-			{deletedConfirmation.state != "hidden" && (
-				<div>
-					{deletedConfirmation.state == "shown" ? (
-						<>
-							<Typography variant="h5">Delete Items</Typography>
-							<div>Delete these {deletedConfirmation.numItems} items?'</div>
-						</>
-
-					) : (
-						<div>Loading</div>
-					)}
-					<Button onClick={async () => {
-						const names = invoices
-							.filter((invoice) => invoice.checked)
-							.map((invoice) => invoice.name);
-						setDeleteConfirmation({
-							...deletedConfirmation,
-							state: "loading",
-						});
-						await deleteInvoicesFromUser(
-							user!.username,
-							user!.password,
-							names
-						);
-
-						setInvoices(invoices.filter((invoice) => !invoice.checked));
-						setDeleteConfirmation({
-							...deletedConfirmation,
-							state: "hidden",
-						});
-					}}>Yes</Button>
-					<Button onClick={() =>
-						setDeleteConfirmation({ ...deletedConfirmation, state: "hidden" })
-					}>No</Button>
-				</div>
-			)}
 		</>
 	);
 }
