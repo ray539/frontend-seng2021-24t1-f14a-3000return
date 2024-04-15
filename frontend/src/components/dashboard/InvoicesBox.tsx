@@ -75,9 +75,6 @@ export default function InvoicesBox() {
           container
           justifyContent={"space-between"}
           alignItems={"center"}
-          margin={"8px"}
-          marginLeft={0}
-          marginRight={0}
         >
           <Grid
             item
@@ -188,14 +185,46 @@ export default function InvoicesBox() {
   }
 
   function Invoices() {
+    const [selectAll, setSelectAll] = useState(false);
+
     return (
       <>
-        <Box
+        <Grid
+          item
+          display={"flex"}
+          flexDirection={"column"}
           padding={"10px"}
+          width={"100%"}
           sx={{
             bgcolor: "#F1E8FF",
           }}
         >
+          <Grid 
+            container 
+            wrap="nowrap"
+            paddingLeft={2}
+            paddingRight={2}
+          >
+            <Box 
+              width={"100%"}
+              borderBottom={"1px solid black"}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectAll}
+                    onChange={(e) => {
+                      setSelectAll(e.target.checked);
+                      invoices.map((invoice) => invoice.checked = !selectAll)
+                    }}
+                  />
+                }
+                label={"Name"} // Set the label of the checkbox to be the name of the invoice
+              />
+            </Box>
+          </Grid>
+
+
           {
             invoices.length === 0 ? (
               <Typography>No Invoices!</Typography>
@@ -206,19 +235,28 @@ export default function InvoicesBox() {
                 })
                 .map((invoice, i) => (
                   Invoice(invoice, i)
-                ))
+                )
+              )
             )
           }
-        </Box>
+        </Grid>
       </>
     );
   }
 
   return (
     <>
-      <Header />
-      <Buttons />
-      <Invoices />
+      <Grid 
+        container
+        height={"100%"}
+        alignContent={"flex-start"}
+        alignItems={"stretch"}
+        gap={"8px"}
+      >
+        <Header />
+        <Buttons />
+        <Invoices />
+      </Grid>
     </>
   );
 }
