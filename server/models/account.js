@@ -12,7 +12,8 @@ const Schema = mongoose.Schema
 const AccountSchema = new Schema({
   username: String,
   email: String,
-  passwordEncrypted: String
+  passwordEncrypted: String,
+  savedTags: [String]
 })
 
 const AccountModel = mongoose.model("Account", AccountSchema)

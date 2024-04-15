@@ -1,10 +1,9 @@
-let globalId: number = 2;
-
 export interface UserProfile {
   id: string
   username: string,
   email: string,
   password: string,
+  savedTags: string[]
 }
 
 export interface EInvoice {
@@ -19,6 +18,26 @@ export interface EInvoiceItem {
   checked: boolean,
   pdfGenMsg: 'generate pdf' | 'fetching xml...' | 'generating...' | 'an error occured :(',
   tags: string[]
+}
+
+export function arraysEqual(arr1: string[], arr2: string[]) {
+  // Check if the arrays have the same length
+  if (arr1.length !== arr2.length) {
+      return false;
+  }
+  
+  // Sort the arrays to ensure elements are in the same order
+  const sortedArr1 = arr1.slice().sort();
+  const sortedArr2 = arr2.slice().sort();
+  
+  // Iterate over one array and check if each element exists in the other array
+  for (let i = 0; i < sortedArr1.length; i++) {
+      if (sortedArr1[i] !== sortedArr2[i]) {
+          return false;
+      }
+  }
+  
+  return true;
 }
 
 // export const USERS: UserProfile[] = [

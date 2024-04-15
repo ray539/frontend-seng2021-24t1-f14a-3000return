@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContextProvider";
-import { EInvoiceItem } from "../../../data";
+import { EInvoice, EInvoiceItem, arraysEqual } from "../../../data";
 import {
   addInvoiceToUser,
   addTagsToInvoice,
   deleteTagsFromInvoice,
   sendInvoicesByNames,
+  setUserSavedTags,
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
@@ -18,8 +19,10 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { TextSnippet } from "@mui/icons-material";
+import {setTagListForInvoice} from '../../../service/service'
 
-function TagWithX({text}: {text: string}) {
+function TagWithX({text, rmvFunction}: {text: string, rmvFunction: Function}) {
   return (
     <Typography fontSize={15} sx={{
       marginRight: '0.5em',
@@ -43,6 +46,7 @@ function TagWithX({text}: {text: string}) {
         },
         marginLeft: '0.5em'
       }}
+      onClick={() => rmvFunction()}
     />
     </Typography>
   )
@@ -65,25 +69,56 @@ function Tag({text}: {text: string}) {
 function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoices: EInvoiceItem[], setInvoices: Function, index:number, Popup: boolean, setPopup: Function }) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
-  const [buttonText, setButtonText] = useState('SEND');
+  const [searchBarTxt, setSearchBarTxt] = useState('')
+  const [tempTagList, setTempTagList] = useState<string[]>([...invoices[index].tags])
+  const [tempUserTagList, setTempUserTagList] = useState<string[]>([...user!.savedTags])
 
-  const invoiceTags = invoices[index].tags
-  console.log(invoices[index])
-  const userTags = ['U1', 'U2', 'U3']
+  const shownUserTags = tempUserTagList.filter(ut => RegExp(searchBarTxt).test(ut))
 
-  const addTagToInvoice = (index: number, tagName: string) => {
-    let invoice = invoices[index];
-    let tagRet = addTagsToInvoice(user!.username, user!.password, invoice.name, [tagName])
-    setInvoices(tagRet)
+  const pushTagListChanges = async (tagList: string[]) => {
+    let newInvoices = JSON.parse(JSON.stringify(invoices)) as EInvoiceItem[]
+    let invoice = newInvoices[index]
+
+    let tagRet = await setTagListForInvoice(user!.username, user!.password, invoice.name, tagList)
+    invoice.tags = tagRet
+    setInvoices(newInvoices)
   }
 
-  const removeTagFromInvoice = (index: number, tagName: string) => {
-    let invoice = invoices[index];
-    let tagRet = deleteTagsFromInvoice(user!.username, user!.password, invoice.name, [tagName])
-    setInvoices(tagRet)
+  const addSavedTag = async (tag: string) => {
+    // add new tags to the existing tempUserTagList array
+    // short the length to 30
+    // assume tempUserTagList is unique
+    if (tempUserTagList.includes(tag)) {
+      return
+    }
+    let newTempTagList = [tag, ...tempUserTagList];
+    newTempTagList = newTempTagList.slice(0, 30);
+    console.log(newTempTagList)
+    addTagToInvoice(tag)
+    setTempUserTagList(newTempTagList)
+  }
+
+  const addTagToInvoice = async(tag: string) => {
+    if (tempTagList.includes(tag)) {
+      return;
+    }
+    setTempTagList([...tempTagList, tag])
+  }
+
+  /**
+   * update the commonly used tags array of the user to the new one
+   */
+  const pushUserTaglistChanges = async() => {
+    const newUser = await setUserSavedTags(user!.username, user!.password, tempUserTagList)
+    authContext.setCurrentUser(newUser)
   }
 
   const closePopup = () => {
+    if (!arraysEqual(tempTagList, invoices[index].tags)) {
+      if (!window.confirm('You have unsaved changes. Do you want to discard them?')) {
+        return
+      }
+    }
     setPopup(false);
   }
 
@@ -103,29 +138,45 @@ function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoic
             marginBottom: '1em'
           }}>
             {
-              invoiceTags.length == 0 ?
+              tempTagList.length == 0 ?
                 <Typography>No Tags</Typography>
               :
-              invoiceTags.map(tag => <div key={tag}> <TagWithX text={tag}></TagWithX></div>)
+              tempTagList.map(tag => <div key={tag}> <TagWithX text={tag}
+                rmvFunction={() => {
+                  setTempTagList(tempTagList.filter(t => t !== tag))
+                }}
+              ></TagWithX></div>)
             }
           </Box>
 
           <TextField
             label='Search for tags...'
+            value={searchBarTxt}
+            onChange={(e) => {
+              const newTxt = e.target.value
+              if (!/^[a-zA-Z0-9_-]*$/.test(newTxt)) {
+                return
+              }
+              setSearchBarTxt(newTxt.toUpperCase())
+            }}
             sx={{
               marginBottom: '1em'
             }}
           >
           </TextField>
           
-          <Box sx={{overflowY: 'scroll', overflowX: 'hidden', height:'200px', border: '1px solid black', position: 'relative', borderRadius: '0.5em'}}>
+          <Box sx={{overflowY: 'scroll', overflowX: 'hidden', height:'200px', border: '1px solid black', position: 'relative', borderRadius: '0.5em', marginBottom: '1em'}}>
             <List>
               {
-                userTags.length == 0 ? 
-                  <Typography>No recent tags</Typography>
+                shownUserTags.length == 0 ? 
+                  <Typography>No tags found</Typography>
                 :
-                userTags.map(userTag => 
-                <ListItem disablePadding key={userTag}>
+                shownUserTags.map(userTag => 
+                <ListItem
+                  disablePadding
+                  key={userTag}
+                  onClick={() => {addTagToInvoice(userTag); setSearchBarTxt('')}}
+                >
                   <ListItemButton>
                     <ListItemIcon sx={{minWidth: '40px'}}>
                       <AccessTimeIcon />
@@ -146,37 +197,44 @@ function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoic
               }
               </List>
 
-
-              <ListItemButton
-                sx={{
-                  backgroundColor: "#dfffd9",
-                  '&:hover': {
-                    backgroundColor: "#c7ffbd",
-                  },
-                  position: 'sticky',
-                  width: '100%',
-                  bottom: '0px'
-                }}
+              {
+                (!shownUserTags.includes(searchBarTxt) && searchBarTxt.length > 0) &&
+                <ListItemButton
+                  sx={{
+                    backgroundColor: "#dfffd9",
+                    '&:hover': {
+                      backgroundColor: "#c7ffbd",
+                    },
+                    position: 'sticky',
+                    width: '100%',
+                    bottom: '0px'
+                  }}
+                  onClick={() => {
+                    setSearchBarTxt('')
+                    addSavedTag(searchBarTxt)
+                  }}
               >
                 <ListItemIcon sx={{minWidth: '40px'}}>
                   <AddCircleOutlineIcon />
                 </ListItemIcon>
                 <ListItemText sx={{display: 'flex', alignItems: 'center'}}>
-                  <Tag text='TAG5'></Tag>
+                  <Tag text={searchBarTxt}></Tag>
                 </ListItemText>
-
                 <ListItemIcon>
                   <IconButton edge="end" aria-label="comments">
                     <Typography sx={{marginRight:'1em'}}>Create and add new tag</Typography>
                     <AddIcon />
                   </IconButton>
                 </ListItemIcon>
-
               </ListItemButton>
-
-            
-
+              }
           </Box>
+          <Button variant='contained' onClick={() => {
+            pushTagListChanges(tempTagList)
+            pushUserTaglistChanges()
+          }}>
+            save changes
+          </Button>
         </Box>
 
         

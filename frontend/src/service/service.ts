@@ -17,7 +17,8 @@ export async function logInAndGetUser(username: string, password: string) {
       id: acct._id,
       username: acct.username,
       email: acct.email,
-      password: password
+      password: password,
+      savedTags: acct.savedTags ? acct.savedTags : []
     }
 
     return retUser
@@ -61,8 +62,53 @@ export async function addTagsToInvoice(username: string, password: string, invoi
     }
   )
   const retTags = res.data as string[]
+  console.log(retTags)
   return retTags
 }
+
+export async function setTagListForInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.put('/api/setTagList',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  console.log(retTags)
+  return retTags
+}
+
+export async function setUserSavedTags(username: string, password: string, newSavedTags: string[]) {
+  const res = await axios.put('/api/setUserSavedtags',
+    {
+      newSavedTags: newSavedTags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+
+  const acc = res.data
+  const retUser: UserProfile = {
+    id: acc._id,
+    username: acc.username,
+    email: acc.email,
+    password: password,
+    savedTags: acc.savedTags ? acc.savedTags : []
+  }
+
+  return retUser;
+}
+
 
 export async function deleteTagsFromInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
   const res = await axios.post('/api/deleteTagsFromInvoice',
@@ -201,7 +247,8 @@ export async function registerUser(username: string, email: string, password: st
       id: acct._id,
       username: acct.username,
       password: password,
-      email: acct.email
+      email: acct.email,
+      savedTags: acct.savedTags ? acct.savedTags : []
     }
     return retUser
   } catch (err) {
@@ -289,7 +336,8 @@ export async function changeEmail(username: string, password: string, newEmail: 
       id: acc._id,
       username: acc.username,
       email: acc.email,
-      password: password
+      password: password,
+      savedTags: acc.savedTags ? acc.savedTags : []
     }
 
     return retUser;
@@ -313,7 +361,8 @@ export async function changePassword(username: string, password: string, newPass
       id: acc._id,
       username: acc.username,
       email: acc.email,
-      password: password
+      password: password,
+      savedTags: acc.savedTags ? acc.savedTags : []
     }
     return retUser;
   } catch (err) {

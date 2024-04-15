@@ -411,6 +411,27 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
   res.json(invoices)
 })
 
+// sets the list of saved tags of a certain user to the new list
+// headers:
+//   username
+//   password
+// body:
+//   newSavedTags
+app.put('/api/setUserSavedtags', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const newSavedTags = req.body.newSavedTags
+  account.savedTags = newSavedTags
+  await account.save()
+  res.json(account)
+})
+
 // add a list of tags to an invoice in one request
 // headers:
 //   username
@@ -440,17 +461,18 @@ app.post('/api/addTagsToInvoice', async(req, res) => {
 
   for (const tag of tagsToAdd) {
     if (!newTags.includes(tag)) {
-      newTags.append(tag)
+      newTags.push(tag)
     }
   }
 
   invoice.tags = newTags;
 
-  const invRet = invoice.save()
-  res.json(invRet)
+  const invRet = await invoice.save()
+  console.log(invRet)
+  res.json(invRet.tags)
 })
 
-// add a list of tags from an invoice in one request
+// delete a list of tags from an invoice in one request
 // headers:
 //   username
 //   password
@@ -476,8 +498,40 @@ app.post('/api/deleteTagsFromInvoice', async(req, res) => {
   
   const invoice = invoices[0]
   invoice.tags = invoice.tags.filter(tag => tags.includes(tag))
-  const invRet = invoice.save()
-  res.json(invRet)
+  const invRet = await invoice.save()
+  console.log(invRet)
+  res.json(invRet.tags)
+})
+
+// set the list of tags to the one given
+// headers:
+//   username
+//   password
+// body:
+//   invoiceName: string[]
+//   tags: string[]
+app.put('/api/setTagList', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const invoiceName = req.body.invoiceName
+  const tags = req.body.tags
+
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: invoiceName
+  })
+  
+  const invoice = invoices[0]
+  invoice.tags = tags
+  const invRet = await invoice.save()
+  console.log(invRet)
+  res.json(invRet.tags)
 })
 
 // get data of certain invoice
