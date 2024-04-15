@@ -46,9 +46,10 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
             <Button 
               variant="contained"
               sx={{
-                backgroundColor: "#7B54E8",
+                backgroundColor: "#060C2A",
+                borderRadius: "100px",
                 '&:hover': {
-                  backgroundColor: "#6a47cd",
+                  backgroundColor: "#7B54E8",
                 }
               }}
               onClick={() => navigate("/user/create/form")}>
@@ -76,9 +77,10 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
             <Button 
               variant="contained" 
               sx={{
-                backgroundColor: "#7B54E8",
+                backgroundColor: "#060C2A",
+                borderRadius: "100px",
                 '&:hover': {
-                  backgroundColor: "#6a47cd",
+                  backgroundColor: "#7B54E8",
                 }
               }}
               disabled
@@ -105,9 +107,10 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
             <Button 
               variant="contained" 
               sx={{
-                backgroundColor: "#7B54E8",
+                backgroundColor: "#060C2A",
+                borderRadius: "100px",
                 '&:hover': {
-                  backgroundColor: "#6a47cd",
+                  backgroundColor: "#7B54E8",
                 }
               }}
               onClick={() => navigate("/user/upload")}>
