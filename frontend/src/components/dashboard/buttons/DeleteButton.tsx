@@ -37,39 +37,45 @@ function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceIt
       <Dialog onClose={closePopup} open>
         <Grid 
           container
-          justifyContent={"center"}
-          alignContent={"center"}
+          direction={"column"}
+          alignItems={"center"}
           padding={3}
           gap={2}
         >
-          <Typography variant="h4">Delete eInvoice</Typography>
+          <Typography variant="h5" fontWeight={"bold"}>Delete eInvoice</Typography>
           <Typography variant="subtitle1">
-            Are you sure you want to delete? Invoices will be permanently removed
+            Are you sure? Invoice(s) will be permanently deleted.
           </Typography>
-          <Button 
-            variant="contained"
-            sx={{
-              backgroundColor: "#F22556",
-              '&:hover': {
-                backgroundColor: "#d71e4a",
-              }
-            }}
-            onClick={deleteInvoice}
+          <Grid 
+            container 
+            justifyContent={"center"}
+            gap={"8px"}
           >
-            Delete
-          </Button>
-          <Button 
-            variant="contained"
-            sx={{
-              backgroundColor: "#7B54E8",
-              '&:hover': {
-                backgroundColor: "#6a47cd",
-              }
-            }}
-            onClick={closePopup}
-          >
-            Cancel
-          </Button>
+            <Button 
+              variant="contained"
+              sx={{
+                backgroundColor: "#F22556",
+                '&:hover': {
+                  backgroundColor: "#d71e4a",
+                }
+              }}
+              onClick={deleteInvoice}
+            >
+              Delete
+            </Button>
+            <Button 
+              variant="contained"
+              sx={{
+                backgroundColor: "#060C2A",
+                '&:hover': {
+                  backgroundColor: "#7B54E8",
+                }
+              }}
+              onClick={closePopup}
+            >
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
       </Dialog>
     </>
