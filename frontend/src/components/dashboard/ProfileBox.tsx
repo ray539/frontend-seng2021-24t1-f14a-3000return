@@ -11,7 +11,7 @@ export default function ProfileBox() {
   return (
     <>
       <Grid item xs={3}>
-        <Typography variant="h3">Welcome, {authContext.currentUser?.accountType}!</Typography>
+        <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
         {/* NO USER MANAGEMENT PAGE */}
         <br />
         <Link href="/user/profile" variant="body2">
