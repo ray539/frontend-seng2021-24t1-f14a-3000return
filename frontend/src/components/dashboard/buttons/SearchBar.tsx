@@ -1,20 +1,21 @@
 import { Box, Link, TextField, Typography } from "@mui/material";
+import { EInvoiceItem } from "../../../data";
+import { useEffect } from "react";
 // import { useEffect, useState } from "react";
 // import { useEffect } from "react";
 // import { getInvoicesBelongingTo } from "../../../service/service";
 // import { AuthContext } from "../../../context/AuthContextProvider";
 
-export default function SearchBar() {
-	// const [search, setSearch] = useState('')
-
-	// const handleInputChange = (input:any) => {
-	// 	setSearch(input.target.value);
-
-	// }
-
-	// useEffect(() => {
-
-	// });
+export default function SearchBar({invoiceSearchTxt, setInvoiceSearchTxt, tagSelectionTxt, setTagSelectionText}: {
+	invoiceSearchTxt: string,
+	setInvoiceSearchTxt: Function,
+	tagSelectionTxt: string,
+	setTagSelectionText: Function
+}) {
+	
+	useEffect(() => {
+		console.log('mounted')
+	}, [])
 
 	return (
 		<>
@@ -26,8 +27,17 @@ export default function SearchBar() {
 					size="small"
 					fullWidth
 					sx={{marginRight: '1em'}}
+					value={invoiceSearchTxt}
+					onChange={(e) => setInvoiceSearchTxt(e.target.value)}
 				/>
-				<TextField fullWidth sx={{marginRight: '1em'}} label="tag selection string" size='small'></TextField>
+				<TextField 
+					fullWidth 
+					sx={{marginRight: '1em'}} 
+					label="tag selection string" 
+					size='small'
+					value={tagSelectionTxt}
+					onChange={(e) => setTagSelectionText(e.target.value)}
+				/>
 			</Box>
 
 			<Box sx={{display: 'flex', justifyContent: 'right'}}>
