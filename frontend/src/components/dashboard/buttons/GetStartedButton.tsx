@@ -25,45 +25,92 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
       >
         <Grid
           container
-          padding={"20px"}
-          gap={"8px"}
+          padding={"10px"}
           wrap='nowrap'
         >
           <Grid
-            item
+            container
+            direction={"column"}
             xs
             justifyContent={"space-between"}
+            alignItems={"center"}
+            padding={"20px"}
+            gap={"10px"}
           >
-            <Typography variant='h5'>
+            <Typography variant='h5' fontWeight={"bold"}>
               Starting a new eInvoice?
             </Typography>
-            <Button variant="contained" onClick={() => navigate("/user/create/form")}>
+            <Typography variant='subtitle1'>
+              Fill out a form to create a new eInvoice.
+            </Typography>
+            <Button 
+              variant="contained"
+              sx={{
+                backgroundColor: "#7B54E8",
+                '&:hover': {
+                  backgroundColor: "#6a47cd",
+                }
+              }}
+              onClick={() => navigate("/user/create/form")}>
               Create
-            </Button>
+            </Button>  
           </Grid>
 
           <Grid
-            item
+            container
+            direction={"column"}
             xs
             justifyContent={"space-between"}
+            alignItems={"center"}
+            borderLeft={"2px solid #7B54E8"}
+            borderRight={"2px solid #7B54E8"}
+            padding={"20px"}
+            gap={"10px"}
           >
-            <Typography variant='h5'>
-              Have a document to convert to an eInvoice?
+            <Typography variant='h5' fontWeight={"bold"}>
+              Have a file to convert to an eInvoice?
             </Typography>
-            <Button variant="contained">
+            <Typography variant='subtitle1'>
+              Coming soon!
+            </Typography>
+            <Button 
+              variant="contained" 
+              sx={{
+                backgroundColor: "#7B54E8",
+                '&:hover': {
+                  backgroundColor: "#6a47cd",
+                }
+              }}
+              disabled
+            >
               Convert
             </Button>
           </Grid>
           
           <Grid
-            item
+            container
+            direction={"column"}
             xs
             justifyContent={"space-between"}
+            alignItems={"center"}
+            padding={"20px"}
+            gap={"10px"}
           >
-            <Typography variant='h5'>
-              Already prepared an eInvoice?
+            <Typography variant='h5' fontWeight={"bold"}>
+              Already have an eInvoice prepared?
             </Typography>
-            <Button variant="contained" onClick={() => navigate("/user/upload")}>
+            <Typography variant='subtitle1'>
+              Validate your eInvoice to submit it.
+            </Typography>
+            <Button 
+              variant="contained" 
+              sx={{
+                backgroundColor: "#7B54E8",
+                '&:hover': {
+                  backgroundColor: "#6a47cd",
+                }
+              }}
+              onClick={() => navigate("/user/upload")}>
               Validate
             </Button>  
           </Grid>
