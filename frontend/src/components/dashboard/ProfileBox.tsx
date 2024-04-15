@@ -14,7 +14,7 @@ export default function ProfileBox() {
 				<Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
 				{/* NO USER MANAGEMENT PAGE */}
 				<br />
-				<Link href="/user-profile" variant="body2">
+				<Link href="/user/profile" variant="body2">
 					Manage account
 				</Link>➡️
 			</Grid>

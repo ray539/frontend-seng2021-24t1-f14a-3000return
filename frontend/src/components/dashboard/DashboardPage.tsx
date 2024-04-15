@@ -13,6 +13,7 @@ import {
   Button, Typography, Grid, Link,
   Paper
 } from '@mui/material';
+import ProfileManagementPage from './ProfileManagementPage'
 // import { Container } from "react-bootstrap";
 
 function Dashboard() {
@@ -24,9 +25,7 @@ function Dashboard() {
       <Grid 
         item
         height={"100vh"}
-        sx={{
-          backgroundColor: "#7B54E8"
-        }}
+        bgcolor={"#7B54E8"}
       >
         <Grid
           container
@@ -158,6 +157,7 @@ export default function DashboardPage() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="/upload" element={<ValidatePage />} />
           <Route path="/create/*" element={<CreationPage />} />
+          <Route path="/profile" element={<ProfileManagementPage />} />
           <Route
             path="/view-invoice/:invoiceName"
             element={<InvoiceView />}

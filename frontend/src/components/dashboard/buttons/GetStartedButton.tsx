@@ -39,24 +39,26 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
             </Typography>
             <Button variant="contained" onClick={() => navigate("/user/create/form")}>
               Create
-            </Button>  
+            </Button>
           </Grid>
 
           <Grid
             item
             xs
+            justifyContent={"space-between"}
           >
             <Typography variant='h5'>
               Have a document to convert to an eInvoice?
             </Typography>
             <Button variant="contained">
               Convert
-            </Button>  
+            </Button>
           </Grid>
           
           <Grid
             item
             xs
+            justifyContent={"space-between"}
           >
             <Typography variant='h5'>
               Already prepared an eInvoice?

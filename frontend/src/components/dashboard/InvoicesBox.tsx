@@ -27,13 +27,13 @@ export default function InvoicesBox() {
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
 	const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    console.log(user?.username, user?.password);
-    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+	useEffect(() => {
+		console.log(user?.username, user?.password);
+		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
 			setInvoices(invoices)
-    );
-  }, []);
-
+		);
+	}, []);
+	
 	// function changePdfButtonMsg(
   //   msg:
 	// 		| "generate pdf"
@@ -52,8 +52,8 @@ export default function InvoicesBox() {
 	function Header() {
 		return (
 			<>
-				<Grid 
-					container 
+				<Grid
+					container
 					justifyContent={"space-between"}
 					alignItems={"center"}
 				>
@@ -71,17 +71,17 @@ export default function InvoicesBox() {
 	function Buttons() {
 		return (
 			<>
-				<Grid 
-					container 
+				<Grid
+					container
 					justifyContent={"space-between"}
 					alignItems={"center"}
 					margin={"8px"}
 					marginLeft={0}
 					marginRight={0}
 				>
-					<Grid 
-						item 
-						xs 
+					<Grid
+						item
+						xs
 						paddingRight={"8px"}
 					>
 						<TextField 
@@ -101,10 +101,10 @@ export default function InvoicesBox() {
 						gap={"8px"}
 					>
 						<Grid item xs>
-							<DownloadButton invoices={invoices}/>
+							<DownloadButton invoices={invoices} />
 						</Grid>
 						<Grid item xs>
-							<SendButton invoices={invoices}/>
+							<SendButton invoices={invoices} />
 						</Grid>
 						<Grid item xs>
 							<DeleteButton invoices={invoices} setInvoices={setInvoices}/>
@@ -190,10 +190,10 @@ export default function InvoicesBox() {
 	function Invoices() {
 		return (
 			<>
-				<Box 
+				<Box
 					padding={"10px"}
-					sx={{ 
-						bgcolor: "#F1E8FF", 
+					sx={{
+						bgcolor: "#F1E8FF",
 					}}
 				>
 					{
