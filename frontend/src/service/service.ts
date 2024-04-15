@@ -47,6 +47,40 @@ export async function getInvoicesBelongingTo(username: string, password: string)
   return einvoices
 }
 
+export async function addTagsToInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.post('/api/addTagsToInvoice',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  return retTags
+}
+
+export async function deleteTagsFromInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.post('/api/deleteTagsFromInvoice',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  return retTags
+}
+
 export async function validateFile(username: string, password: string, xmlFile: File) {
   return new Promise((resolve) => {
     const reader = new FileReader()

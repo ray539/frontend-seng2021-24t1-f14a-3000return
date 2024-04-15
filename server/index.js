@@ -406,6 +406,7 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
     belongsTo: username
   }).select('name tags')
 
+  console.log(invoices)
 
   res.json(invoices)
 })
@@ -415,9 +416,38 @@ app.get('/api/getInvoiceNamesBelongingTo', async (req, res) => {
 //   username
 //   password
 // body:
+//   invoiceName: string
 //   tags: string[]
 app.post('/api/addTagsToInvoice', async(req, res) => {
-  
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const invoiceName = req.body.invoiceName
+  const tagsToAdd = req.body.tags
+
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: invoiceName
+  })
+
+  const invoice = invoices[0]
+  const newTags = [...invoice.tags]
+
+  for (const tag of tagsToAdd) {
+    if (!newTags.includes(tag)) {
+      newTags.append(tag)
+    }
+  }
+
+  invoice.tags = newTags;
+
+  const invRet = invoice.save()
+  res.json(invRet)
 })
 
 // add a list of tags from an invoice in one request
@@ -425,9 +455,29 @@ app.post('/api/addTagsToInvoice', async(req, res) => {
 //   username
 //   password
 // body:
+//   invoiceName: string[]
 //   tags: string[]
-app.delete('/api/deleteTagsFromInvoice', async(req, res) => {
+app.post('/api/deleteTagsFromInvoice', async(req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password)
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const invoiceName = req.body.invoiceName
+  const tags = req.body.tags
+
+  const invoices = await EInvoice.find({
+    belongsTo: username,
+    name: invoiceName
+  })
   
+  const invoice = invoices[0]
+  invoice.tags = invoice.tags.filter(tag => tags.includes(tag))
+  const invRet = invoice.save()
+  res.json(invRet)
 })
 
 // get data of certain invoice

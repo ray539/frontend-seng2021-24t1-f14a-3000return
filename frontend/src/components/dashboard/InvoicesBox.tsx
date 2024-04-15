@@ -170,17 +170,15 @@ export default function InvoicesBox() {
 									/>
 								</Box>
 								<Box sx={{display:'flex', alignItems: 'center'}}>
-									<ManageTagButton invoices={invoices} index={i}/>
+									<ManageTagButton invoices={invoices} setInvoices={setInvoices} index={i}/>
 
 									<Box sx={{
 										marginLeft: '0.5em',
 										marginRight: '0.5em', 
-										border: '1px solid grey', 
-										maxWidth:"85px", 
+										width: '200px',
 										display: 'flex', 
 										padding: '0.25em', 
 										borderRadius: '5px',
-										backgroundColor: '#efefef',
 										
 									}}>
 										<Box sx={{overflow: 'hidden', display: 'flex'}}>
