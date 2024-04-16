@@ -1,25 +1,18 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContextProvider";
-import { EInvoice, EInvoiceItem, arraysEqual } from "../../../data";
+import { EInvoiceItem, arraysEqual } from "../../../data";
 import {
-  addInvoiceToUser,
-  addTagsToInvoice,
-  deleteTagsFromInvoice,
-  sendInvoicesByNames,
   setUserSavedTags,
 } from "../../../service/service";
-import ErrorPopup from "./ErrorPopup";
 import {
   Box,
-  Button, Checkbox, Container, Dialog, DialogTitle, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField,
+  Button, Dialog, DialogTitle, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField,
   Typography
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { TextSnippet } from "@mui/icons-material";
 import {setTagListForInvoice} from '../../../service/service'
 
 function TagWithX({text, rmvFunction}: {text: string, rmvFunction: Function}) {
