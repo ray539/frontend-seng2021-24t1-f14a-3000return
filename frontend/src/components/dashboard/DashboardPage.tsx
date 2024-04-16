@@ -85,6 +85,7 @@ function Dashboard() {
             square
             sx={{ 
               padding: "20px",
+              width: "20%"
             }}
           >
             <ProfileBox />
@@ -93,7 +94,7 @@ function Dashboard() {
             elevation={10} 
             square
             sx={{ 
-              width: "100%", 
+              width: "80%", 
               padding: "20px"
             }}
           >

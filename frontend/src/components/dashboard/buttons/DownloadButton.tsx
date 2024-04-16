@@ -81,7 +81,6 @@ export default function DownloadButton({ invoices }: { invoices: EInvoiceItem[] 
         >
           <DownloadIcon /> Download <Box></Box> 
         </Grid>
-        
       </Button>
 
       {Popup && <DownloadPopup Popup={Popup} setPopup={setPopup} invoices={invoices} />}

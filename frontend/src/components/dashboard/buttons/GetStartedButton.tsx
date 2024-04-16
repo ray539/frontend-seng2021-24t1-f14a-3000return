@@ -29,6 +29,8 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
         <Grid
           container
           padding={"10px"}
+          paddingTop={"20px"}
+          paddingBottom={"20px"}
           wrap='nowrap'
         >
           <Grid

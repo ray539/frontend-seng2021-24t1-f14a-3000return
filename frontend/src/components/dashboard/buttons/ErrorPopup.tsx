@@ -1,6 +1,9 @@
 import {
-  Dialog, DialogTitle
+  Dialog,
+  Grid,
+  Typography
 } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/Error';
 
 export default function ErrorPopup({ setPopup } : { Popup: boolean, setPopup: Function }) {
   const closeError = () => {
@@ -10,7 +13,16 @@ export default function ErrorPopup({ setPopup } : { Popup: boolean, setPopup: Fu
   return (
     <>
       <Dialog onClose={closeError} open>
-        <DialogTitle>Please select a file</DialogTitle>
+        <Grid 
+          container
+          direction={"column"}
+          alignItems={"center"}
+          padding={2}
+          gap={1}
+        >
+          <ErrorIcon color='error' />
+          <Typography variant='subtitle1'>Please select a file</Typography>
+        </Grid>
       </Dialog>
     </>
   )
