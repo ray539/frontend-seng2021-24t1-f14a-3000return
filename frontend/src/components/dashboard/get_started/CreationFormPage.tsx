@@ -4,12 +4,18 @@ import { AuthContext } from "../../../context/AuthContextProvider";
 import { CreationFormData, InvoiceItem, sampleData } from "./formTypes";
 import {
   Button,
-  Container,
+  Grid,
   MenuItem,
+  Paper,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
+import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { createInvoice } from "../../../service/service";
+import logo from '../../../assets/blacklogo.png'
 
 const newItem = {
   ID: "",
@@ -79,11 +85,6 @@ function StringField({
     </>
   );
 }
-
-import { DateField, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import { createInvoice } from "../../../service/service";
 
 function MyDateField({
   label,
@@ -468,73 +469,118 @@ export default function CreationFormPage() {
 
   return (
     <>
-    <button onClick={() => {setFormData(sampleData); setNumItems(2)}}>(debug) fill in with sample data</button>
-      <Container maxWidth="lg" sx={{ mt: 3, border: "3px solid #eeeeee", borderRadius: '1em', backgroundColor: '#fefefe' }}>
-        <Typography variant="h3" component="h3" align="center" gutterBottom marginTop={2}>
-          Invoice creation form
-        </Typography>
-        <Typography variant="body1" component="p" align="left" gutterBottom>
-          Please fill out these details and download the xml generated
-        </Typography>
-        <GeneralDetails formData={formData} setFormData={setFormData} />
-        <PartyDetails
-          formData={formData}
-          setFormData={setFormData}
-          seller={true}
-        />
-        <PartyDetails
-          formData={formData}
-          setFormData={setFormData}
-          seller={false}
-        />
-        <Typography variant="h4" component="h4" align="left" gutterBottom color='white' mx={sectionHeaderStyle}>
-          Invoiced items
-        </Typography>
-        <NumberField
-          label={"Number of items"}
-          textLabel={"0"}
-          value={numItems.toString()}
-          setterFn={(v) => {
-            let newNumItems = Number(v)
-            setNumItems(newNumItems)
-            let newLines: InvoiceItem[] = [];
-            for (let i = 0; i < newNumItems; i++) {
-              if (i >= formData.InvoiceLines.length) {
-                newLines.push({...newItem})
-              } else {
-                newLines.push({...formData.InvoiceLines[i]})
-              }
-            }
-            setFormData({...formData, InvoiceLines: newLines})
-          }}
-        ></NumberField>
-        {itemInputs}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          onClick={async() => {
-            if (!validateFormData(formData)) return;
-            const xmlData = await createInvoice(user?.username!, user?.password!, formData);
-            console.log(xmlData)
-            const blob = new Blob([xmlData], {type: 'application/xml'});
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a')
-            link.href = url;
-            link.download = formData.InvoiceID!;
-            document.body.appendChild(link)
-            link.click();
-            document.body.removeChild(link)
-            URL.revokeObjectURL(url)
-            navigate('/user/upload')
+      <Grid
+        container
+        bgcolor={"#7B54E8"}
+        minHeight={"100vh"}
+        height={"fit-content"}
+        justifyContent={"center"}
+        padding={"20px"}
+        paddingTop={"0px"}
+      >
+        <Grid
+          container
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          height={"8%"}
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Creation
+            </Typography>
+            <button onClick={() => {setFormData(sampleData); setNumItems(2)}}>Sample data</button>
+          </Grid>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              navigate("/user");
+            }}
+          >
+            Dashboard
+          </Button>
+        </Grid>
+        
+        <Paper 
+          elevation={10} 
+          square
+          sx={{ 
+            width: "100%",
           }}
         >
-          Submit Form
-        </Button>
-
-
-      </Container>
+          <Grid
+            container
+            direction={"column"}
+            width={"100%"}
+            padding={2}
+          >
+            <GeneralDetails formData={formData} setFormData={setFormData} />
+            <PartyDetails
+              formData={formData}
+              setFormData={setFormData}
+              seller={true}
+            />
+            <PartyDetails
+              formData={formData}
+              setFormData={setFormData}
+              seller={false}
+            />
+            <Typography variant="h4" component="h4" align="left" gutterBottom color='white' mx={sectionHeaderStyle}>
+              Invoiced items
+            </Typography>
+            <NumberField
+              label={"Number of items"}
+              textLabel={"0"}
+              value={numItems.toString()}
+              setterFn={(v) => {
+                let newNumItems = Number(v)
+                setNumItems(newNumItems)
+                let newLines: InvoiceItem[] = [];
+                for (let i = 0; i < newNumItems; i++) {
+                  if (i >= formData.InvoiceLines.length) {
+                    newLines.push({...newItem})
+                  } else {
+                    newLines.push({...formData.InvoiceLines[i]})
+                  }
+                }
+                setFormData({...formData, InvoiceLines: newLines})
+              }}
+            ></NumberField>
+            {itemInputs}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              onClick={async() => {
+                if (!validateFormData(formData)) return;
+                const xmlData = await createInvoice(user?.username!, user?.password!, formData);
+                console.log(xmlData)
+                const blob = new Blob([xmlData], {type: 'application/xml'});
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a')
+                link.href = url;
+                link.download = formData.InvoiceID!;
+                document.body.appendChild(link)
+                link.click();
+                document.body.removeChild(link)
+                URL.revokeObjectURL(url)
+                navigate('/user/upload')
+              }}
+            >
+              Submit Form
+            </Button>
+          </Grid>
+        </Paper>
+      </Grid>
     </>
   );
 }
