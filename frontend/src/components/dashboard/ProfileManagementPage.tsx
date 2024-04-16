@@ -2,32 +2,12 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser, updateAccountType } from "../../service/service";
+import logo from '../../assets/blacklogo.png'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-
-function BackButton() {
-  const navigate = useNavigate();
-  return (
-    <Box sx={{
-      background: 'black',
-      color: 'white',
-      padding: '0.5em',
-      borderRadius: '1em',
-      display: 'flex',
-      userSelect: 'none',
-      '&:hover': {
-        cursor: 'pointer'
-      }
-    }}
-      onClick={() => navigate('/user')}
-    >
-      <img src="/images/back-arrow.png" style={{ width: '30px', marginRight: '0.5em' }}></img>
-      <Typography sx={{ display: 'inline' }}>Back</Typography>
-    </Box>
-  )
-}
 
 function DropDown({ text, tc, bgc, element, showElement, setShowElement }: { text: string, tc: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
   // const [showElement, setShowElement] = useState(false)
@@ -488,7 +468,7 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
 export default function ProfileManagementPage() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
-  const user = authContext.currentUser
+  // const user = authContext.currentUser
 
   const [showChangeEmail, setShowChangeEmail] = useState(false)
   const [showChangePass, setShowChangePass] = useState(false)
@@ -499,84 +479,90 @@ export default function ProfileManagementPage() {
     <>
       <Box
         bgcolor={"#7B54E8"}
-        height={"100vh"}
+        minHeight={"100vh"}
+        height={"fit-content"}
       >
         <Grid
           container
-          justifyContent={"space-between"}
-          height={"5%"}
-          padding={1}
-          paddingLeft={4}
-          paddingRight={4}
-        >
-          <Typography
-            variant="h5"
-            alignContent={"center"}
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          height={"8%"}
+          paddingLeft={"20px"}
+          paddingRight={"20px"}
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Dashboard
+            </Typography>
+          </Grid>
+
+          <Button
+            variant="contained"
             sx={{
-              flexGrow: 1
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              navigate("/user");
             }}
           >
             Dashboard
-          </Typography>
+          </Button>
 
-          {authContext.currentUser == null ? (
-            <>
-              <Button variant="contained" color="primary" href="/login" role="button">
-                Sign In
-              </Button>
-              <Button variant="contained" color="primary" href="/register" role="button">
-                Sign Up
-              </Button>
-            </>
-          ) : (
-            // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button
-              variant="contained"
-              href="/"
-              role="button"
-              sx={{
-                backgroundColor: "#060C2A",
-                borderRadius: "100px"
-              }}
-              onClick={() => {
-                authContext.setCurrentUser(null);
-                navigate("/");
-              }}
-            >
-              Sign Out
-            </Button>
-          )}
         </Grid>
-        <Box sx={{
-          display: 'flex',
-          margin: '1em',
-          justifyContent: 'space-between'
-        }}>
-          <BackButton></BackButton>
-        </Box>
 
-        <Container sx={{ border: '1px solid #dddddd', backgroundColor: '#fcfcfc', marginTop: '1em', paddingTop: '1em' }} maxWidth='sm'>
-          <Box sx={{ width: 'fit-content', margin: 'auto', display: 'flex', alignItems: 'center' }}>
-            <img src="/images/empty-profile.png" style={{ width: '50px', marginRight: '0.5em' }}></img>
-            <Typography fontSize={20}>username: {user?.username}</Typography>
-          </Box>
+        <Grid
+          container
+          justifyContent={"space-between"}
+          wrap="nowrap"
+          height={"92%"}
+          padding={"20px"}
+          paddingTop={"0"}
+          gap={"20px"}
+        >
+          <Paper 
+            elevation={10} 
+            square
+            sx={{ 
+              padding: "20px",
+              width: "100%",
+              height: "fit-content"
+            }}
+          >
+            
+            <Grid 
+              container
+              alignItems={"center"}
+              gap={1}
+            >
+              <AccountCircleIcon fontSize="large"/> 
+              <Typography variant="h5">
+                {authContext.currentUser?.username}
+              </Typography>
+            </Grid>
 
-          <DropDown
-            setShowElement={setShowChangeAccountType}
-            showElement={showChangeAccountType}
-            text={"Change Account Type"}
-            tc={"white"}
-            bgc={"black"}
-            element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
-          ></DropDown>
+            <DropDown
+              setShowElement={setShowChangeAccountType}
+              showElement={showChangeAccountType}
+              text={"Change Account Type"}
+              tc={"white"}
+              bgc={"black"}
+              element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
+            ></DropDown>
 
-          <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} ></DropDown>
+            <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} ></DropDown>
 
-          <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass} />} ></DropDown>
+            <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass} />} ></DropDown>
 
-          <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} />
-
-        </Container>
+            <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} />
+            
+          </Paper>
+        </Grid>
       </Box>
     </>
   )

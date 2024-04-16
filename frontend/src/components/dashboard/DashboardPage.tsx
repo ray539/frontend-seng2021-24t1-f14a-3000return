@@ -46,35 +46,21 @@ function Dashboard() {
             </Typography>
           </Grid>
 
-          
-
-          {authContext.currentUser == null ? (
-            <>
-              <Button variant="contained" color="primary" href="/login" role="button">
-                Sign In
-              </Button>
-              <Button variant="contained" color="primary" href="/register" role="button">
-                Sign Up
-              </Button>
-            </>
-          ) : (
-            // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button
-              variant="contained"
-              href="/"
-              role="button"
-              sx={{
-                backgroundColor: "#060C2A",
-                borderRadius: "100px"
-              }}
-              onClick={() => {
-                authContext.setCurrentUser(null);
-                navigate("/");
-              }}
-            >
-              Sign Out
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            href="/"
+            role="button"
+            sx={{
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              authContext.setCurrentUser(null);
+              navigate("/");
+            }}
+          >
+            Sign Out
+          </Button>
         </Grid>
 
         <Grid
