@@ -4,10 +4,11 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { EInvoiceItem } from '../../../data';
 import LockIcon from '@mui/icons-material/Lock';
+import { AuthContext } from '../../../context/AuthContextProvider';
 
 
 function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
@@ -76,6 +77,8 @@ function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
 
 export default function GetStartedButton({ invoices }: { invoices: EInvoiceItem[] }) {
   const [Popup, setPopup] = useState(false);
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
   const openPopup = () => {
     setPopup(true);
@@ -85,7 +88,21 @@ export default function GetStartedButton({ invoices }: { invoices: EInvoiceItem[
 
   return (
     <>
-      {numItems < 5 ? (
+      {user?.accountType === "Free" && numItems >= 5 ? (
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          endIcon={<LockIcon />}
+          sx={{
+            fontWeight: "bold",
+            backgroundColor: "#cccccc",
+            pointerEvents: "none",
+          }}
+        >
+          Upgrade to Premium for more invoices
+        </Button>
+      ) : (
         <Button
           type="submit"
           fullWidth
@@ -100,20 +117,6 @@ export default function GetStartedButton({ invoices }: { invoices: EInvoiceItem[
           onClick={openPopup}
         >
           Get Started
-        </Button>
-      ) : (
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          endIcon={<LockIcon />}
-          sx={{
-            fontWeight: "bold",
-            backgroundColor: "#cccccc",
-            pointerEvents: "none", // Disable pointer events
-          }}
-        >
-          Upgrade to Premium for more invoices
         </Button>
       )}
 

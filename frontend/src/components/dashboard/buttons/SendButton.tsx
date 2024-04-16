@@ -89,7 +89,7 @@ export default function SendButton({ invoices }: { invoices: EInvoiceItem[] }) {
 
   return (
     <>
-      {user && user.accountType === "Premium" ? (
+      {user && user.accountType != "Free" ? (
         <Button
           variant="contained"
           fullWidth
