@@ -6,7 +6,8 @@ import {
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
-  Button, Dialog, DialogTitle, TextField
+  Button, Dialog, Grid, TextField,
+  Typography
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 
@@ -24,50 +25,88 @@ function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: bo
   return (
     <>
       <Dialog onClose={closePopup} open>
-        <DialogTitle>Send eInvoice</DialogTitle>
-        <form onSubmit={(e) => { e.preventDefault() }}>
-          <TextField
-            fullWidth
-            label="Recipient emails (comma separated)"
-            value={emailListStr}
-            onChange={(e) => setEmailListStr(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="From"
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-          />
-          <Button onClick={async () => {
-            const emails = emailListStr.split(',').filter(e => e !== '');
-            if (emails.length == 0) {
-              window.alert('Enter at least one email');
-              return;
-            }
-            const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
-            if (invoiceNames.length == 0) {
-              window.alert('No invoices are selected');
-              return;
-            }
+        <Grid
+          container
+          direction={"column"}
+          alignItems={"center"}
+          padding={3}
+          gap={2}
+        >
+          <Typography variant="h5" fontWeight={"bold"}>Send eInvoice</Typography>
+        
+          <form onSubmit={(e) => { e.preventDefault() }}>
+            <TextField
+              fullWidth
+              label="Recipient emails (comma separated)"
+              value={emailListStr}
+              onChange={(e) => setEmailListStr(e.target.value)}
+            />
+            <TextField
+              fullWidth
+              label="From"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+            <Grid 
+              container
+              justifyContent={"center"}
+              gap={"8px"}
+              paddingTop={"8px"}
+            >
+              <Button 
+                variant="contained"
+                sx={{
+                  backgroundColor: "#060C2A",
+                  '&:hover': {
+                    backgroundColor: "#7B54E8",
+                  }
+                }}
+                onClick={async () => {
+                  const emails = emailListStr.split(',').filter(e => e !== '');
+                  if (emails.length == 0) {
+                    window.alert('Enter at least one email');
+                    return;
+                  }
+                  const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
+                  if (invoiceNames.length == 0) {
+                    window.alert('No invoices are selected');
+                    return;
+                  }
 
-            if (!from) {
-              window.alert('Please fill out the "From" field');
-              return;
-            }
+                  if (!from) {
+                    window.alert('Please fill out the "From" field');
+                    return;
+                  }
 
-            setButtonText('SENDING...');
-            const res = await sendInvoicesByNames(user!.username, user!.password, invoiceNames, emails, from);
-            if (!res.success) {
-              window.alert('Send failed');
-              return;
-            }
-            setButtonText('SENT');
-            setTimeout(closePopup, 1000);
-
-          }} disabled={buttonText !== 'SEND'}>{buttonText}</Button>
-          <Button disabled={buttonText !== 'SEND'} onClick={closePopup}>Cancel</Button>
-        </form>
-
+                  setButtonText('SENDING...');
+                  const res = await sendInvoicesByNames(user!.username, user!.password, invoiceNames, emails, from);
+                  if (!res.success) {
+                    window.alert('Send failed');
+                    return;
+                  }
+                  setButtonText('SENT');
+                  setTimeout(closePopup, 1000);
+                }} 
+                disabled={buttonText !== 'SEND'}
+              >
+                {buttonText}
+              </Button>
+              <Button 
+                variant="contained"
+                sx={{
+                  backgroundColor: "#060C2A",
+                  '&:hover': {
+                    backgroundColor: "#F22556",
+                  }
+                }}
+                disabled={buttonText !== 'SEND'} 
+                onClick={closePopup}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </form>
+        </Grid>
       </Dialog>
     </>
   )
