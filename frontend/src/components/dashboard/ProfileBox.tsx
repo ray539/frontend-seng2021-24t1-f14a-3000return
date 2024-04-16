@@ -25,7 +25,7 @@ export default function ProfileBox() {
         >
           <AccountCircleIcon fontSize="large"/> 
         </IconButton>
-        <Typography variant="h5">
+        <Typography variant="h4">
           {authContext.currentUser?.username}
         </Typography>
       </Grid>

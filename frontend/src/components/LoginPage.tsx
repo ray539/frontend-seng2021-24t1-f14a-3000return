@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Container, TextField, Button, Alert, Grid, Link, Typography } from "@mui/material";
+import { TextField, Button, Alert, Grid, Link, Typography } from "@mui/material";
 import { useContext } from "react";
 import { logInAndGetUser } from "../service/service";
+import logo from '../assets/logo.png'
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -25,60 +26,145 @@ export default function LoginPage() {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ mt: 3 }}>
-      <Typography variant="h3" component="h1" align="center" gutterBottom>Sign in</Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="password"
-              label="Password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        {showError && <Alert severity="error">Incorrect username or password!</Alert>}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+    <>
+      <Grid 
+        container
+        height={"100vh"}
+        width={"100vw"}
+      >
+        <Grid 
+          container
+          direction={"column"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          width={"70%"}
+          padding={2}
         >
-          Login
-        </Button>
-        <Grid container justifyContent="space-between" alignItems={"center"}>
-          <Grid item>
-            <Button variant="contained" color="primary" href="/" role="button">
-              Back
+          <Grid
+            container
+            alignItems={"center"}
+            gap={2}
+          >
+            <img src={logo} alt="Logo" width={"80px"}/>
+            <Typography 
+              variant="h4" 
+              fontWeight={"bold"}
+            >
+              3000% Returns
+            </Typography>
+          </Grid>
+
+          <Grid 
+            container
+            direction={"column"}
+            alignItems={"center"}
+            height={"50%"}
+          >
+            <Typography variant="h4" fontWeight={"bold"}>Login</Typography>
+            <Typography variant="subtitle1" color={"#7B54E8"}>Sign in to your account</Typography>
+            <br />
+            <Grid item width={"40%"}>
+              <form 
+                onSubmit={handleSubmit}>
+                <Grid 
+                  container
+                  direction={"column"}
+                  alignItems={"center"}  
+                  width={"100%"}
+                  gap={2}
+                >
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <TextField
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#060C2A",
+                      width: "60%",
+                      borderRadius: "100px",
+                      '&:hover': {
+                        backgroundColor: "#7B54E8",
+                      }
+                    }}
+                  >
+                    Sign in
+                  </Button>
+                  {showError && <Alert severity="error">Incorrect username or password!</Alert>}
+                </Grid>
+              </form>
+            </Grid>
+          </Grid>
+          
+          <Grid
+            container
+            justifyContent={"flex-end"}
+          >
+            <Button variant="text" color="primary" href="/" role="button">
+              Return to homepage →
             </Button>
           </Grid>
-          <Grid item>
-            <Link href="/register" variant="body2">
-              Don't have an account? Sign Up
-            </Link>
-          </Grid>
+          
         </Grid>
-      </form>
-    </Container>
+
+        
+        <Grid 
+          container
+          direction={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          width={"30%"}
+          bgcolor={"#7B54E8"}
+          color={"white"}
+        >
+          <Typography 
+            variant="h4" 
+            fontSize={32} 
+            fontWeight={"bold"}
+          >
+            Don't have an account?
+          </Typography>
+          <Typography variant="subtitle1">Gain access to our eInvoicing services</Typography>
+          <br />
+          <Button 
+            variant="contained" 
+            href="/register" 
+            sx={{
+              width: "40%",
+              height: "45px",
+              color: "#060C2A",
+              backgroundColor: "white",
+              borderRadius: "100px",
+              '&:hover': {
+                color: "white",
+                backgroundColor: "#060C2A",
+              }
+            }}
+          >
+            Sign up
+          </Button>
+        </Grid>
+      </Grid>
+    </>
   );
 }

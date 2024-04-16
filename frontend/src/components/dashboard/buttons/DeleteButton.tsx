@@ -61,7 +61,10 @@ function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceIt
                   backgroundColor: "#d71e4a",
                 }
               }}
-              onClick={deleteInvoice}
+              onClick={() => {
+                deleteInvoice();
+                closePopup();
+              }}
             >
               Delete
             </Button>
