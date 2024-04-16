@@ -2,8 +2,12 @@ import { useContext, useState } from "react";
 import { EInvoiceItem } from "../../../data";
 import ErrorPopup from "./ErrorPopup";
 import {
-  Button, Dialog, DialogTitle
+  Box,
+  Button, Dialog,
+  Grid,
+  Typography
 } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 import {
   downloadInvoices,
 } from "../../../service/service";
@@ -20,26 +24,32 @@ function DownloadPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup
   return (
     <>
       <Dialog onClose={closePopup} open>
-        <DialogTitle>Downloading eInvoice</DialogTitle>
-        <Button
-          variant="contained"
-          onClick={async () => {
-            const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
-            if (invoiceNames.length === 0) {
-              window.alert('No invoices are selected');
-              return;
-            }
-            try {
-              await downloadInvoices(user!.username, user!.password, invoiceNames);
-              setTimeout(closePopup, 1000);
-            } catch (error) {
-              console.error('Download failed:', error);
-              window.alert('Download failed. Please try again later.');
-            }
-          }}
+        <Grid
+          container
+          direction={"column"}
+          alignItems={"center"}
+          padding={3}
+          gap={2}
         >
-          Download file(s)?
-        </Button>
+          <Typography variant="h5" fontWeight={"bold"}>Download eInvoice</Typography>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const invoiceNames = invoices.filter(invoice => invoice.checked).map(invoice => invoice.name);
+              try {
+                await downloadInvoices(user!.username, user!.password, invoiceNames);
+                setTimeout(closePopup, 1000);
+              } catch (error) {
+                console.error('Download failed:', error);
+                window.alert('Download failed. Please try again later.');
+              }
+            }}
+          >
+            Confirm
+          </Button>
+        </Grid>
+
+        
       </Dialog>
     </>
   )
@@ -59,8 +69,25 @@ export default function DownloadButton({ invoices }: { invoices: EInvoiceItem[] 
 
   return (
     <>
-      <Button variant="contained" fullWidth onClick={openPopup}>
-        Download
+      <Button 
+        variant="contained" 
+        fullWidth 
+				sx={{
+					backgroundColor: "#7B54E8",
+					'&:hover': {
+						backgroundColor: "#6a47cd",
+					}
+				}}
+        onClick={openPopup}
+      >
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          wrap="nowrap"
+        >
+          <DownloadIcon /> Download <Box></Box> 
+        </Grid>
       </Button>
 
       {Popup && <DownloadPopup Popup={Popup} setPopup={setPopup} invoices={invoices} />}

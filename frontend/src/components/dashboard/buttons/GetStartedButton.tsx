@@ -1,11 +1,15 @@
 // import { useState } from "react";
 import {
+  Box,
   Button, Dialog,
   Grid,
   Typography,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import CreateIcon from '@mui/icons-material/Create';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { EInvoiceItem } from '../../../data';
 import LockIcon from '@mui/icons-material/Lock';
 import { AuthContext } from '../../../context/AuthContextProvider';
@@ -28,6 +32,8 @@ function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
         <Grid
           container
           padding={"10px"}
+          paddingTop={"20px"}
+          paddingBottom={"20px"}
           wrap='nowrap'
         >
           <Grid
@@ -54,8 +60,17 @@ function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
                   backgroundColor: "#7B54E8",
                 }
               }}
-              onClick={() => navigate("/user/create/form")}>
-              Create
+              onClick={() => navigate("/user/create/form")}
+            >
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <CreateIcon /> Create <Box></Box>
+              </Grid>
             </Button>  
           </Grid>
 
@@ -87,7 +102,15 @@ function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
               }}
               disabled
             >
-              Convert
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <ChangeCircleIcon /> Convert <Box></Box>
+              </Grid>
             </Button>
           </Grid>
 
@@ -115,9 +138,18 @@ function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
                   backgroundColor: "#7B54E8",
                 }
               }}
-              onClick={() => navigate("/user/upload")}>
-              Validate
-            </Button>
+              onClick={() => navigate("/user/upload")}
+            >
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <TaskAltIcon /> Validate <Box></Box>
+              </Grid>
+            </Button>  
           </Grid>
         </Grid>
       </Dialog>

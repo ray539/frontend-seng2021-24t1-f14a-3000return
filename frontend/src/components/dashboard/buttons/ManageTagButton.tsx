@@ -7,12 +7,14 @@ import {
 import {
   Box,
   Button, Dialog, DialogTitle, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField,
+  Tooltip,
   Typography
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import LabelIcon from '@mui/icons-material/Label';
 import {setTagListForInvoice} from '../../../service/service'
 
 function TagWithX({text, rmvFunction}: {text: string, rmvFunction: Function}) {
@@ -247,12 +249,16 @@ export default function ManageTagButton({invoices, setInvoices, index}: {invoice
 
   return ( 
     <>
-      <Button 
-        variant="outlined" 
-        onClick={openPopup}
-      >
-        Manage Tags:
-      </Button>
+      
+      <Tooltip title="Manage tags">
+        <IconButton
+          onClick={openPopup}
+          aria-label="Tags"
+        >
+          <LabelIcon />
+        </IconButton>
+      </Tooltip>
+      
       
       {Popup && <ManageInvoicePopup invoices={invoices} setInvoices={setInvoices} index={index} Popup={Popup} setPopup={setPopup} />}
     </>

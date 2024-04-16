@@ -15,6 +15,7 @@ import {
   IconButton,
   Tooltip,
   TextField,
+  Chip,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
 import DeleteButton from "./buttons/DeleteButton";
@@ -32,6 +33,7 @@ function Header({invoices}: {invoices: EInvoiceItem[]}) {
 				container
 				justifyContent={"space-between"}
 				alignItems={"center"}
+        height={"auto"}
 			>
 				<Grid item xs>
 					<Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
@@ -58,6 +60,7 @@ function Buttons({
 				container
 				justifyContent={"space-between"}
 				alignItems={"center"}
+        height={"auto"}
 			>
 				<Grid
 					item
@@ -66,7 +69,7 @@ function Buttons({
 				>
 					<Box sx={{display:'flex', justifyContent: 'space-between'}}>
 						<TextField 
-							label="search invoices" 
+							label="Search invoices" 
 							type="search"
 							variant="outlined" 
 							size="small"
@@ -78,7 +81,7 @@ function Buttons({
 						<TextField 
 							fullWidth 
 							sx={{marginRight: '1em'}} 
-							label="tag selection string" 
+							label="Search tags" 
 							size='small'
 							value={tagSelectionTxt}
 							onChange={(e) => {
@@ -90,9 +93,6 @@ function Buttons({
 								setTagSelectionTxt(newVal)
 							}}
 						/>
-					</Box>
-					<Box sx={{display: 'flex', justifyContent: 'right'}}>
-						<Typography sx={{marginRight: '1em'}}>what's this?</Typography>
 					</Box>
 				</Grid>
 				<Grid 
@@ -151,10 +151,12 @@ function Invoice({
 			<Grid 
 				container
 				wrap="nowrap"
-				paddingLeft={2}
-				paddingRight={2}
+        width={"100%"}
+        paddingLeft={2}
+        paddingRight={2}
+        borderBottom={"1px solid grey"}
 			>
-				<Box width={"100%"}>
+				<Box width={"50%"} overflow={"hidden"}>
 					<FormControlLabel
 						control={
 							<Checkbox
@@ -175,41 +177,34 @@ function Invoice({
 				<Grid 
 					container
 					justifyContent={"flex-end"}
-					sx={{
-						flexWrap: 'nowrap',
-						alignItems: 'center'
-					}}
+          width={"100%"}
+          alignItems={"center"}
+          wrap="nowrap"
 					gap={1}
 				>
-					<ManageTagButton invoices={invoices} setInvoices={setInvoices} index={i}/>
-					<Box sx={{
-						marginLeft: '0.5em',
-						marginRight: '0.5em', 
-						width: '200px',
-						display: 'flex', 
-						padding: '0.25em', 
-						borderRadius: '5px',
-					}}>
-						<Box sx={{overflow: 'hidden', display: 'flex'}}>
-							{
-								invoice.tags.length == 0 ?
-								<Typography sx={{color: 'grey'}}>no tags</Typography>
-								:
-
-								invoice.tags.map((tag) => 
-									<Typography key={tag} fontSize={15} sx={{
-										marginRight: '0.5em',
-										borderRadius: '5px', 
-										padding: '0.1em', 
-										backgroundColor: 'grey',
-										color: 'white',
-										textWrap: 'nowrap'
-									}}>{tag}</Typography>
-								)
-
-							}
-						</Box>
+					<Box 
+            sx={{
+              width: '100%',
+              display: 'flex', 
+              padding: '0.25em', 
+              borderRadius: '5px',
+              gap: '5px'
+            }}
+          >
+            {
+              invoice.tags.map((tag) => 
+                <Chip 
+                  label={tag}
+                  size="small"
+                  sx={{
+                    backgroundColor: '#7B54E8',
+                    color: "white"
+                  }}
+                />
+              )
+            }
 					</Box>
+          <ManageTagButton invoices={invoices} setInvoices={setInvoices} index={i}/>
 					<Tooltip title="View eInvoice">
 						<IconButton 
 							aria-label="View"
@@ -257,8 +252,11 @@ function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoice
 				item
 				display={"flex"}
 				flexDirection={"column"}
-				padding={"10px"}
+				padding={"20px"}
+        paddingTop={1}
 				width={"100%"}
+        height={"100%"}
+        overflow={"auto"}
 				sx={{
 					bgcolor: "#F1E8FF",
 				}}
@@ -266,11 +264,11 @@ function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoice
 				<Grid 
 					container 
 					wrap="nowrap"
-					paddingLeft={2}
-					paddingRight={2}
 				>
 					<Box 
 						width={"100%"}
+            paddingLeft={2}
+            paddingRight={2}
 						borderBottom={"1px solid black"}
 					>
 						<FormControlLabel
@@ -290,13 +288,9 @@ function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoice
 
 
 				{
-					shownInvoices.length === 0 ? (
-						<Typography>No Invoices!</Typography>
-					) : (
-						shownInvoices.map((invoice) => (
-							<Invoice key={invoice.id} invoice={invoice} i={invoice.index} invoices={invoices} setInvoices={setInvoices}/>
-						))
-					)
+          shownInvoices.map((invoice) => (
+            <Invoice key={invoice.id} invoice={invoice} i={invoice.index} invoices={invoices} setInvoices={setInvoices}/>
+          ))
 				}
 			</Grid>
 		</>
@@ -305,10 +299,9 @@ function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoice
 
 function shouldShowInvoice(invoice: EInvoiceItem, tagSelectionTxt: string, search: string) {
 	const res1 = evaluateString(invoice, tagSelectionTxt) == 'true'
-	const res2 = RegExp(search).test(invoice.name)
+	const res2 = RegExp(new RegExp(search, 'i')).test(invoice.name)
 	return res1 && res2
 }
-
 
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
@@ -339,8 +332,6 @@ export default function InvoicesBox() {
 		setTagSelectionTxt_(value)
 	}
 
-
-
   useEffect(() => {
     console.log(user?.username, user?.password);
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
@@ -355,6 +346,7 @@ export default function InvoicesBox() {
         height={"100%"}
         alignContent={"flex-start"}
         alignItems={"stretch"}
+        overflow={"clip"}
         gap={"8px"}
       >
         <Header invoices={invoices}/>

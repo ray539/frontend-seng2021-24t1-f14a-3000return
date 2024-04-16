@@ -6,10 +6,12 @@ import {
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
+  Box,
   Button, Dialog,
   Grid,
   Typography
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function DeletePopup({ invoices, setPopup, setInvoices }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function, setInvoices: Function }) {
   const authContext = useContext(AuthContext);
@@ -107,7 +109,14 @@ export default function DeleteButton({invoices, setInvoices}: {invoices : EInvoi
         }}
         onClick={openPopup}
       >
-        Delete
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          wrap="nowrap"
+        >
+          <DeleteIcon /> Delete <Box></Box> 
+        </Grid>
       </Button>
       
       {Popup && <DeletePopup invoices={invoices} Popup={Popup} setPopup={setPopup} setInvoices={setInvoices} />}

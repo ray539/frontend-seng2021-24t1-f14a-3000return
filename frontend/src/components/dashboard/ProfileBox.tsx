@@ -1,24 +1,38 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import {
-  Typography, Grid, Link, Box
+  Typography, Grid, Link, Box,
+  IconButton
 } from '@mui/material';
 import { Container } from "react-bootstrap";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileBox() {
   const authContext = useContext(AuthContext);
-  const user = authContext.currentUser
+  const navigate = useNavigate();
+  const user = authContext.currentUser;
 
   return (
     <>
-      <Grid item xs={3}>
-        <Typography variant="h3">Welcome, {user?.username}!</Typography>
-        {/* NO USER MANAGEMENT PAGE */}
-        <br />
-        <Link href="/user/profile" variant="body2">
-          Manage account →
-        </Link>
+      <Grid 
+        container
+        alignItems={"center"}
+        gap={1}
+      >
+        <IconButton
+          onClick={() => navigate("/user/profile")}
+        >
+          <AccountCircleIcon fontSize="large"/> 
+        </IconButton>
+        <Typography variant="h5">
+          {authContext.currentUser?.username}
+        </Typography>
       </Grid>
+      <Link href="/user/profile" variant="body2">
+        Manage account →
+      </Link>
+      <br />
       <br />
       <Container>
         <Typography variant="h6">
