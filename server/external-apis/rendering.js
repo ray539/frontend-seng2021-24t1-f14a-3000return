@@ -3,12 +3,12 @@ import { xmlData } from './common.js';
 
 
 const RENDERING_ACCOUNT = {
-  email: 'raywang2003@gmail.com',
+  email: 'a@gmail.com',
   password: 'Password123'
 }
 
-const MAX_TRIES = 1
-const TOKEN = '71233f64eba0f6995d5898b719ad5e1b2cd1227df9983e50f4e679910f354f29' // DON'T CHANGE THIS!!
+const MAX_TRIES = 3
+let TOKEN = '6978bdddcc3858a6744a092e3739f25a9d2fb7f95e8530d64313f2d2b2f76fe8'
 
 // sample pdf: https://billtime.io/storage/invoice_12345554_en.660356e9567c8.pdf
 
@@ -42,10 +42,14 @@ export async function callRenderingAPIPDF(xmlData) {
       return res.data;
     } catch (err) {
       console.log(err.response.data)
+      console.log('refreshing token')
+      const res = await axios.post('http://rendering.ap-southeast-2.elasticbeanstalk.com/user/login', RENDERING_ACCOUNT)
+      TOKEN = res.data.token;
+      console.log('token:', TOKEN);
     }
     numTries++;
-    return {PDFURL: 'mockUID', UID: 'mockUID'}
   }
+  return {PDFURL: 'mockUID', UID: 'mockUID'}
 }
 
 // let res = callRenderingAPIPDF(xmlData).then(res => {

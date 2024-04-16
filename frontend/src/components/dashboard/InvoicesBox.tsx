@@ -221,7 +221,7 @@ function Invoice({
 						</IconButton>
 					</Tooltip>
 					{user!.accountType !== 'Free' ? (
-              <Tooltip title="Generate PDF">
+              <Tooltip title="Generate PDF (give about 10 seconds)">
                 <IconButton
                   aria-label="PDF"
                   onClick={getPDF}
