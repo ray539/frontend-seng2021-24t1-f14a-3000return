@@ -20,6 +20,7 @@ import GetStartedButton from "./buttons/GetStartedButton";
 import DeleteButton from "./buttons/DeleteButton";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ManageTagButton from "./buttons/ManageTagButton";
 
 const buttonWidth = "65%";
 
@@ -91,7 +92,17 @@ function Buttons({
 	);
 }
 
-function Invoice(invoice: EInvoiceItem, i: number, invoices: EInvoiceItem[], setInvoices: Function) {
+function Invoice({
+		invoice,
+		i,
+		invoices,
+		setInvoices
+	} : {
+		invoice: EInvoiceItem, 
+		i: number, 
+		invoices: EInvoiceItem[], 
+		setInvoices: Function
+	}) {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
 
@@ -115,8 +126,7 @@ function Invoice(invoice: EInvoiceItem, i: number, invoices: EInvoiceItem[], set
 	return (
 		<>
 			<Grid 
-				container 
-				key={invoice.id} 
+				container
 				wrap="nowrap"
 				paddingLeft={2}
 				paddingRight={2}
@@ -136,12 +146,46 @@ function Invoice(invoice: EInvoiceItem, i: number, invoices: EInvoiceItem[], set
 						label={invoice.name} // Set the label of the checkbox to be the name of the invoice
 						labelPlacement="end" // Align the label to the start of the checkbox
 					/>
-				</Box>
+				</Box>				
+
 				<Grid 
 					container
 					justifyContent={"flex-end"}
+					sx={{
+						flexWrap: 'nowrap',
+						alignItems: 'center'
+					}}
 					gap={1}
 				>
+					<ManageTagButton invoices={invoices} setInvoices={setInvoices} index={i}/>
+					<Box sx={{
+						marginLeft: '0.5em',
+						marginRight: '0.5em', 
+						width: '200px',
+						display: 'flex', 
+						padding: '0.25em', 
+						borderRadius: '5px',
+					}}>
+						<Box sx={{overflow: 'hidden', display: 'flex'}}>
+							{
+								invoice.tags.length == 0 ?
+								<Typography sx={{color: 'grey'}}>no tags</Typography>
+								:
+
+								invoice.tags.map((tag) => 
+									<Typography key={tag} fontSize={15} sx={{
+										marginRight: '0.5em',
+										borderRadius: '5px', 
+										padding: '0.1em', 
+										backgroundColor: 'grey',
+										color: 'white',
+										textWrap: 'nowrap'
+									}}>{tag}</Typography>
+								)
+
+							}
+						</Box>
+					</Box>
 					<Tooltip title="View eInvoice">
 						<IconButton 
 							aria-label="View"
@@ -216,7 +260,7 @@ function Invoices({invoices, setInvoices, search}: {invoices: EInvoiceItem[], se
 								return invoice.name.match(new RegExp(search, 'i'))
 							})
 							.map((invoice, i) => (
-								Invoice(invoice, i, invoices, setInvoices)
+								<Invoice key={invoice.id} invoice={invoice} i={i} invoices={invoices} setInvoices={setInvoices}/>
 							)
 						)
 					)
@@ -249,8 +293,17 @@ export default function InvoicesBox() {
         gap={"8px"}
       >
         <Header />
-        <Buttons search={search} setSearch={setSearch} invoices={invoices} setInvoices={setInvoices} />
-        <Invoices invoices={invoices} setInvoices={setInvoices} search={""} />
+        <Buttons 
+					search={search} 
+					setSearch={setSearch} 
+					invoices={invoices} 
+					setInvoices={setInvoices} 
+				/>
+        <Invoices 
+					invoices={invoices} 
+					setInvoices={setInvoices} 
+					search={""} 
+				/>
       </Grid>
     </>
   );
