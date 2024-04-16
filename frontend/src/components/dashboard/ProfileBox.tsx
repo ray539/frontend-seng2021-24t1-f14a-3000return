@@ -36,10 +36,10 @@ export default function ProfileBox() {
       <br />
       <Container>
         <Typography variant="h6">
-          Current plan: {user?.accountType} <br />
+          Plan: {user?.accountType} <br />
         </Typography>
         <Typography variant="h6">
-          Your team:
+          Team:
         </Typography>
         <Box bgcolor={"#F1E8FF"} minHeight={250} display="flex" justifyContent="center" alignItems="center">
           <Typography variant="body2">
