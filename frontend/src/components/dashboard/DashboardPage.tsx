@@ -14,7 +14,7 @@ import {
   Paper,
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
-// import { Container } from "react-bootstrap";
+import logo from '../../assets/blacklogo.png'
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -34,13 +34,19 @@ function Dashboard() {
           height={"8%"}
           paddingLeft={"20px"}
           paddingRight={"20px"}
-        >
-          <Typography 
-            variant="h5" 
-            fontWeight={"bold"}
-          >
-            Dashboard
-          </Typography>
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Dashboard
+            </Typography>
+          </Grid>
+
+          
 
           {authContext.currentUser == null ? (
             <>
