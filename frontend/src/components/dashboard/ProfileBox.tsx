@@ -7,11 +7,12 @@ import { Container } from "react-bootstrap";
 
 export default function ProfileBox() {
   const authContext = useContext(AuthContext);
+  const user = authContext.currentUser
 
   return (
     <>
       <Grid item xs={3}>
-        <Typography variant="h3">Welcome, {authContext.currentUser?.username}!</Typography>
+        <Typography variant="h3">Welcome, {user?.username}!</Typography>
         {/* NO USER MANAGEMENT PAGE */}
         <br />
         <Link href="/user/profile" variant="body2">
@@ -21,7 +22,7 @@ export default function ProfileBox() {
       <br />
       <Container>
         <Typography variant="h6">
-          Current plan: Premium <br />
+          Current plan: {user?.accountType} <br />
         </Typography>
         <Typography variant="h6">
           Your team:

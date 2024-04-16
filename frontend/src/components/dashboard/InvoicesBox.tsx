@@ -36,13 +36,13 @@ export default function InvoicesBox() {
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
       setInvoices(invoices)
     );
-  }, []);
+  }, [user]);
   useEffect(() => {
     console.log(user?.username, user?.password, user?.accountType);
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
       setInvoices(invoices)
     );
-  }, []);
+  }, [user]);
 
   function changePdfButtonMsg(
     msg:

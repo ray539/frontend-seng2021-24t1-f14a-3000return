@@ -603,3 +603,28 @@ app.post('/api/downloadInvoicesByNames', async (req, res) => {
     res.status(500).json({ error: 'Failed to download invoices' });
   }
 });
+
+app.put('/api/updateAccountType', async (req, res) => {
+  const username = req.headers.username;
+  const password = req.headers.password;
+
+  const account = await loginUser(username, password);
+  if (!account) {
+    return res.status(403).json({ error: 'invalid username or password' });
+  }
+
+  const newAccountType = req.body.newAccountType;
+
+  const users = await Account.find({
+    username: username
+  })
+
+  if (users.length == 0) {
+    return res.status(403).json({ error: 'invalid username or password' })
+  }
+
+  const user = users[0]
+  user.accountType = newAccountType;
+  await user.save();
+  res.json(user)
+});

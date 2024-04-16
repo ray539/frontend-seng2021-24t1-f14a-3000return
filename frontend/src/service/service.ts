@@ -353,3 +353,28 @@ export async function downloadInvoices(username: string, password: string, invoi
     // Handle error appropriately, e.g., display an error message to the user
   }
 }
+
+export async function updateAccountType(username: string, password: string, newAccountType: string) {
+  try {
+    const res = await axios.put('/api/updateAccountType', { newAccountType: newAccountType }, {
+      headers: {
+        username: username,
+        password: password
+      }
+    });
+    const acc = res.data;
+
+    const retUser: UserProfile = {
+      id: acc._id,
+      username: acc.username,
+      email: acc.email,
+      password: password,
+      accountType: acc.accountType
+    }
+
+    return retUser;
+
+  } catch (err) {
+    return null;
+  }
+}
