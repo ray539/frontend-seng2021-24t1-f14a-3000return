@@ -13,6 +13,7 @@ const AccountSchema = new Schema({
   username: String,
   email: String,
   passwordEncrypted: String,
+  savedTags: [String],
   accountType: String
 })
 

@@ -18,6 +18,7 @@ export async function logInAndGetUser(username: string, password: string) {
       username: acct.username,
       email: acct.email,
       password: password,
+      savedTags: acct.savedTags ? acct.savedTags : [],
       accountType: acct.accountType
     }
 
@@ -36,15 +37,98 @@ export async function getInvoicesBelongingTo(username: string, password: string)
     }
   })
   const einvoicesRaw = res.data as any[];
-  const einvoices: EInvoiceItem[] = einvoicesRaw.map(invoice => {
+  const einvoices: EInvoiceItem[] = einvoicesRaw.map((invoice, i) => {
     return {
       id: invoice._id,
       name: invoice.name,
       checked: false,
-      pdfGenMsg: 'generate pdf'
+      pdfGenMsg: 'generate pdf',
+      tags: invoice.tags ? invoice.tags : [],
+      index: i,
+      shown: true
     }
   })
   return einvoices
+}
+
+export async function addTagsToInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.post('/api/addTagsToInvoice',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  console.log(retTags)
+  return retTags
+}
+
+export async function setTagListForInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.put('/api/setTagList',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  console.log(retTags)
+  return retTags
+}
+
+export async function setUserSavedTags(username: string, password: string, newSavedTags: string[]) {
+  const res = await axios.put('/api/setUserSavedtags',
+    {
+      newSavedTags: newSavedTags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+
+  const acc = res.data
+  const retUser: UserProfile = {
+    id: acc._id,
+    username: acc.username,
+    email: acc.email,
+    password: password,
+    savedTags: acc.savedTags ? acc.savedTags : [],
+    accountType: acc.accountType
+  }
+
+  return retUser;
+}
+
+
+export async function deleteTagsFromInvoice(username: string, password: string, invoiceName: string, tags: string[]) {
+  const res = await axios.post('/api/deleteTagsFromInvoice',
+    {
+      invoiceName: invoiceName,
+      tags: tags
+    },
+    {
+      headers: {
+        username: username,
+        password: password
+      }
+    }
+  )
+  const retTags = res.data as string[]
+  return retTags
 }
 
 export async function validateFile(username: string, password: string, xmlFile: File) {
@@ -170,6 +254,7 @@ export async function registerUser(username: string, email: string, password: st
       username: acct.username,
       password: password,
       email: acct.email,
+      savedTags: acct.savedTags ? acct.savedTags : [],
       accountType: acct.accountType
     }
     return retUser
@@ -259,6 +344,7 @@ export async function changeEmail(username: string, password: string, newEmail: 
       username: acc.username,
       email: acc.email,
       password: password,
+      savedTags: acc.savedTags ? acc.savedTags : [],
       accountType: acc.accountType
     }
 
@@ -284,6 +370,7 @@ export async function changePassword(username: string, password: string, newPass
       username: acc.username,
       email: acc.email,
       password: password,
+      savedTags: acc.savedTags ? acc.savedTags : [],
       accountType: acc.accountType
     }
     return retUser;
@@ -369,7 +456,8 @@ export async function updateAccountType(username: string, password: string, newA
       username: acc.username,
       email: acc.email,
       password: password,
-      accountType: acc.accountType
+      savedTags: acc.savedTags,
+      accountType: acc.accountType,
     }
 
     return retUser;
