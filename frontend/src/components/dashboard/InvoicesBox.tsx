@@ -32,7 +32,7 @@ export default function InvoicesBox() {
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
       setInvoices(invoices)
     );
-  }, []);
+  }, [user]);
 
   // function changePdfButtonMsg(
   //   msg:
@@ -120,7 +120,6 @@ export default function InvoicesBox() {
         invoice.name
       );
 
-      // console.log(xmlData);
       const link = await getPdfLink(
         user!.username,
         user!.password,
@@ -151,8 +150,8 @@ export default function InvoicesBox() {
                   }}
                 />
               }
-              label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-              labelPlacement="end" // Align the label to the start of the checkbox
+              label={invoice.name}
+              labelPlacement="end"
             />
           </Box>
           <Grid
@@ -170,19 +169,33 @@ export default function InvoicesBox() {
                 <VisibilityIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Generate PDF">
-              <IconButton
-                aria-label="PDF"
-                onClick={getPDF}
-              >
-                <PictureAsPdfIcon />
-              </IconButton>
-            </Tooltip>
+            {!user || user.accountType !== 'Free' ? (
+              <Tooltip title="Generate PDF">
+                <IconButton
+                  aria-label="PDF"
+                  onClick={getPDF}
+                >
+                  <PictureAsPdfIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Upgrade to Premium to generate PDF">
+                <span>
+                  <IconButton
+                    aria-label="PDF"
+                    disabled
+                  >
+                    <PictureAsPdfIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
           </Grid>
         </Grid>
       </>
-    )
+    );
   }
+
 
   function Invoices() {
     const [selectAll, setSelectAll] = useState(false);
