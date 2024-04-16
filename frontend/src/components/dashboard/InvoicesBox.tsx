@@ -299,7 +299,7 @@ function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoice
 
 function shouldShowInvoice(invoice: EInvoiceItem, tagSelectionTxt: string, search: string) {
 	const res1 = evaluateString(invoice, tagSelectionTxt) == 'true'
-	const res2 = RegExp(search).test(invoice.name)
+	const res2 = RegExp(new RegExp(search, 'i')).test(invoice.name)
 	return res1 && res2
 }
 
