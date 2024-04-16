@@ -9,35 +9,26 @@ import logo from '../../assets/blacklogo.png'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
-function DropDown({ text, tc, bgc, element, showElement, setShowElement }: { text: string, tc: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
+function DropDown({ text, bgc, element, showElement, setShowElement }: { text: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
   // const [showElement, setShowElement] = useState(false)
 
   return (
     <>
-      <Container sx={{
-        width: '50%',
-        marginTop: '2em',
-        marginBottom: '2em',
-        display: 'flex',
-        justifyContent: 'center',
-        userSelect: 'none',
-        backgroundColor: bgc,
-        color: tc,
-        padding: '0.5em',
-        borderRadius: '1em',
-        '&:hover': {
-          cursor: 'pointer'
-        }
-      }}
+      <Button
+        variant="contained"
+        sx={{
+          backgroundColor: "#060C2A",
+          '&:hover': {
+            backgroundColor: bgc,
+          }
+        }}
         onClick={() => {
           setShowElement(!showElement)
         }}
       >
-        <Typography>{text}</Typography>
-      </Container>
-
+        {text}
+      </Button>
       {showElement && element}
-
     </>
   )
 }
@@ -539,6 +530,7 @@ export default function ProfileManagementPage() {
               container
               alignItems={"center"}
               gap={1}
+              marginBottom={"20px"}
             >
               <AccountCircleIcon fontSize="large"/> 
               <Typography variant="h5">
@@ -546,21 +538,44 @@ export default function ProfileManagementPage() {
               </Typography>
             </Grid>
 
-            <DropDown
-              setShowElement={setShowChangeAccountType}
-              showElement={showChangeAccountType}
-              text={"Change Account Type"}
-              tc={"white"}
-              bgc={"black"}
-              element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
-            ></DropDown>
+            <Grid 
+              container
+              direction={"column"}
+              alignItems={"flex-start"}
+              gap={1}
+            >
+              <DropDown
+                setShowElement={setShowChangeAccountType}
+                showElement={showChangeAccountType}
+                text={"Change Account Type"}
+                bgc={"#7B54E8"}
+                element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
+              />
 
-            <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} ></DropDown>
+              <DropDown 
+                setShowElement={setShowChangeEmail} 
+                showElement={showChangeEmail} 
+                text={"Update Email"} 
+                bgc={"#7B54E8"} 
+                element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} 
+              />
 
-            <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass} />} ></DropDown>
+              <DropDown 
+                setShowElement={setShowChangePass} 
+                showElement={showChangePass} 
+                text={"Change password"} 
+                bgc={"#7B54E8"} 
+                element={<ChangePasswordForm setShowElement={setShowChangePass} />} 
+              />
 
-            <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} />
-            
+              <DropDown 
+                setShowElement={setShowDeleteAcc} 
+                showElement={showDeleteAcc} 
+                text={"Delete account"} 
+                bgc='red' 
+                element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} 
+              />
+            </Grid>
           </Paper>
         </Grid>
       </Box>
