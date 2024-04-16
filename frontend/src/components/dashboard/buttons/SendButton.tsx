@@ -6,9 +6,11 @@ import {
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
+  Box,
   Button, Dialog, Grid, TextField,
   Typography
 } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
 
 function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function }) {
   const authContext = useContext(AuthContext);
@@ -136,7 +138,14 @@ export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
 				}}
         onClick={openPopup}
       >
-        Send
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          wrap="nowrap"
+        >
+          <EmailIcon /> Send <Box></Box> 
+        </Grid>
       </Button>
       
       {Popup && <SendPopup invoices={invoices} Popup={Popup} setPopup={setPopup} />}

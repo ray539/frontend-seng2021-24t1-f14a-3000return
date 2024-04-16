@@ -10,7 +10,7 @@ export default function ErrorPopup({ setPopup } : { Popup: boolean, setPopup: Fu
   return (
     <>
       <Dialog onClose={closeError} open>
-        <DialogTitle>Select a file</DialogTitle>
+        <DialogTitle>Please select a file</DialogTitle>
       </Dialog>
     </>
   )

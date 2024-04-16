@@ -11,7 +11,7 @@ import {
 } from "../../service/service";
 import {
   Button, Typography, Grid, Link,
-  Paper
+  Paper,
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
 // import { Container } from "react-bootstrap";
@@ -30,17 +30,14 @@ function Dashboard() {
         <Grid
           container
           justifyContent={"space-between"} 
-          height={"5%"}
-          padding={1}
-          paddingLeft={4}
-          paddingRight={4}
+          alignItems={"center"}
+          height={"8%"}
+          paddingLeft={"20px"}
+          paddingRight={"20px"}
         >
           <Typography 
             variant="h5" 
-            alignContent={"center"} 
-            sx={{ 
-              flexGrow: 1 
-            }}
+            fontWeight={"bold"}
           >
             Dashboard
           </Typography>
@@ -78,21 +75,23 @@ function Dashboard() {
           container 
           justifyContent={"space-between"} 
           wrap="nowrap"
-          height={"95%"}
+          height={"92%"}
           padding={"20px"}
+          paddingTop={"0"}
           gap={"20px"}
         >
-
           <Paper 
-            elevation={0} 
+            elevation={10} 
+            square
             sx={{ 
-              padding: "20px"
+              padding: "20px",
             }}
           >
             <ProfileBox />
           </Paper>
           <Paper 
-            elevation={0} 
+            elevation={10} 
+            square
             sx={{ 
               width: "100%", 
               padding: "20px"

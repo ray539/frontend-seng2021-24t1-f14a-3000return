@@ -1,12 +1,15 @@
 // import { useState } from "react";
 import {
+  Box,
   Button, Dialog,
   Grid,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-
+import CreateIcon from '@mui/icons-material/Create';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 
 function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) {
@@ -52,8 +55,17 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
                   backgroundColor: "#7B54E8",
                 }
               }}
-              onClick={() => navigate("/user/create/form")}>
-              Create
+              onClick={() => navigate("/user/create/form")}
+            >
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <CreateIcon /> Create <Box></Box>
+              </Grid>
             </Button>  
           </Grid>
 
@@ -85,7 +97,15 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
               }}
               disabled
             >
-              Convert
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <ChangeCircleIcon /> Convert <Box></Box>
+              </Grid>
             </Button>
           </Grid>
           
@@ -113,8 +133,17 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
                   backgroundColor: "#7B54E8",
                 }
               }}
-              onClick={() => navigate("/user/upload")}>
-              Validate
+              onClick={() => navigate("/user/upload")}
+            >
+              <Grid 
+                container 
+                justifyContent={"space-between"} 
+                alignItems={"center"}
+                wrap="nowrap"
+                width={"120px"}
+              >
+                <TaskAltIcon /> Validate <Box></Box>
+              </Grid>
             </Button>  
           </Grid>
         </Grid>
@@ -148,7 +177,7 @@ export default function GetStartedButton() {
 				// }}
         onClick={openPopup}
 			>
-				Get Started
+				Start eInvoicing
 			</Button>
 
       {Popup && <GetStartedPopup Popup={Popup} setPopup={setPopup} />}

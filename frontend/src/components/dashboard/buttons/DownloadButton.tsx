@@ -2,8 +2,11 @@ import { useContext, useState } from "react";
 import { EInvoiceItem } from "../../../data";
 import ErrorPopup from "./ErrorPopup";
 import {
-  Button, Dialog, DialogTitle
+  Box,
+  Button, Dialog, DialogTitle,
+  Grid
 } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 import {
   downloadInvoices,
 } from "../../../service/service";
@@ -59,8 +62,26 @@ export default function DownloadButton({ invoices }: { invoices: EInvoiceItem[] 
 
   return (
     <>
-      <Button variant="contained" fullWidth onClick={openPopup}>
-        Download
+      <Button 
+        variant="contained" 
+        fullWidth 
+				sx={{
+					backgroundColor: "#7B54E8",
+					'&:hover': {
+						backgroundColor: "#6a47cd",
+					}
+				}}
+        onClick={openPopup}
+      >
+        <Grid 
+          container 
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          wrap="nowrap"
+        >
+          <DownloadIcon /> Download <Box></Box> 
+        </Grid>
+        
       </Button>
 
       {Popup && <DownloadPopup Popup={Popup} setPopup={setPopup} invoices={invoices} />}
