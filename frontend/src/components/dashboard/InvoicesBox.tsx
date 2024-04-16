@@ -21,6 +21,7 @@ import DeleteButton from "./buttons/DeleteButton";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ManageTagButton from "./buttons/ManageTagButton";
+import { evaluateString } from "./buttons/TagSelectionEvaluator";
 
 const buttonWidth = "65%";
 
@@ -46,9 +47,11 @@ function Header() {
 function Buttons({
 	search, 
 	setSearch,
+	tagSelectionTxt,
+	setTagSelectionTxt,
 	invoices,
 	setInvoices
-}: {search: string, setSearch: Function, invoices: EInvoiceItem[], setInvoices: Function}) {
+}: {search: string, setSearch: Function, tagSelectionTxt: string, setTagSelectionTxt: Function, invoices: EInvoiceItem[], setInvoices: Function}) {
 	return (
 		<>
 			<Grid
@@ -61,16 +64,35 @@ function Buttons({
 					xs
 					paddingRight={"8px"}
 				>
-					<TextField 
-						label="Search invoices" 
-						variant="outlined" 
-						size="small"
-						fullWidth
-						value={search}
-						onChange={(e) => {
-							setSearch(e.target.value)
-						}}
-					/>
+					<Box sx={{display:'flex', justifyContent: 'space-between'}}>
+						<TextField 
+							label="search invoices" 
+							type="search"
+							variant="outlined" 
+							size="small"
+							fullWidth
+							sx={{marginRight: '1em'}}
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+						/>
+						<TextField 
+							fullWidth 
+							sx={{marginRight: '1em'}} 
+							label="tag selection string" 
+							size='small'
+							value={tagSelectionTxt}
+							onChange={(e) => {
+								let newVal = e.target.value.toUpperCase()
+								if (!/^[A-Z0-9_\-,|\(\)]*$/.test(newVal)) {
+									console.log('here');
+									return;
+								}
+								setTagSelectionTxt(newVal)}}
+						/>
+					</Box>
+					<Box sx={{display: 'flex', justifyContent: 'right'}}>
+						<Typography sx={{marginRight: '1em'}}>what's this?</Typography>
+					</Box>
 				</Grid>
 				<Grid 
 					container 
@@ -210,8 +232,14 @@ function Invoice({
 	)
 }
 
-function Invoices({invoices, setInvoices, search}: {invoices: EInvoiceItem[], setInvoices: Function, search: string}) {
+function Invoices({invoices, setInvoices, search, tagSelectionTxt}: {invoices: EInvoiceItem[], setInvoices: Function, search: string, tagSelectionTxt: string}) {
 	const [selectAll, setSelectAll] = useState(false);
+	const shownInvoices = invoices.filter(invoice => {
+		const res1 = evaluateString(invoice, tagSelectionTxt) == 'true'
+		const res2 = RegExp(search).test(invoice.name)
+		return res1 && res2
+	})
+
 
 	return (
 		<>
@@ -255,14 +283,9 @@ function Invoices({invoices, setInvoices, search}: {invoices: EInvoiceItem[], se
 					invoices.length === 0 ? (
 						<Typography>No Invoices!</Typography>
 					) : (
-						invoices
-							.filter((invoice) => {
-								return invoice.name.match(new RegExp(search, 'i'))
-							})
-							.map((invoice, i) => (
-								<Invoice key={invoice.id} invoice={invoice} i={i} invoices={invoices} setInvoices={setInvoices}/>
-							)
-						)
+						shownInvoices.map((invoice, i) => (
+							<Invoice key={invoice.id} invoice={invoice} i={i} invoices={invoices} setInvoices={setInvoices}/>
+						))
 					)
 				}
 			</Grid>
@@ -275,6 +298,7 @@ export default function InvoicesBox() {
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
   const [search, setSearch] = useState("");
+	const [tagSelectionTxt, setTagSelectionTxt] = useState('')
 
   useEffect(() => {
     console.log(user?.username, user?.password);
@@ -297,13 +321,15 @@ export default function InvoicesBox() {
 					search={search} 
 					setSearch={setSearch} 
 					invoices={invoices} 
-					setInvoices={setInvoices} 
+					setInvoices={setInvoices}
+					tagSelectionTxt={tagSelectionTxt}
+					setTagSelectionTxt={setTagSelectionTxt}
 				/>
         <Invoices 
-					invoices={invoices} 
-					setInvoices={setInvoices} 
-					search={""} 
-				/>
+					invoices={invoices}
+					setInvoices={setInvoices}
+					search={search} 
+					tagSelectionTxt={tagSelectionTxt}				/>
       </Grid>
     </>
   );
