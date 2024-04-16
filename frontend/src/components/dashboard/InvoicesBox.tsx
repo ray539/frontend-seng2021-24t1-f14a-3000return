@@ -5,20 +5,21 @@ import SendButton from "./buttons/SendButton";
 import { AuthContext } from "../../context/AuthContextProvider";
 import { EInvoiceItem } from "../../data";
 import {
-	deleteInvoicesFromUser,
-	getInvoicesBelongingTo,
-	getPdfLink,
-	getXmlData,
+  getInvoicesBelongingTo,
+  getPdfLink,
+  getXmlData,
 } from "../../service/service";
 import {
-	Button, Checkbox, FormControlLabel,
-	Typography, Grid, Box,
-	TextField,
+  Checkbox, FormControlLabel,
+  Typography, Grid, Box,
+  IconButton,
+  Tooltip,
+  TextField,
 } from '@mui/material';
 import GetStartedButton from "./buttons/GetStartedButton";
-import SearchBar from "./buttons/SearchBar";
-import ManageTagButton from "./buttons/ManageTagButton";
-import { evaluateString } from "./buttons/TagSelectionEvaluator";
+import DeleteButton from "./buttons/DeleteButton";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const buttonWidth = "65%";
 
@@ -42,82 +43,47 @@ function Header() {
 }
 
 function Buttons({
-	invoiceSearchTxt,
-	setInvoiceSearchTxt,
-	tagSelectionTxt,
-	setTagSelectionTxt,
+	search, 
+	setSearch,
 	invoices,
-	setInvoices,
-	deletedConfirmation,
-	setDeleteConfirmation
-	}: {
-		invoiceSearchTxt: string,
-		setInvoiceSearchTxt: Function,
-		tagSelectionTxt: string,
-		setTagSelectionTxt: Function,
-		invoices: EInvoiceItem[],
-		setInvoices: Function,
-		deletedConfirmation: {state: string, numItems: number},
-		setDeleteConfirmation: Function
-	}) {
+	setInvoices
+}: {search: string, setSearch: Function, invoices: EInvoiceItem[], setInvoices: Function}) {
 	return (
 		<>
 			<Grid
 				container
 				justifyContent={"space-between"}
 				alignItems={"center"}
-				margin={"8px"}
-				marginLeft={0}
-				marginRight={0}
 			>
 				<Grid
 					item
 					xs
 					paddingRight={"8px"}
 				>
-					<SearchBar
-						invoiceSearchTxt={invoiceSearchTxt}
-						setInvoiceSearchTxt={setInvoiceSearchTxt}
-						tagSelectionTxt={tagSelectionTxt}
-						setTagSelectionText={setTagSelectionTxt}
+					<TextField 
+						label="Search invoices" 
+						variant="outlined" 
+						size="small"
+						fullWidth
+						value={search}
+						onChange={(e) => {
+							setSearch(e.target.value)
+						}}
 					/>
-
 				</Grid>
-
-				<Grid
-					container
+				<Grid 
+					container 
 					width={buttonWidth}
 					gap={"8px"}
 				>
 					<Grid item xs>
 						<DownloadButton invoices={invoices} />
 					</Grid>
-
 					<Grid item xs>
 						<SendButton invoices={invoices} />
 					</Grid>
-
 					<Grid item xs>
-						<Button
-							variant="contained"
-							fullWidth
-							sx={{
-								backgroundColor: "#F22556",
-								'&:hover': {
-									backgroundColor: "#d71e4a",
-								}
-							}}
-							onClick={() => {
-								const numItems = invoices.filter((invoice) => invoice.checked).length;
-								if (numItems == 0) return;
-								setDeleteConfirmation({
-									state: "shown",
-									numItems: numItems,
-								});
-							}
-							}>
-							Delete
-						</Button>
+						<DeleteButton invoices={invoices} setInvoices={setInvoices}/>
 					</Grid>
 				</Grid>
 			</Grid>
@@ -125,221 +91,167 @@ function Buttons({
 	);
 }
 
+function Invoice(invoice: EInvoiceItem, i: number, invoices: EInvoiceItem[], setInvoices: Function) {
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
-function Invoices({
-	invoices,
-	setInvoices,
-	changePdfButtonMsg
-}: {
-	invoices: EInvoiceItem[],
-	setInvoices: Function,
-	changePdfButtonMsg: Function
-}) {
-	const authContext = useContext(AuthContext)
-	const user = authContext.currentUser
+	async function getPDF() {
+		const xmlData = await getXmlData(
+			user!.username,
+			user!.password,
+			invoice.name
+		);
+
+		// console.log(xmlData);
+		const link = await getPdfLink(
+			user!.username,
+			user!.password,
+			xmlData
+		);
+
+		setTimeout(() => window.open(link), 100);
+	}
 
 	return (
 		<>
-			<Box
+			<Grid 
+				container 
+				key={invoice.id} 
+				wrap="nowrap"
+				paddingLeft={2}
+				paddingRight={2}
+			>
+				<Box width={"100%"}>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={invoice.checked}
+								onChange={(e) => {
+									const invoices_ = [...invoices];
+									invoices_[i].checked = e.target.checked;
+									setInvoices(invoices_);
+								}}
+							/>
+						}
+						label={invoice.name} // Set the label of the checkbox to be the name of the invoice
+						labelPlacement="end" // Align the label to the start of the checkbox
+					/>
+				</Box>
+				<Grid 
+					container
+					justifyContent={"flex-end"}
+					gap={1}
+				>
+					<Tooltip title="View eInvoice">
+						<IconButton 
+							aria-label="View"
+							onClick={() => {
+								window.open(`/user/view-invoice/${invoice.name}`);
+							}}
+						>
+							<VisibilityIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Generate PDF">
+						<IconButton 
+							aria-label="PDF"
+							onClick={getPDF}
+						>
+							<PictureAsPdfIcon />
+						</IconButton>
+					</Tooltip>
+				</Grid>
+			</Grid>
+		</>
+	)
+}
+
+function Invoices({invoices, setInvoices, search}: {invoices: EInvoiceItem[], setInvoices: Function, search: string}) {
+	const [selectAll, setSelectAll] = useState(false);
+
+	return (
+		<>
+			<Grid
+				item
+				display={"flex"}
+				flexDirection={"column"}
 				padding={"10px"}
+				width={"100%"}
 				sx={{
 					bgcolor: "#F1E8FF",
 				}}
 			>
-				{invoices.length === 0 ? (
-					<Typography>No Invoices!</Typography>
-				) : (
-					invoices.map((invoice, i) => (
-						<Box key={invoice.id} display={"flex"} justifyContent={"space-between"}>
-							<Box>
-								<FormControlLabel
-									control={
-										<Checkbox
-											checked={invoice.checked}
-											onChange={(e) => {
-												const invoices_ = [...invoices];
-												invoices_[i].checked = e.target.checked;
-												setInvoices(invoices_);
-											}}
-										/>
-									}
-									label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-									labelPlacement="end" // Align the label to the start of the checkbox
+				<Grid 
+					container 
+					wrap="nowrap"
+					paddingLeft={2}
+					paddingRight={2}
+				>
+					<Box 
+						width={"100%"}
+						borderBottom={"1px solid black"}
+					>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={selectAll}
+									onChange={(e) => {
+										setSelectAll(e.target.checked);
+										invoices.map((invoice) => invoice.checked = !selectAll)
+									}}
 								/>
-							</Box>
-							<Box sx={{display:'flex', alignItems: 'center'}}>
-								<ManageTagButton invoices={invoices} setInvoices={setInvoices} index={i}/>
+							}
+							label={"Name"} // Set the label of the checkbox to be the name of the invoice
+						/>
+					</Box>
+				</Grid>
 
-								<Box sx={{
-									marginLeft: '0.5em',
-									marginRight: '0.5em', 
-									width: '200px',
-									display: 'flex', 
-									padding: '0.25em', 
-									borderRadius: '5px',
-									
-								}}>
-									<Box sx={{overflow: 'hidden', display: 'flex'}}>
-										{
-											invoice.tags.length == 0 ?
-											<Typography sx={{color: 'grey'}}>no tags</Typography>
-											:
 
-											invoice.tags.map((tag) => 
-												<Typography key={tag} fontSize={15} sx={{
-													marginRight: '0.5em',
-													borderRadius: '5px', 
-													padding: '0.1em', 
-													backgroundColor: 'grey',
-													color: 'white',
-													textWrap: 'nowrap'
-												}}>{tag}</Typography>
-											)
-
-										}
-									</Box>
-								</Box>
-								
-								<Button variant="outlined" onClick={() => {
-									window.open(`/user/view-invoice/${invoice.name}`);
-								}}>View XML</Button>
-								<Button variant="outlined" disabled={invoice.pdfGenMsg != 'generate pdf'} onClick={async () => {
-									changePdfButtonMsg("fetching xml...", i);
-									const xmlData = await getXmlData(
-										user!.username,
-										user!.password,
-										invoice.name
-									);
-									console.log(xmlData);
-									changePdfButtonMsg("generating...", i);
-									const link = await getPdfLink(
-										user!.username,
-										user!.password,
-										xmlData
-									);
-									if (!link) {
-										changePdfButtonMsg("an error occured :(", i);
-										setTimeout(() => changePdfButtonMsg("generate pdf", i), 1000);
-										return;
-									}
-									changePdfButtonMsg("generate pdf", i);
-									setTimeout(() => window.open(link), 100);
-								}}>{invoice.pdfGenMsg}</Button>
-							</Box>
-						</Box>
-					))
-				)}
-			</Box>
+				{
+					invoices.length === 0 ? (
+						<Typography>No Invoices!</Typography>
+					) : (
+						invoices
+							.filter((invoice) => {
+								return invoice.name.match(new RegExp(search, 'i'))
+							})
+							.map((invoice, i) => (
+								Invoice(invoice, i, invoices, setInvoices)
+							)
+						)
+					)
+				}
+			</Grid>
 		</>
 	);
 }
 
 export default function InvoicesBox() {
-	const authContext = useContext(AuthContext);
-	const user = authContext.currentUser;
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
+  const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
+  const [search, setSearch] = useState("");
 
-	const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-	const [invoiceSearchTxt, setInvoiceSearchTxt] = useState('')
-	const [tagSelectionTxt, setTagSelectionTxt] = useState('')
+  useEffect(() => {
+    console.log(user?.username, user?.password);
+    getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
+      setInvoices(invoices)
+    );
+  }, []);
 
-	const [deletedConfirmation, setDeleteConfirmation] = useState<{
-		state: "hidden" | "shown" | "loading";
-		numItems: number;
-	}>({
-		state: "hidden",
-		numItems: 0,
-	});
-
-	function changePdfButtonMsg(
-		msg:
-			| "generate pdf"
-			| "fetching xml..."
-			| "generating..."
-			| "an error occured :(",
-		i: number
-	) {
-		const invoices_ = [...invoices];
-		invoices_[i].pdfGenMsg = msg;
-		setInvoices(invoices_);
-	}
-
-	useEffect(() => {
-		console.log(user?.username, user?.password);
-		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-			setInvoices(invoices)
-		);
-	}, []);
-
-	useEffect(() => {
-		console.log(user?.username, user?.password);
-		getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
-			setInvoices(invoices)
-		);
-	}, []);
-
-	const shownInvoices = invoices.filter(invoice => {
-		const res = evaluateString(invoice, tagSelectionTxt)
-		if (res == 'true') {
-			return true
-		}
-		return false
-	})
-
-	return (
-		<>
-			<Header />
-			<Buttons 
-				invoiceSearchTxt={invoiceSearchTxt} 
-				setInvoiceSearchTxt={setInvoiceSearchTxt} 
-				tagSelectionTxt={tagSelectionTxt} 
-				setTagSelectionTxt={setTagSelectionTxt} 
-				invoices={invoices}
-				setInvoices={setInvoices} 
-				deletedConfirmation={deletedConfirmation} 
-				setDeleteConfirmation={setDeleteConfirmation} 
-			/>
-			<Invoices 
-				invoices={shownInvoices}
-				setInvoices={setInvoices}
-				changePdfButtonMsg={changePdfButtonMsg} 
-			/>
-
-			{deletedConfirmation.state != "hidden" && (
-				<div>
-					{deletedConfirmation.state == "shown" ? (
-						<>
-							<Typography variant="h5">Delete Items</Typography>
-							<div>Delete these {deletedConfirmation.numItems} items?'</div>
-						</>
-
-					) : (
-						<div>Loading</div>
-					)}
-					<Button onClick={async () => {
-						const names = invoices
-							.filter((invoice) => invoice.checked)
-							.map((invoice) => invoice.name);
-						setDeleteConfirmation({
-							...deletedConfirmation,
-							state: "loading",
-						});
-						await deleteInvoicesFromUser(
-							user!.username,
-							user!.password,
-							names
-						);
-
-						setInvoices(invoices.filter((invoice) => !invoice.checked));
-						setDeleteConfirmation({
-							...deletedConfirmation,
-							state: "hidden",
-						});
-					}}>Yes</Button>
-					<Button onClick={() =>
-						setDeleteConfirmation({ ...deletedConfirmation, state: "hidden" })
-					}>No</Button>
-				</div>
-			)}
-		</>
-	);
+  return (
+    <>
+      <Grid 
+        container
+        height={"100%"}
+        alignContent={"flex-start"}
+        alignItems={"stretch"}
+        gap={"8px"}
+      >
+        <Header />
+        <Buttons search={search} setSearch={setSearch} invoices={invoices} setInvoices={setInvoices} />
+        <Invoices invoices={invoices} setInvoices={setInvoices} search={""} />
+      </Grid>
+    </>
+  );
 }
