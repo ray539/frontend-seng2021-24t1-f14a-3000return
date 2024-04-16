@@ -143,7 +143,7 @@ function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoic
           </Box>
 
           <TextField
-            label='Search for tags...'
+            label='Add tag: eg. UNPAID'
             value={searchBarTxt}
             onChange={(e) => {
               const newTxt = e.target.value
@@ -162,7 +162,7 @@ function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoic
             <List>
               {
                 shownUserTags.length == 0 ? 
-                  <Typography>No tags found</Typography>
+                  <Typography>No recent tags</Typography>
                 :
                 shownUserTags.map(userTag => 
                 <ListItem

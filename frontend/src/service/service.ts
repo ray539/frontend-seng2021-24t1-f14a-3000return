@@ -18,11 +18,8 @@ export async function logInAndGetUser(username: string, password: string) {
       username: acct.username,
       email: acct.email,
       password: password,
-<<<<<<< HEAD
-      savedTags: acct.savedTags ? acct.savedTags : []
-=======
+      savedTags: acct.savedTags ? acct.savedTags : [],
       accountType: acct.accountType
->>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
 
     return retUser
@@ -40,13 +37,15 @@ export async function getInvoicesBelongingTo(username: string, password: string)
     }
   })
   const einvoicesRaw = res.data as any[];
-  const einvoices: EInvoiceItem[] = einvoicesRaw.map(invoice => {
+  const einvoices: EInvoiceItem[] = einvoicesRaw.map((invoice, i) => {
     return {
       id: invoice._id,
       name: invoice.name,
       checked: false,
       pdfGenMsg: 'generate pdf',
-      tags: invoice.tags ? invoice.tags : []
+      tags: invoice.tags ? invoice.tags : [],
+      index: i,
+      shown: true
     }
   })
   return einvoices
@@ -107,7 +106,8 @@ export async function setUserSavedTags(username: string, password: string, newSa
     username: acc.username,
     email: acc.email,
     password: password,
-    savedTags: acc.savedTags ? acc.savedTags : []
+    savedTags: acc.savedTags ? acc.savedTags : [],
+    accountType: acc.accountType
   }
 
   return retUser;
@@ -254,11 +254,8 @@ export async function registerUser(username: string, email: string, password: st
       username: acct.username,
       password: password,
       email: acct.email,
-<<<<<<< HEAD
-      savedTags: acct.savedTags ? acct.savedTags : []
-=======
+      savedTags: acct.savedTags ? acct.savedTags : [],
       accountType: acct.accountType
->>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
     return retUser
   } catch (err) {
@@ -347,11 +344,8 @@ export async function changeEmail(username: string, password: string, newEmail: 
       username: acc.username,
       email: acc.email,
       password: password,
-<<<<<<< HEAD
-      savedTags: acc.savedTags ? acc.savedTags : []
-=======
+      savedTags: acc.savedTags ? acc.savedTags : [],
       accountType: acc.accountType
->>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
 
     return retUser;
@@ -376,11 +370,8 @@ export async function changePassword(username: string, password: string, newPass
       username: acc.username,
       email: acc.email,
       password: password,
-<<<<<<< HEAD
-      savedTags: acc.savedTags ? acc.savedTags : []
-=======
+      savedTags: acc.savedTags ? acc.savedTags : [],
       accountType: acc.accountType
->>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
     return retUser;
   } catch (err) {
@@ -465,7 +456,8 @@ export async function updateAccountType(username: string, password: string, newA
       username: acc.username,
       email: acc.email,
       password: password,
-      accountType: acc.accountType
+      savedTags: acc.savedTags,
+      accountType: acc.accountType,
     }
 
     return retUser;

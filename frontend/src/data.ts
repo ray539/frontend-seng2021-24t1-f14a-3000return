@@ -18,7 +18,9 @@ export interface EInvoiceItem {
   name: string,
   checked: boolean,
   pdfGenMsg: 'generate pdf' | 'fetching xml...' | 'generating...' | 'an error occured :(',
-  tags: string[]
+  tags: string[],
+  index: number,
+  shown: boolean
 }
 
 export function arraysEqual(arr1: string[], arr2: string[]) {

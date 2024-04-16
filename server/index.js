@@ -306,7 +306,7 @@ app.post('/api/addInvoice', async (req, res) => {
     belongsTo: username,
     name: name,
     data: xmlData,
-    tags: ['test']
+    tags: []
   })
 
   let invoice = newInvoice.save();

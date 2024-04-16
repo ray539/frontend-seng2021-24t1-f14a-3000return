@@ -81,7 +81,7 @@ export default function RegisterPage() {
           value={plan}
           onChange={(e) => setPlan(e.target.value)}
           fullWidth
-          label="Label"
+          label="Account Type"
           required
         >
           <MenuItem value={"Free"}>Free</MenuItem>

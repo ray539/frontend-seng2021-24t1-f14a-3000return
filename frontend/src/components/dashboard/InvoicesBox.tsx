@@ -87,7 +87,8 @@ function Buttons({
 									console.log('here');
 									return;
 								}
-								setTagSelectionTxt(newVal)}}
+								setTagSelectionTxt(newVal)
+							}}
 						/>
 					</Box>
 					<Box sx={{display: 'flex', justifyContent: 'right'}}>
@@ -160,6 +161,7 @@ function Invoice({
 								checked={invoice.checked}
 								onChange={(e) => {
 									const invoices_ = [...invoices];
+									// get the invoice which has that name
 									invoices_[i].checked = e.target.checked;
 									setInvoices(invoices_);
 								}}
@@ -168,7 +170,7 @@ function Invoice({
 						label={invoice.name} // Set the label of the checkbox to be the name of the invoice
 						labelPlacement="end" // Align the label to the start of the checkbox
 					/>
-				</Box>				
+				</Box>
 
 				<Grid 
 					container
@@ -246,15 +248,9 @@ function Invoice({
 	)
 }
 
-function Invoices({invoices, setInvoices, search, tagSelectionTxt}: {invoices: EInvoiceItem[], setInvoices: Function, search: string, tagSelectionTxt: string}) {
+function Invoices({invoices, setInvoices}: {invoices: EInvoiceItem[], setInvoices: Function}) {
 	const [selectAll, setSelectAll] = useState(false);
-	const shownInvoices = invoices.filter(invoice => {
-		const res1 = evaluateString(invoice, tagSelectionTxt) == 'true'
-		const res2 = RegExp(search).test(invoice.name)
-		return res1 && res2
-	})
-
-
+	const shownInvoices = invoices.filter(invoice => invoice.shown)
 	return (
 		<>
 			<Grid
@@ -283,7 +279,7 @@ function Invoices({invoices, setInvoices, search, tagSelectionTxt}: {invoices: E
 									checked={selectAll}
 									onChange={(e) => {
 										setSelectAll(e.target.checked);
-										invoices.map((invoice) => invoice.checked = !selectAll)
+										shownInvoices.map((invoice) => invoice.checked = !selectAll)
 									}}
 								/>
 							}
@@ -294,11 +290,11 @@ function Invoices({invoices, setInvoices, search, tagSelectionTxt}: {invoices: E
 
 
 				{
-					invoices.length === 0 ? (
+					shownInvoices.length === 0 ? (
 						<Typography>No Invoices!</Typography>
 					) : (
-						shownInvoices.map((invoice, i) => (
-							<Invoice key={invoice.id} invoice={invoice} i={i} invoices={invoices} setInvoices={setInvoices}/>
+						shownInvoices.map((invoice) => (
+							<Invoice key={invoice.id} invoice={invoice} i={invoice.index} invoices={invoices} setInvoices={setInvoices}/>
 						))
 					)
 				}
@@ -307,12 +303,43 @@ function Invoices({invoices, setInvoices, search, tagSelectionTxt}: {invoices: E
 	);
 }
 
+function shouldShowInvoice(invoice: EInvoiceItem, tagSelectionTxt: string, search: string) {
+	const res1 = evaluateString(invoice, tagSelectionTxt) == 'true'
+	const res2 = RegExp(search).test(invoice.name)
+	return res1 && res2
+}
+
+
 export default function InvoicesBox() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
   const [invoices, setInvoices] = useState<EInvoiceItem[]>([]);
-  const [search, setSearch] = useState("");
-	const [tagSelectionTxt, setTagSelectionTxt] = useState('')
+  const [search, setSearch_] = useState("");
+	const [tagSelectionTxt, setTagSelectionTxt_] = useState('')
+
+	// set searchTxt and unchecks invoices which become invisible
+	function setSearch(value: string) {
+		const invoicesNew = [...invoices]
+		for (let invoice of invoicesNew) {
+			invoice.shown = shouldShowInvoice(invoice, tagSelectionTxt, value)
+			invoice.checked = false
+		}
+		setInvoices(invoicesNew)
+		setSearch_(value)
+	}
+
+	// set tagSelectionTxt and check
+	function setTagSelectionTxt(value: string) {
+		const invoicesNew = [...invoices]
+		for (let invoice of invoicesNew) {
+			invoice.shown = shouldShowInvoice(invoice, value, search)
+			invoice.checked = false
+		}
+		setInvoices(invoicesNew)
+		setTagSelectionTxt_(value)
+	}
+
+
 
   useEffect(() => {
     console.log(user?.username, user?.password);
@@ -339,11 +366,10 @@ export default function InvoicesBox() {
 					tagSelectionTxt={tagSelectionTxt}
 					setTagSelectionTxt={setTagSelectionTxt}
 				/>
-        <Invoices 
+        <Invoices
 					invoices={invoices}
 					setInvoices={setInvoices}
-					search={search} 
-					tagSelectionTxt={tagSelectionTxt}				/>
+					/>
       </Grid>
     </>
   );
