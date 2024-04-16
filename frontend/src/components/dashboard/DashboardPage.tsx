@@ -48,15 +48,13 @@ function Dashboard() {
 
           <Button
             variant="contained"
-            href="/"
-            role="button"
             sx={{
               backgroundColor: "#060C2A",
               borderRadius: "100px"
             }}
             onClick={() => {
               authContext.setCurrentUser(null);
-              navigate("/");
+              navigate("/login");
             }}
           >
             Sign Out

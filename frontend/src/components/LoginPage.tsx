@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { TextField, Button, Alert, Grid, Link, Typography } from "@mui/material";
+import { TextField, Button, Alert, Grid, Typography } from "@mui/material";
 import { useContext } from "react";
 import { logInAndGetUser } from "../service/service";
 import logo from '../assets/logo.png'
@@ -58,14 +58,15 @@ export default function LoginPage() {
             container
             direction={"column"}
             alignItems={"center"}
-            height={"50%"}
+            height={"fit-content"}
           >
             <Typography variant="h4" fontWeight={"bold"}>Login</Typography>
             <Typography variant="subtitle1" color={"#7B54E8"}>Sign in to your account</Typography>
             <br />
             <Grid item width={"40%"}>
               <form 
-                onSubmit={handleSubmit}>
+                onSubmit={handleSubmit}
+              >
                 <Grid 
                   container
                   direction={"column"}
@@ -120,7 +121,7 @@ export default function LoginPage() {
             container
             justifyContent={"flex-end"}
           >
-            <Button variant="text" color="primary" href="/" role="button">
+            <Button variant="text" color="primary" onClick={() => navigate("/")}>
               Return to homepage →
             </Button>
           </Grid>
@@ -148,7 +149,6 @@ export default function LoginPage() {
           <br />
           <Button 
             variant="contained" 
-            href="/register" 
             sx={{
               width: "40%",
               height: "45px",
@@ -160,6 +160,7 @@ export default function LoginPage() {
                 backgroundColor: "#060C2A",
               }
             }}
+            onClick={() => navigate("/register")}
           >
             Sign up
           </Button>
