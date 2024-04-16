@@ -14,7 +14,7 @@ export async function callValidationAPIJSON(xmlData) {
   let numTries = 0;
   while (numTries < MAX_TRIES) {
     try {
-      const res = await axios.post(`${LOCAL_URL}/api/validate/json`, xmlData, {
+      const res = await axios.post(`${DEPLOY_URL}/api/validate/json`, xmlData, {
         headers: {
           'Content-Type': 'application/xml',
           'Authorization': TOKEN
@@ -25,7 +25,7 @@ export async function callValidationAPIJSON(xmlData) {
       console.log(err.response.data);
       console.log("refreshing token")
       // log in again
-      const res = await axios.post(`${LOCAL_URL}/auth/login`, VALIDATION_ACCOUNT)
+      const res = await axios.post(`${DEPLOY_URL}/auth/login`, VALIDATION_ACCOUNT)
       const resString = res.data
       const regex = /"([^"]+)"/
       const newToken = resString.match(regex)[1]

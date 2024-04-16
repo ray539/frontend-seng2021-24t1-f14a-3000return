@@ -22,24 +22,24 @@ function Dashboard() {
 
   return (
     <>
-      <Grid 
+      <Grid
         item
         height={"100vh"}
         bgcolor={"#7B54E8"}
       >
         <Grid
           container
-          justifyContent={"space-between"} 
+          justifyContent={"space-between"}
           height={"5%"}
           padding={1}
           paddingLeft={4}
           paddingRight={4}
         >
-          <Typography 
-            variant="h5" 
-            alignContent={"center"} 
-            sx={{ 
-              flexGrow: 1 
+          <Typography
+            variant="h5"
+            alignContent={"center"}
+            sx={{
+              flexGrow: 1
             }}
           >
             Dashboard
@@ -56,9 +56,9 @@ function Dashboard() {
             </>
           ) : (
             // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button 
+            <Button
               variant="contained"
-              href="/" 
+              href="/"
               role="button"
               sx={{
                 backgroundColor: "#060C2A",
@@ -74,27 +74,27 @@ function Dashboard() {
           )}
         </Grid>
 
-        <Grid 
-          container 
-          justifyContent={"space-between"} 
+        <Grid
+          container
+          justifyContent={"space-between"}
           wrap="nowrap"
           height={"95%"}
           padding={"20px"}
           gap={"20px"}
         >
 
-          <Paper 
-            elevation={0} 
-            sx={{ 
+          <Paper
+            elevation={0}
+            sx={{
               padding: "20px"
             }}
           >
             <ProfileBox />
           </Paper>
-          <Paper 
-            elevation={0} 
-            sx={{ 
-              width: "100%", 
+          <Paper
+            elevation={0}
+            sx={{
+              width: "100%",
               padding: "20px"
             }}
           >

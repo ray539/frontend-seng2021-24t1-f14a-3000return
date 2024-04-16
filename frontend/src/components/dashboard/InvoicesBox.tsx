@@ -25,7 +25,7 @@ import { evaluateString } from "./buttons/TagSelectionEvaluator";
 
 const buttonWidth = "65%";
 
-function Header() {
+function Header({invoices}: {invoices: EInvoiceItem[]}) {
 	return (
 		<>
 			<Grid
@@ -37,7 +37,7 @@ function Header() {
 					<Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
 				</Grid>
 				<Grid item width={buttonWidth}>
-					<GetStartedButton />
+					<GetStartedButton invoices={invoices} />
 				</Grid>
 			</Grid>
 		</>
@@ -218,14 +218,28 @@ function Invoice({
 							<VisibilityIcon />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title="Generate PDF">
-						<IconButton 
-							aria-label="PDF"
-							onClick={getPDF}
-						>
-							<PictureAsPdfIcon />
-						</IconButton>
-					</Tooltip>
+					{user!.accountType !== 'Free' ? (
+              <Tooltip title="Generate PDF">
+                <IconButton
+                  aria-label="PDF"
+                  onClick={getPDF}
+                >
+                  <PictureAsPdfIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Upgrade to Premium to generate PDF">
+                <span>
+                  <IconButton
+                    aria-label="PDF"
+                    disabled
+                  >
+                    <PictureAsPdfIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )
+					}
 				</Grid>
 			</Grid>
 		</>
@@ -309,14 +323,14 @@ export default function InvoicesBox() {
 
   return (
     <>
-      <Grid 
+      <Grid
         container
         height={"100%"}
         alignContent={"flex-start"}
         alignItems={"stretch"}
         gap={"8px"}
       >
-        <Header />
+        <Header invoices={invoices}/>
         <Buttons 
 					search={search} 
 					setSearch={setSearch} 

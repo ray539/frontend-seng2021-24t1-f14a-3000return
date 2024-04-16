@@ -9,6 +9,7 @@ import {
   Button, Dialog, Grid, TextField,
   Typography
 } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
 
 function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function }) {
   const authContext = useContext(AuthContext);
@@ -111,9 +112,11 @@ function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: bo
   )
 }
 
-export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
+export default function SendButton({ invoices }: { invoices: EInvoiceItem[] }) {
   const [Popup, setPopup] = useState(false);
   const [Error, setError] = useState(false);
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
   const openPopup = () => {
     if (!invoices.find(i => i.checked)) {
@@ -123,24 +126,35 @@ export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
     }
   }
 
-  return ( 
+  return (
     <>
-      <Button 
-        variant="contained" 
-        fullWidth 
-				sx={{
-					backgroundColor: "#7B54E8",
-					'&:hover': {
-						backgroundColor: "#6a47cd",
-					}
-				}}
-        onClick={openPopup}
-      >
-        Send
-      </Button>
-      
+      {user && user.accountType != "Free" ? (
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={openPopup}
+          sx={{
+            backgroundColor: "#7B54E8",
+            '&:hover': {
+              backgroundColor: "#6a47cd",
+            }
+          }}
+        >
+          Send
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          fullWidth
+          disabled
+          endIcon={<LockIcon />}
+        >
+          Send
+        </Button>
+      )}
+
       {Popup && <SendPopup invoices={invoices} Popup={Popup} setPopup={setPopup} />}
-      {Error && <ErrorPopup Popup={Error} setPopup={setError}/>}
+      {Error && <ErrorPopup Popup={Error} setPopup={setError} />}
     </>
   );
 }

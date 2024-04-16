@@ -18,7 +18,11 @@ export async function logInAndGetUser(username: string, password: string) {
       username: acct.username,
       email: acct.email,
       password: password,
+<<<<<<< HEAD
       savedTags: acct.savedTags ? acct.savedTags : []
+=======
+      accountType: acct.accountType
+>>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
 
     return retUser
@@ -234,21 +238,27 @@ export async function getXmlData(username: string, password: string, filename: s
   }
 }
 
-export async function registerUser(username: string, email: string, password: string) {
+export async function registerUser(username: string, email: string, password: string, accountType: string) {
   try {
     const res = await axios.post('/api/newAccount', {
       username: username,
       email: email,
       password: password,
+      accountType: accountType
     })
     const acct = res.data
+    console.log("Inside axios: ", acct.accountType)
 
     const retUser: UserProfile = {
       id: acct._id,
       username: acct.username,
       password: password,
       email: acct.email,
+<<<<<<< HEAD
       savedTags: acct.savedTags ? acct.savedTags : []
+=======
+      accountType: acct.accountType
+>>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
     return retUser
   } catch (err) {
@@ -337,7 +347,11 @@ export async function changeEmail(username: string, password: string, newEmail: 
       username: acc.username,
       email: acc.email,
       password: password,
+<<<<<<< HEAD
       savedTags: acc.savedTags ? acc.savedTags : []
+=======
+      accountType: acc.accountType
+>>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
 
     return retUser;
@@ -362,7 +376,11 @@ export async function changePassword(username: string, password: string, newPass
       username: acc.username,
       email: acc.email,
       password: password,
+<<<<<<< HEAD
       savedTags: acc.savedTags ? acc.savedTags : []
+=======
+      accountType: acc.accountType
+>>>>>>> c62836e37c3a7fb01e083d0f6b8416da1738fd75
     }
     return retUser;
   } catch (err) {
@@ -429,5 +447,30 @@ export async function downloadInvoices(username: string, password: string, invoi
   } catch (error) {
     console.error('Error downloading invoices:', error);
     // Handle error appropriately, e.g., display an error message to the user
+  }
+}
+
+export async function updateAccountType(username: string, password: string, newAccountType: string) {
+  try {
+    const res = await axios.put('/api/updateAccountType', { newAccountType: newAccountType }, {
+      headers: {
+        username: username,
+        password: password
+      }
+    });
+    const acc = res.data;
+
+    const retUser: UserProfile = {
+      id: acc._id,
+      username: acc.username,
+      email: acc.email,
+      password: password,
+      accountType: acc.accountType
+    }
+
+    return retUser;
+
+  } catch (err) {
+    return null;
   }
 }

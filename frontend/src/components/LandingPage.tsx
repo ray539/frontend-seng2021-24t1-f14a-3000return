@@ -74,7 +74,7 @@ export default function LandingPage() {
                 - Invoice Validation <br />
                 - Invoice Rendering and Sending <br />
                 - Quick Fix Suggestions on Invalid Reports <br />
-                - Unlimited Invoice Storage
+                - Unlimited Invoice Storage <br />
                 - Bulk Validation
               </Typography>
             </Paper>

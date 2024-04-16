@@ -4,6 +4,7 @@ export interface UserProfile {
   email: string,
   password: string,
   savedTags: string[]
+  accountType: string
 }
 
 export interface EInvoice {
@@ -39,6 +40,41 @@ export function arraysEqual(arr1: string[], arr2: string[]) {
   
   return true;
 }
+
+// export function getInvoicesBelongingTo(id: string): EInvoice[] {
+//   return E_INVOICES.filter(i => i.belongsTo === id);
+// }
+
+// export function logInAndGetUser(username: string, password: string) {
+//   // if using database, will have to deal with encryption here...
+//   const u = USERS.find(u => u.username === username && u.password === password);
+//   if (u == null) return null
+//   return { ...u };
+// }
+
+// export function registerUser(username: string, email: string, password: string, accountType: string): UserProfile | null {
+//   // Check if the username or email is already taken
+//   if (USERS.some(user => user.username === username || user.email === email)) {
+//     return null; // Return null if username or email is already taken
+//   }
+
+//   // Generate a unique ID for the new user
+//   const id = globalId.toString();
+//   globalId++;
+
+//   // Create a new user object
+//   const newUser: UserProfile = {
+//     id,
+//     username,
+//     email,
+//     password,
+//     accountType,
+//   };
+
+//   USERS.push(newUser);
+
+//   return newUser;
+// }
 
 // export const USERS: UserProfile[] = [
 //   {
