@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { Alert, Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser, updateAccountType } from "../../service/service";
 
