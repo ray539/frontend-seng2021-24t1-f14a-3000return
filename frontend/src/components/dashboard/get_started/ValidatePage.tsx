@@ -144,6 +144,7 @@ export default function ValidatePage() {
             <li>
               Name: 
               <input
+                
                 type="text"
                 value={fileName !== '' ? fileName : (file ? file.name : '')}
                 onChange={handleFileNameChange}

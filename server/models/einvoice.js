@@ -12,7 +12,8 @@ const Schema = mongoose.Schema
 const EInvoiceSchema = new Schema({
   belongsTo: String, // username of account it belongs to
   name: String,
-  data: String
+  data: String,
+  tags: [String]
 })
 
 const EInvoiceModel = mongoose.model("EInvoice", EInvoiceSchema)

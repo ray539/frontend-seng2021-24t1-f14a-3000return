@@ -10,12 +10,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 function DropDown({ text, bgc, element, showElement, setShowElement }: { text: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
-  // const [showElement, setShowElement] = useState(false)
-
   return (
     <>
       <Button
         variant="contained"
+        fullWidth
         sx={{
           backgroundColor: "#060C2A",
           '&:hover': {
@@ -33,8 +32,72 @@ function DropDown({ text, bgc, element, showElement, setShowElement }: { text: s
   )
 }
 
+function ChangeAccountTypeForm() {
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [accountType, setAccountType] = useState<string>(''); // State to hold the selected account type
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
-function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
+  // Initialize accountType with the user's current account type
+  useEffect(() => {
+    if (user) {
+      setAccountType(user.accountType);
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updatedUser = await updateAccountType(user!.username, user!.password, accountType);
+      authContext.setCurrentUser(updatedUser);
+      setShowSuccess(true)
+    } catch (error) {
+      console.error('Error updating account type:', error);
+    }
+  };
+
+  return (
+    <>
+      <Container
+        sx={{
+          border: '1px solid #dddddd',
+          borderRadius: '1em',
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
+            <TextField
+              select
+              margin="normal"
+              id="account-select"
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              fullWidth
+              label="plan"
+              required
+            >
+              <MenuItem value={"Free"}>Free</MenuItem>
+              <MenuItem value={"Premium"}>Premium</MenuItem>
+              <MenuItem value={"Team"}>Team</MenuItem>
+            </TextField>
+          </FormControl>
+
+          <Container sx={{ width: 'fit-content', marginBottom: '1em' }}>
+            <Button variant='contained' type='submit'>Confirm</Button>
+          </Container>
+          {
+            showSuccess &&
+            <Alert severity="success" sx={{ marginBottom: '1em' }}>
+              Plan successfully changed.
+            </Alert>
+          }
+        </form>
+      </Container>
+    </>
+  );
+}
+
+function ChangeEmailForm() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
 
@@ -55,57 +118,31 @@ function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
       <Container sx={{
         border: '1px solid #dddddd',
         borderRadius: '1em',
-        maxWidth: '75%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative'
       }}>
-        <form onSubmit={async (e) => {
-          e.preventDefault()
-          if (newEmail != confEmail) {
-            window.alert('emails do not match')
-            return;
-          }
-          let a = await logInAndGetUser(user!.username, pass)
-          if (a == null) {
-            window.alert('incorrect password')
-            return
-          }
+        <form 
+          onSubmit={async (e) => {
+            e.preventDefault()
+            if (newEmail != confEmail) {
+              window.alert('emails do not match')
+              return;
+            }
+            let a = await logInAndGetUser(user!.username, pass)
+            if (a == null) {
+              window.alert('incorrect password')
+              return
+            }
 
-          let account = await changeEmail(user!.username, user!.password, newEmail)
-          if (!account) {
-            window.alert('an unknown error occured')
-            return
-          }
-          console.log(account)
-          authContext.setCurrentUser(account)
-          setShowSuccess(true)
-        }}
+            let account = await changeEmail(user!.username, user!.password, newEmail)
+            if (!account) {
+              window.alert('an unknown error occured')
+              return
+            }
+            console.log(account)
+            authContext.setCurrentUser(account)
+            setShowSuccess(true)
+          }}
           onFocus={() => setShowSuccess(false)}
         >
-
-
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Update email</Typography>
-
-          <Box sx={{
-            border: '1px solid black',
-            width: 'fit-content',
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            padding: '0 0.5em 0 0.5em',
-            borderRadius: '0.5em',
-            color: 'white',
-            backgroundColor: 'black',
-            userSelect: 'none',
-            '&:hover': {
-              cursor: 'pointer'
-            }
-          }}
-            onClick={() => { setShowElement(false) }}
-          >
-            <Typography>back</Typography>
-          </Box>
 
           <TextField
             fullWidth
@@ -159,7 +196,7 @@ function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
   )
 }
 
-function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
+function ChangePasswordForm() {
   const [oldPass, setOldPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [confPass, setConfPass] = useState('')
@@ -173,10 +210,6 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
       <Container sx={{
         border: '1px solid #dddddd',
         borderRadius: '1em',
-        maxWidth: '75%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative'
       }}>
         <form
           onSubmit={async (e) => {
@@ -201,32 +234,7 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
             setShowSuccess(true)
           }}
           onFocus={() => setShowSuccess(false)}
-
         >
-
-
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Change password</Typography>
-
-          <Box sx={{
-            border: '1px solid black',
-            width: 'fit-content',
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            padding: '0 0.5em 0 0.5em',
-            borderRadius: '0.5em',
-            color: 'white',
-            backgroundColor: 'black',
-            userSelect: 'none',
-            '&:hover': {
-              cursor: 'pointer'
-            }
-          }}
-            onClick={() => setShowElement(false)}
-          >
-            <Typography>back</Typography>
-          </Box>
-
           <TextField
             fullWidth
             type='password'
@@ -278,100 +286,7 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
   )
 }
 
-function ChangeAccountTypeForm({ setShowElement }: { setShowElement: Function }) {
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [accountType, setAccountType] = useState<string>(''); // State to hold the selected account type
-  const authContext = useContext(AuthContext);
-  const user = authContext.currentUser;
-
-  // Initialize accountType with the user's current account type
-  useEffect(() => {
-    if (user) {
-      setAccountType(user.accountType);
-    }
-  }, [user]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updatedUser = await updateAccountType(user!.username, user!.password, accountType);
-      authContext.setCurrentUser(updatedUser);
-      setShowElement(false);
-      setShowSuccess(true)
-    } catch (error) {
-      console.error('Error updating account type:', error);
-    }
-  };
-
-  return (
-    <>
-      <Container
-        sx={{
-          border: '1px solid #dddddd',
-          borderRadius: '1em',
-          maxWidth: '75%',
-          marginTop: '1em',
-          marginBottom: '1em',
-          position: 'relative'
-        }}
-      >
-        <form onSubmit={handleSubmit}>
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Change plan</Typography>
-          <Box
-            sx={{
-              border: '1px solid black',
-              width: 'fit-content',
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              padding: '0 0.5em 0 0.5em',
-              borderRadius: '0.5em',
-              color: 'white',
-              backgroundColor: 'black',
-              userSelect: 'none',
-              '&:hover': {
-                cursor: 'pointer'
-              }
-            }}
-            onClick={() => setShowElement(false)}
-          >
-            <Typography>back</Typography>
-          </Box>
-
-          <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
-            <TextField
-              select
-              margin="normal"
-              id="account-select"
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              fullWidth
-              label="plan"
-              required
-            >
-              <MenuItem value={"Free"}>Free</MenuItem>
-              <MenuItem value={"Premium"}>Premium</MenuItem>
-              <MenuItem value={"Team"}>Team</MenuItem>
-            </TextField>
-          </FormControl>
-
-          <Container sx={{ width: 'fit-content', marginBottom: '1em' }}>
-            <Button variant='contained' type='submit'>Confirm</Button>
-          </Container>
-          {
-            showSuccess &&
-            <Alert severity="success" sx={{ marginBottom: '1em' }}>
-              Plan successfully changed.
-            </Alert>
-          }
-        </form>
-      </Container>
-    </>
-  );
-}
-
-
-function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
+function DeleteAccountForm() {
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
   const authContext = useContext(AuthContext);
@@ -384,18 +299,12 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
         border: '1px solid #dddddd',
         borderRadius: '1em',
         maxWidth: '100%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative',
-        paddingTop: '2em'
       }}>
         <form onSubmit={(e) => {
           e.preventDefault()
           console.log('submited');
 
         }}>
-
-
           <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '20px', fontWeight: '600' }}>
             Are you sure you wish to delete your account?
           </Typography>
@@ -447,11 +356,9 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
 
 
             }}>Delete</Button>
-            <Button variant='contained' sx={{ margin: '1em' }} onClick={() => setShowElement(false)}>Cancel</Button>
           </Container>
         </form>
       </Container>
-
     </>
   )
 }
@@ -488,7 +395,7 @@ export default function ProfileManagementPage() {
               variant="h5" 
               fontWeight={"bold"}
             >
-              Dashboard
+              Settings
             </Typography>
           </Grid>
 
@@ -514,7 +421,6 @@ export default function ProfileManagementPage() {
           height={"92%"}
           padding={"20px"}
           paddingTop={"0"}
-          gap={"20px"}
         >
           <Paper 
             elevation={10} 
@@ -542,22 +448,22 @@ export default function ProfileManagementPage() {
               container
               direction={"column"}
               alignItems={"flex-start"}
-              gap={1}
+              gap={3}
             >
               <DropDown
                 setShowElement={setShowChangeAccountType}
                 showElement={showChangeAccountType}
-                text={"Change Account Type"}
+                text={"Change Plan"}
                 bgc={"#7B54E8"}
-                element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
+                element={<ChangeAccountTypeForm />}
               />
 
               <DropDown 
                 setShowElement={setShowChangeEmail} 
                 showElement={showChangeEmail} 
-                text={"Update Email"} 
+                text={"Change Email"} 
                 bgc={"#7B54E8"} 
-                element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} 
+                element={<ChangeEmailForm />} 
               />
 
               <DropDown 
@@ -565,7 +471,7 @@ export default function ProfileManagementPage() {
                 showElement={showChangePass} 
                 text={"Change password"} 
                 bgc={"#7B54E8"} 
-                element={<ChangePasswordForm setShowElement={setShowChangePass} />} 
+                element={<ChangePasswordForm />} 
               />
 
               <DropDown 
@@ -573,7 +479,7 @@ export default function ProfileManagementPage() {
                 showElement={showDeleteAcc} 
                 text={"Delete account"} 
                 bgc='red' 
-                element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} 
+                element={<DeleteAccountForm />} 
               />
             </Grid>
           </Paper>

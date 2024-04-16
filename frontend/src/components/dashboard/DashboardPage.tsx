@@ -132,7 +132,9 @@ function InvoiceView() {
   return (
     <>
       <Typography variant="h1">{invoiceName}</Typography>
-      <Typography>{xmlData}</Typography>
+      <pre>
+        {xmlData}
+      </pre>
     </>
   );
 }
