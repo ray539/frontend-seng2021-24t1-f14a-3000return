@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Container, TextField, Button, Alert, Typography, Link, Grid } from '@mui/material';
+import { Container, TextField, Button, Alert, Typography, Link, Grid, MenuItem } from '@mui/material';
 import { registerUser } from "../service/service";
 
 export default function RegisterPage() {
@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showError, setShowError] = useState(false);
+  const [plan, setPlan] = useState('');
   const authContext = useContext(AuthContext);
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -19,7 +20,8 @@ export default function RegisterPage() {
       setShowError(true);
       return;
     }
-    const user = await registerUser(username, email, password)
+    const user = await registerUser(username, email, password, plan)
+    console.log(plan)
     if (user == null) {
       setShowError(true);
       return;
@@ -72,6 +74,20 @@ export default function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+        <TextField
+          select
+          margin="normal"
+          id="account-select"
+          value={plan}
+          onChange={(e) => setPlan(e.target.value)}
+          fullWidth
+          label="Label"
+          required
+        >
+          <MenuItem value={"Free"}>Free</MenuItem>
+          <MenuItem value={"Premium"}>Premium</MenuItem>
+          <MenuItem value={"Team"}>Team</MenuItem>
+        </TextField>
         {showError && <Alert severity="error">Passwords do not match or user already exists</Alert>}
         <Button
           type="submit"
