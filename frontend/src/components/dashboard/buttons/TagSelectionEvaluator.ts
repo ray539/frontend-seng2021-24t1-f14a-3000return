@@ -27,7 +27,7 @@ export function evaluateString(invoice: EInvoiceItem, selectionString: string) {
     let v = selectionString.match(/^[A-Z0-9_-]+/)
     if (v) {
       let variable = v[0]
-      if (tags.join('?').match(new RegExp(selectionString))) {
+      if (tags.includes(variable)) {
         evalStr += 'true '
       } else {
         evalStr += 'false '
