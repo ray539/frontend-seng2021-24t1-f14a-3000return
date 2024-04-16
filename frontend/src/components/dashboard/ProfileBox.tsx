@@ -17,7 +17,7 @@ export default function ProfileBox() {
         <br />
         <Link href="/user/profile" variant="body2">
           Manage account
-        </Link>➡️
+        </Link> →
       </Grid>
       <br />
       <Container>
