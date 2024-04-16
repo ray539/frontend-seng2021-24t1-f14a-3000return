@@ -5,6 +5,7 @@ export interface UserProfile {
   username: string,
   email: string,
   password: string,
+  accountType: string
 }
 
 export interface EInvoice {
@@ -25,13 +26,15 @@ export const USERS: UserProfile[] = [
     id: '0',
     username: 'user1',
     email: 'user1@example.com',
-    password: 'pass1'
+    password: 'pass1',
+    accountType: ""
   },
   {
     id: '1',
     username: 'user2',
     email: 'user2@example.com',
-    password: 'pass2'
+    password: 'pass2',
+    accountType: ""
   },
 ];
 
@@ -93,7 +96,7 @@ export function logInAndGetUser(username: string, password: string) {
   return { ...u };
 }
 
-export function registerUser(username: string, email: string, password: string): UserProfile | null {
+export function registerUser(username: string, email: string, password: string, accountType: string): UserProfile | null {
   // Check if the username or email is already taken
   if (USERS.some(user => user.username === username || user.email === email)) {
     return null; // Return null if username or email is already taken
@@ -108,7 +111,8 @@ export function registerUser(username: string, email: string, password: string):
     id,
     username,
     email,
-    password
+    password,
+    accountType,
   };
 
   USERS.push(newUser);

@@ -5,25 +5,28 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import CreateIcon from '@mui/icons-material/Create';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { EInvoiceItem } from '../../../data';
+import LockIcon from '@mui/icons-material/Lock';
+import { AuthContext } from '../../../context/AuthContextProvider';
 
 
-function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) {
+function GetStartedPopup({ setPopup }: { Popup: boolean, setPopup: Function }) {
   const navigate = useNavigate();
-  
+
   const closePopup = () => {
     setPopup(false);
   }
 
   return (
     <>
-      <Dialog 
+      <Dialog
         maxWidth={"md"}
-        onClose={closePopup} 
+        onClose={closePopup}
         open
       >
         <Grid
@@ -110,7 +113,7 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
               </Grid>
             </Button>
           </Grid>
-          
+
           <Grid
             container
             direction={"column"}
@@ -154,33 +157,50 @@ function GetStartedPopup({ setPopup }: {  Popup: boolean, setPopup: Function }) 
   )
 }
 
-export default function GetStartedButton() {
+export default function GetStartedButton({ invoices }: { invoices: EInvoiceItem[] }) {
   const [Popup, setPopup] = useState(false);
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
   const openPopup = () => {
-		setPopup(true);
+    setPopup(true);
   }
 
-  return ( 
+  const numItems = invoices.length;
+
+  return (
     <>
-			<Button
-				type="submit"
-				fullWidth
-				variant="contained"
-				sx={{
-          fontWeight: "bold",
-					backgroundColor: "#28ed8e",
-					'&:hover': {
-						backgroundColor: "#44e397",
-					}
-				}}
-				// onClick={() => {
-				// 	navigate("/user/get-started");
-				// }}
-        onClick={openPopup}
-			>
-				Start eInvoicing
-			</Button>
+      {user?.accountType === "Free" && numItems >= 5 ? (
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          endIcon={<LockIcon />}
+          sx={{
+            fontWeight: "bold",
+            backgroundColor: "#cccccc",
+            pointerEvents: "none",
+          }}
+        >
+          Upgrade to Premium for more invoices
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{
+            fontWeight: "bold",
+            backgroundColor: "#28ed8e",
+            '&:hover': {
+              backgroundColor: "#44e397",
+            }
+          }}
+          onClick={openPopup}
+        >
+          Get Started
+        </Button>
+      )}
 
       {Popup && <GetStartedPopup Popup={Popup} setPopup={setPopup} />}
     </>

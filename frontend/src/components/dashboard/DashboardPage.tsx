@@ -22,7 +22,7 @@ function Dashboard() {
 
   return (
     <>
-      <Grid 
+      <Grid
         item
         height={"100vh"}
         bgcolor={"#7B54E8"}
@@ -59,9 +59,9 @@ function Dashboard() {
             </>
           ) : (
             // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button 
+            <Button
               variant="contained"
-              href="/" 
+              href="/"
               role="button"
               sx={{
                 backgroundColor: "#060C2A",
@@ -77,9 +77,9 @@ function Dashboard() {
           )}
         </Grid>
 
-        <Grid 
-          container 
-          justifyContent={"space-between"} 
+        <Grid
+          container
+          justifyContent={"space-between"}
           wrap="nowrap"
           height={"92%"}
           padding={"20px"}

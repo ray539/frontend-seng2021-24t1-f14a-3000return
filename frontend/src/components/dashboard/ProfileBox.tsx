@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 export default function ProfileBox() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
+  const user = authContext.currentUser;
 
   return (
     <>
@@ -35,7 +36,7 @@ export default function ProfileBox() {
       <br />
       <Container>
         <Typography variant="h6">
-          Current plan: Premium <br />
+          Current plan: {user?.accountType} <br />
         </Typography>
         <Typography variant="h6">
           Your team:

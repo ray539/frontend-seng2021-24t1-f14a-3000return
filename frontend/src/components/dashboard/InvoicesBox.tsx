@@ -32,8 +32,8 @@ export default function InvoicesBox() {
     getInvoicesBelongingTo(user!.username, user!.password).then((invoices) =>
       setInvoices(invoices)
     );
-  }, []);
-  
+  }, [user]);
+
   // function changePdfButtonMsg(
   //   msg:
   // 		| "generate pdf"
@@ -61,7 +61,7 @@ export default function InvoicesBox() {
             <Typography variant="h4" fontWeight={"bold"}>Invoices</Typography>
           </Grid>
           <Grid item width={buttonWidth}>
-            <GetStartedButton />
+            <GetStartedButton invoices={invoices} />
           </Grid>
         </Grid>
       </>
@@ -81,9 +81,9 @@ export default function InvoicesBox() {
             xs
             paddingRight={"8px"}
           >
-            <TextField 
-              label="Search invoices" 
-              variant="outlined" 
+            <TextField
+              label="Search invoices"
+              variant="outlined"
               size="small"
               fullWidth
               value={search}
@@ -92,8 +92,8 @@ export default function InvoicesBox() {
               }}
             />
           </Grid>
-          <Grid 
-            container 
+          <Grid
+            container
             width={buttonWidth}
             gap={"8px"}
           >
@@ -104,7 +104,7 @@ export default function InvoicesBox() {
               <SendButton invoices={invoices} />
             </Grid>
             <Grid item xs>
-              <DeleteButton invoices={invoices} setInvoices={setInvoices}/>
+              <DeleteButton invoices={invoices} setInvoices={setInvoices} />
             </Grid>
           </Grid>
         </Grid>
@@ -120,7 +120,6 @@ export default function InvoicesBox() {
         invoice.name
       );
 
-      // console.log(xmlData);
       const link = await getPdfLink(
         user!.username,
         user!.password,
@@ -132,9 +131,9 @@ export default function InvoicesBox() {
 
     return (
       <>
-        <Grid 
-          container 
-          key={invoice.id} 
+        <Grid
+          container
+          key={invoice.id}
           wrap="nowrap"
           paddingLeft={2}
           paddingRight={2}
@@ -151,17 +150,17 @@ export default function InvoicesBox() {
                   }}
                 />
               }
-              label={invoice.name} // Set the label of the checkbox to be the name of the invoice
-              labelPlacement="end" // Align the label to the start of the checkbox
+              label={invoice.name}
+              labelPlacement="end"
             />
           </Box>
-          <Grid 
+          <Grid
             container
             justifyContent={"flex-end"}
             gap={1}
           >
             <Tooltip title="View eInvoice">
-              <IconButton 
+              <IconButton
                 aria-label="View"
                 onClick={() => {
                   window.open(`/user/view-invoice/${invoice.name}`);
@@ -170,19 +169,33 @@ export default function InvoicesBox() {
                 <VisibilityIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Generate PDF">
-              <IconButton 
-                aria-label="PDF"
-                onClick={getPDF}
-              >
-                <PictureAsPdfIcon />
-              </IconButton>
-            </Tooltip>
+            {!user || user.accountType !== 'Free' ? (
+              <Tooltip title="Generate PDF">
+                <IconButton
+                  aria-label="PDF"
+                  onClick={getPDF}
+                >
+                  <PictureAsPdfIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Upgrade to Premium to generate PDF">
+                <span>
+                  <IconButton
+                    aria-label="PDF"
+                    disabled
+                  >
+                    <PictureAsPdfIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
           </Grid>
         </Grid>
       </>
-    )
+    );
   }
+
 
   function Invoices() {
     const [selectAll, setSelectAll] = useState(false);
@@ -199,13 +212,13 @@ export default function InvoicesBox() {
             bgcolor: "#F1E8FF",
           }}
         >
-          <Grid 
-            container 
+          <Grid
+            container
             wrap="nowrap"
             paddingLeft={2}
             paddingRight={2}
           >
-            <Box 
+            <Box
               width={"100%"}
               borderBottom={"1px solid black"}
             >
@@ -236,7 +249,7 @@ export default function InvoicesBox() {
                 .map((invoice, i) => (
                   Invoice(invoice, i)
                 )
-              )
+                )
             )
           }
         </Grid>
@@ -246,7 +259,7 @@ export default function InvoicesBox() {
 
   return (
     <>
-      <Grid 
+      <Grid
         container
         height={"100%"}
         alignContent={"flex-start"}

@@ -11,6 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
 
 function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function }) {
   const authContext = useContext(AuthContext);
@@ -113,9 +114,11 @@ function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: bo
   )
 }
 
-export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
+export default function SendButton({ invoices }: { invoices: EInvoiceItem[] }) {
   const [Popup, setPopup] = useState(false);
   const [Error, setError] = useState(false);
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
   const openPopup = () => {
     if (!invoices.find(i => i.checked)) {
@@ -125,31 +128,42 @@ export default function SendButton({invoices}: {invoices : EInvoiceItem[]} ) {
     }
   }
 
-  return ( 
+  return (
     <>
-      <Button 
-        variant="contained" 
-        fullWidth 
-				sx={{
-					backgroundColor: "#7B54E8",
-					'&:hover': {
-						backgroundColor: "#6a47cd",
-					}
-				}}
-        onClick={openPopup}
-      >
-        <Grid 
-          container 
-          justifyContent={"space-between"} 
-          alignItems={"center"}
-          wrap="nowrap"
+      {user && user.accountType != "Free" ? (
+        <Button 
+          variant="contained" 
+          fullWidth 
+          sx={{
+            backgroundColor: "#7B54E8",
+            '&:hover': {
+              backgroundColor: "#6a47cd",
+            }
+          }}
+          onClick={openPopup}
         >
-          <EmailIcon /> Send <Box></Box> 
-        </Grid>
-      </Button>
-      
+          <Grid 
+            container 
+            justifyContent={"space-between"} 
+            alignItems={"center"}
+            wrap="nowrap"
+          >
+            <EmailIcon /> Send <Box></Box> 
+          </Grid>
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          fullWidth
+          disabled
+          endIcon={<LockIcon />}
+        >
+          Send
+        </Button>
+      )}
+
       {Popup && <SendPopup invoices={invoices} Popup={Popup} setPopup={setPopup} />}
-      {Error && <ErrorPopup Popup={Error} setPopup={setError}/>}
+      {Error && <ErrorPopup Popup={Error} setPopup={setError} />}
     </>
   );
 }
