@@ -2,11 +2,12 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser, updateAccountType } from "../../service/service";
 import logo from '../../assets/blacklogo.png'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { PrettyBox } from "../PrettyBox";
 
 
 function DropDown({ text, bgc, element, showElement, setShowElement }: { text: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
@@ -424,67 +425,64 @@ export default function ProfileManagementPage() {
           padding={"20px"}
           paddingTop={"0"}
         >
-          <Paper 
-            elevation={10} 
-            square
-            sx={{ 
-              padding: "20px",
-              width: "100%",
-              height: "fit-content"
-            }}
-          >
-            
-            <Grid 
-              container
-              alignItems={"center"}
-              gap={1}
-              marginBottom={"20px"}
-            >
-              <AccountCircleIcon fontSize="large"/> 
-              <Typography variant="h5">
-                {authContext.currentUser?.username}
-              </Typography>
-            </Grid>
+          <PrettyBox
+            width="100%" 
+            colour="#060C2A"
+            element={
+              <>
+                <Grid 
+                  container
+                  alignItems={"center"}
+                  gap={1}
+                  marginBottom={"20px"}
+                >
+                  <AccountCircleIcon fontSize="large"/> 
+                  <Typography variant="h5">
+                    {authContext.currentUser?.username}
+                  </Typography>
+                </Grid>
 
-            <Grid 
-              container
-              direction={"column"}
-              alignItems={"flex-start"}
-              gap={3}
-            >
-              <DropDown
-                setShowElement={setShowChangeAccountType}
-                showElement={showChangeAccountType}
-                text={"Change Plan"}
-                bgc={"#7B54E8"}
-                element={<ChangeAccountTypeForm />}
-              />
+                <Grid 
+                  container
+                  direction={"column"}
+                  alignItems={"flex-start"}
+                  gap={3}
+                >
+                  <DropDown
+                    setShowElement={setShowChangeAccountType}
+                    showElement={showChangeAccountType}
+                    text={"Change Plan"}
+                    bgc={"#7B54E8"}
+                    element={<ChangeAccountTypeForm />}
+                  />
 
-              <DropDown 
-                setShowElement={setShowChangeEmail} 
-                showElement={showChangeEmail} 
-                text={"Change Email"} 
-                bgc={"#7B54E8"} 
-                element={<ChangeEmailForm />} 
-              />
+                  <DropDown 
+                    setShowElement={setShowChangeEmail} 
+                    showElement={showChangeEmail} 
+                    text={"Change Email"} 
+                    bgc={"#7B54E8"} 
+                    element={<ChangeEmailForm />} 
+                  />
 
-              <DropDown 
-                setShowElement={setShowChangePass} 
-                showElement={showChangePass} 
-                text={"Change password"} 
-                bgc={"#7B54E8"} 
-                element={<ChangePasswordForm />} 
-              />
+                  <DropDown 
+                    setShowElement={setShowChangePass} 
+                    showElement={showChangePass} 
+                    text={"Change password"} 
+                    bgc={"#7B54E8"} 
+                    element={<ChangePasswordForm />} 
+                  />
 
-              <DropDown 
-                setShowElement={setShowDeleteAcc} 
-                showElement={showDeleteAcc} 
-                text={"Delete account"} 
-                bgc='red' 
-                element={<DeleteAccountForm />} 
-              />
-            </Grid>
-          </Paper>
+                  <DropDown 
+                    setShowElement={setShowDeleteAcc} 
+                    showElement={showDeleteAcc} 
+                    text={"Delete account"} 
+                    bgc='red' 
+                    element={<DeleteAccountForm />} 
+                  />
+                </Grid>
+              </>
+            }
+          />
         </Grid>
       </Box>
     </>

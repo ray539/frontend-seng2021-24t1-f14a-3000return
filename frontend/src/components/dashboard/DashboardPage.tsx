@@ -11,10 +11,10 @@ import {
 } from "../../service/service";
 import {
   Button, Typography, Grid, Link,
-  Paper,
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
 import logo from '../../assets/blacklogo.png'
+import { PrettyBox } from "../PrettyBox";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -70,26 +70,25 @@ function Dashboard() {
           paddingTop={"0"}
           gap={"20px"}
         >
-          <Paper 
-            elevation={10} 
-            square
-            sx={{ 
-              padding: "20px",
-              width: "18%"
-            }}
-          >
-            <ProfileBox />
-          </Paper>
-          <Paper 
-            elevation={10} 
-            square
-            sx={{ 
-              width: "85%",
-              padding: "20px"
-            }}
-          >
-            <InvoicesBox />
-          </Paper>
+          <PrettyBox
+            width="20%" 
+            colour="#060C2A" 
+            element={ 
+              <>
+                <ProfileBox />
+              </>
+            }
+          />
+
+          <PrettyBox 
+            width="80%" 
+            colour="#060C2A" 
+            element={
+              <>
+                <InvoicesBox />
+              </>
+            }
+          />
         </Grid>
       </Grid>
     </>

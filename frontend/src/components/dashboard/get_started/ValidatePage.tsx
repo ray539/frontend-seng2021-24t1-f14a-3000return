@@ -6,13 +6,13 @@ import {
   Dialog,
   DialogTitle,
   Grid,
-  Paper,
   Alert,
 } from "@mui/material";
 import { addInvoiceToUser, validateFile } from "../../../service/service";
 import { AuthContext } from "../../../context/AuthContextProvider";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import logo from '../../../assets/blacklogo.png'
+import { PrettyBox } from "../../PrettyBox";
 
 type ValidationOutcome = "" | "loading" | "successful" | "unsuccessful";
 
@@ -145,119 +145,120 @@ export default function ValidatePage() {
           justifyContent={"space-between"}
           height={"92%"}
         >
-          <Paper
-            elevation={10} 
-            square
-            sx={{ 
-              width: "100%",
-            }}
-          >
-            <Grid
-              container
-              direction={"column"}
-              wrap="nowrap"
-              padding={2}
-              height={"100%"}
-            >
-              <Typography variant="h3">Upload your eInvoice</Typography>
-              <br />
-              <Button
-                component="label"
-                variant="outlined"
-                startIcon={<CloudUploadIcon />}
-                sx={{
-                  height: "60%",
-                  color: "#7B54E8",
-                  backgroundColor: "#F1E8FF",
-                  borderColor: "#7B54E8",
-                  '&:hover': {
-                    borderColor: "#7B54E8",
-                  }
-                }}
-              >
-                Upload file
-                <input type="file" onChange={handleFileChange} hidden />
-              </Button>
-              <br />
-              {warning && <Alert severity="error">Error: the file must be XML</Alert>}
-              {file && (
-                <div>
-                  <Typography variant="body1">
-                    File details: <br />
-                    Name: 
-                    <input
-                      
-                      type="text"
-                      value={fileName !== '' ? fileName : (file ? file.name : '')}
-                      onChange={handleFileNameChange}
-                      disabled={submitted}
-                    />
+          <PrettyBox 
+            width="100%" 
+            colour="#060C2A"
+            element={
+              <>
+                  <Grid
+                    container
+                    direction={"column"}
+                    wrap="nowrap"
+                    padding={2}
+                    height={"100%"}
+                  >
+                    <Typography variant="h3">Upload your eInvoice</Typography>
                     <br />
-                    Size: {file.size} bytes
-                  </Typography>
-                </div>
-              )}
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      startIcon={<CloudUploadIcon />}
+                      sx={{
+                        height: "60%",
+                        color: "#7B54E8",
+                        backgroundColor: "#F1E8FF",
+                        borderColor: "#7B54E8",
+                        '&:hover': {
+                          borderColor: "#7B54E8",
+                        }
+                      }}
+                    >
+                      Upload file
+                      <input type="file" onChange={handleFileChange} hidden />
+                    </Button>
+                    <br />
+                    {warning && <Alert severity="error">Error: the file must be XML</Alert>}
+                    {file && (
+                      <div>
+                        <Typography variant="body1">
+                          File details: <br />
+                          Name: 
+                          <input
+                            
+                            type="text"
+                            value={fileName !== '' ? fileName : (file ? file.name : '')}
+                            onChange={handleFileNameChange}
+                            disabled={submitted}
+                          />
+                          <br />
+                          Size: {file.size} bytes
+                        </Typography>
+                      </div>
+                    )}
 
-              <br />
+                    <br />
 
-              <Button 
-                variant="contained"
-                disabled={!file || validationOutcome === "loading"} 
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#28ed8e",
-                  '&:hover': {
-                    backgroundColor: "#44e397",
-                  }
-                }}
-                onClick={handleFileSubmit} 
-              >
-                Submit
-              </Button>
+                    <Button 
+                      variant="contained"
+                      disabled={!file || validationOutcome === "loading"} 
+                      sx={{
+                        fontWeight: "bold",
+                        backgroundColor: "#28ed8e",
+                        '&:hover': {
+                          backgroundColor: "#44e397",
+                        }
+                      }}
+                      onClick={handleFileSubmit} 
+                    >
+                      Submit
+                    </Button>
 
-              <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-                <Grid
-                  container
-                  direction={"column"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  padding={"20px"}
-                  paddingTop={0}
-                >
-                  <DialogTitle>{dialogMessage}</DialogTitle>
-                  {validationOutcome === "successful" ? (
-                    <>
-                      <Typography variant="body1">
-                        Your file has been successfully validated.
-                      </Typography>
-                      <br />
-                      <Button 
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "#060C2A",
-                          borderRadius: "100px",
-                          '&:hover': {
-                            backgroundColor: "#7B54E8",
-                          }
-                        }}
-                        disabled={!file || validationOutcome !== "successful"} 
-                        onClick={() => { handleFileStore(); navigate("/user"); }}
+                    <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+                      <Grid
+                        container
+                        direction={"column"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        padding={"20px"}
+                        paddingTop={0}
                       >
-                        Store
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Typography variant="body1">
-                        {validationReason}
-                      </Typography>
-                      <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
-                    </>
-                  )}
-                </Grid>
-              </Dialog>
-            </Grid>
-          </Paper>
+                        <DialogTitle>{dialogMessage}</DialogTitle>
+                        {validationOutcome === "successful" ? (
+                          <>
+                            <Typography variant="body1">
+                              Your file has been successfully validated.
+                            </Typography>
+                            <br />
+                            <Button 
+                              variant="contained"
+                              sx={{
+                                backgroundColor: "#060C2A",
+                                borderRadius: "100px",
+                                '&:hover': {
+                                  backgroundColor: "#7B54E8",
+                                }
+                              }}
+                              disabled={!file || validationOutcome !== "successful"} 
+                              onClick={() => { handleFileStore(); navigate("/user"); }}
+                            >
+                              Store
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Typography variant="body1">
+                              {validationReason}
+                            </Typography>
+                            <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
+                          </>
+                        )}
+                      </Grid>
+                    </Dialog>
+                  </Grid>
+              </>
+            }
+          />
+          
         </Grid>
       </Grid>
     </>
