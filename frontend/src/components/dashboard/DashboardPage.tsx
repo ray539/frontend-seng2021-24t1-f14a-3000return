@@ -48,15 +48,13 @@ function Dashboard() {
 
           <Button
             variant="contained"
-            href="/"
-            role="button"
             sx={{
               backgroundColor: "#060C2A",
               borderRadius: "100px"
             }}
             onClick={() => {
               authContext.setCurrentUser(null);
-              navigate("/");
+              navigate("/login");
             }}
           >
             Sign Out
@@ -77,7 +75,7 @@ function Dashboard() {
             square
             sx={{ 
               padding: "20px",
-              width: "20%"
+              width: "18%"
             }}
           >
             <ProfileBox />
@@ -86,7 +84,7 @@ function Dashboard() {
             elevation={10} 
             square
             sx={{ 
-              width: "80%", 
+              width: "85%",
               padding: "20px"
             }}
           >

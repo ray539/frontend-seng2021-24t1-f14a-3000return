@@ -14,8 +14,8 @@ function DropDown({ text, bgc, element, showElement, setShowElement }: { text: s
     <>
       <Button
         variant="contained"
-        fullWidth
         sx={{
+          width: "30%",
           backgroundColor: "#060C2A",
           '&:hover': {
             backgroundColor: bgc,
@@ -58,14 +58,16 @@ function ChangeAccountTypeForm() {
 
   return (
     <>
-      <Container
+      <Grid
+        width={"100%"}
+        padding={2}
         sx={{
           border: '1px solid #dddddd',
           borderRadius: '1em',
         }}
       >
         <form onSubmit={handleSubmit}>
-          <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
+          <FormControl fullWidth>
             <TextField
               select
               margin="normal"
@@ -92,7 +94,7 @@ function ChangeAccountTypeForm() {
             </Alert>
           }
         </form>
-      </Container>
+      </Grid>
     </>
   );
 }
