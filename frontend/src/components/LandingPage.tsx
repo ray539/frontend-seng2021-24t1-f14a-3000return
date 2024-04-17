@@ -109,8 +109,12 @@ export default function LandingPage() {
               variant="contained"
               sx={{
                 height: "40px",
-                backgroundColor: "#060C2A",
-                borderRadius: "100px"
+                borderRadius: "100px",
+                fontWeight: "bold",
+                backgroundColor: "#28ed8e",
+                '&:hover': {
+                  backgroundColor: "#44e397",
+                }
               }}
             >
               Get started
