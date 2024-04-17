@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { TextField, Button, Alert, Typography, Link, Grid, MenuItem, Paper } from '@mui/material';
+import { TextField, Button, Alert, Typography, Link, Grid, MenuItem } from '@mui/material';
 import { registerUser } from "../service/service";
 import logo from '../assets/logo.png'
+import { PrettyBox } from "./PrettyBox";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -176,49 +177,46 @@ export default function RegisterPage() {
             Our plans
           </Typography>
           
-          <Paper
-            elevation={10} 
-            square
-            sx={{ 
-              padding: "20px",
-              width: "90%"
-            }}
-          >
-            <Typography variant="h5" fontWeight={"bold"}>Free</Typography>
-            <Typography variant="subtitle1">
-              New to eInvoicing?<br />
-              Begin with our free plan.
-            </Typography>
-          </Paper>
+          <PrettyBox 
+            width="100%" 
+            colour="#060C2A"
+            element={
+              <>
+                <Typography variant="h5" fontWeight={"bold"}>Free</Typography>
+                <Typography variant="subtitle1">
+                  New to eInvoicing?<br />
+                  Begin with our free plan.
+                </Typography>
+              </>
+            }
+          />
           
-          <Paper
-            elevation={10} 
-            square
-            sx={{ 
-              padding: "20px",
-              width: "90%"
-            }}
-          >
-            <Typography variant="h5" fontWeight={"bold"}>Premium</Typography>
-            <Typography variant="subtitle1">
-              Want additional features?<br />
-              Select the premium plan
-            </Typography>
-          </Paper>
+          <PrettyBox 
+            width="100%" 
+            colour="#060C2A"
+            element={
+              <>
+                <Typography variant="h5" fontWeight={"bold"}>Premium</Typography>
+                <Typography variant="subtitle1">
+                  Want additional features?<br />
+                  Select the premium plan
+                </Typography>
+              </>
+            }
+          />
           
-          <Paper
-            elevation={10} 
-            square
-            sx={{ 
-              padding: "20px",
-              width: "90%"
-            }}
-          >
-            <Typography variant="h5" fontWeight={"bold"}>Team</Typography>
-            <Typography variant="subtitle1">
-              Coming soon!
-            </Typography>
-          </Paper>
+          <PrettyBox 
+            width="100%" 
+            colour="#060C2A"
+            element={
+              <>
+                <Typography variant="h5" fontWeight={"bold"}>Team</Typography>
+                <Typography variant="subtitle1">
+                  Coming soon!
+                </Typography>
+              </>
+            }
+          />
         </Grid>
       </Grid>
     </>

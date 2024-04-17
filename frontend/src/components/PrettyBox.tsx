@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import React from "react";
 
 
@@ -12,9 +12,21 @@ export function PrettyBox ({ width, element, colour } : {width: string, element:
         width={width}
         paddingRight={size}
         paddingBottom={size}
-      >
-        {element}
-
+      > 
+        <Paper
+          elevation={10} 
+          square
+          sx={{ 
+            boxSizing: "border-box",
+            width: "100%",
+            height: "100%",
+            padding: "20px",
+            zIndex: "1"
+          }}
+        >
+          {element}
+        </Paper>
+        
         <Box
           position={"relative"}
           zIndex={"0"}

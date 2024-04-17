@@ -11,11 +11,10 @@ import {
 } from "../../service/service";
 import {
   Button, Typography, Grid, Link,
-  Paper,
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
 import logo from '../../assets/blacklogo.png'
-import { PrettyBox } from "./PrettyBox";
+import { PrettyBox } from "../PrettyBox";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -76,19 +75,7 @@ function Dashboard() {
             colour="#060C2A" 
             element={ 
               <>
-                <Paper 
-                  elevation={10} 
-                  square
-                  sx={{ 
-                    boxSizing: "border-box",
-                    width: "100%",
-                    height: "100%",
-                    padding: "20px",
-                    zIndex: "1"
-                  }}
-                >
-                  <ProfileBox />
-                </Paper>
+                <ProfileBox />
               </>
             }
           />
@@ -98,54 +85,10 @@ function Dashboard() {
             colour="#060C2A" 
             element={
               <>
-                <Paper 
-                  elevation={10} 
-                  square
-                  sx={{ 
-                    boxSizing: "border-box",
-                    width: "100%",
-                    height: "100%",
-                    padding: "20px",
-                    zIndex: "1"
-                  }}
-                >
-                  <InvoicesBox />
-                </Paper>
+                <InvoicesBox />
               </>
             }
           />
-          
-          {/* <Grid 
-            container
-            width={"84%"}
-            paddingRight={backgroundBox}
-            paddingBottom={backgroundBox}
-          >
-            <Paper 
-              elevation={10} 
-              square
-              sx={{ 
-                boxSizing: "border-box",
-                width: "100%",
-                height: "100%",
-                padding: "20px",
-                zIndex: "1"
-              }}
-            >
-              <InvoicesBox />
-            </Paper>
-
-            <Box
-              position={"relative"}
-              zIndex={"0"}
-              bgcolor={"#060C2A"}
-              width={"100%"}
-              height={"100%"}
-              marginTop={backgroundBox}
-              left={backgroundBox}
-              bottom={"100%"}
-            />
-          </Grid> */}
         </Grid>
       </Grid>
     </>
