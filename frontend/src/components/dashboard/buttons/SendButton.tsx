@@ -6,9 +6,11 @@ import {
 } from "../../../service/service";
 import ErrorPopup from "./ErrorPopup";
 import {
+  Box,
   Button, Dialog, Grid, TextField,
   Typography
 } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 
 function SendPopup({ invoices, setPopup }: { invoices: EInvoiceItem[], Popup: boolean, setPopup: Function }) {
@@ -129,18 +131,25 @@ export default function SendButton({ invoices }: { invoices: EInvoiceItem[] }) {
   return (
     <>
       {user && user.accountType != "Free" ? (
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={openPopup}
+        <Button 
+          variant="contained" 
+          fullWidth 
           sx={{
             backgroundColor: "#7B54E8",
             '&:hover': {
               backgroundColor: "#6a47cd",
             }
           }}
+          onClick={openPopup}
         >
-          Send
+          <Grid 
+            container 
+            justifyContent={"space-between"} 
+            alignItems={"center"}
+            wrap="nowrap"
+          >
+            <EmailIcon /> Send <Box></Box> 
+          </Grid>
         </Button>
       ) : (
         <Button

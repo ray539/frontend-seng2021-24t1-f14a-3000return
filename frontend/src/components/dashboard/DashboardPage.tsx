@@ -11,10 +11,10 @@ import {
 } from "../../service/service";
 import {
   Button, Typography, Grid, Link,
-  Paper
+  Paper,
 } from '@mui/material';
 import ProfileManagementPage from './ProfileManagementPage'
-// import { Container } from "react-bootstrap";
+import logo from '../../assets/blacklogo.png'
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -29,72 +29,62 @@ function Dashboard() {
       >
         <Grid
           container
-          justifyContent={"space-between"}
-          height={"5%"}
-          padding={1}
-          paddingLeft={4}
-          paddingRight={4}
-        >
-          <Typography
-            variant="h5"
-            alignContent={"center"}
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          height={"8%"}
+          paddingLeft={"20px"}
+          paddingRight={"20px"}
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Dashboard
+            </Typography>
+          </Grid>
+
+          <Button
+            variant="contained"
             sx={{
-              flexGrow: 1
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              authContext.setCurrentUser(null);
+              navigate("/login");
             }}
           >
-            Dashboard
-          </Typography>
-
-          {authContext.currentUser == null ? (
-            <>
-              <Button variant="contained" color="primary" href="/login" role="button">
-                Sign In
-              </Button>
-              <Button variant="contained" color="primary" href="/register" role="button">
-                Sign Up
-              </Button>
-            </>
-          ) : (
-            // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button
-              variant="contained"
-              href="/"
-              role="button"
-              sx={{
-                backgroundColor: "#060C2A",
-                borderRadius: "100px"
-              }}
-              onClick={() => {
-                authContext.setCurrentUser(null);
-                navigate("/");
-              }}
-            >
-              Sign Out
-            </Button>
-          )}
+            Sign Out
+          </Button>
         </Grid>
 
         <Grid
           container
           justifyContent={"space-between"}
           wrap="nowrap"
-          height={"95%"}
+          height={"92%"}
           padding={"20px"}
+          paddingTop={"0"}
           gap={"20px"}
         >
-
-          <Paper
-            elevation={0}
-            sx={{
-              padding: "20px"
+          <Paper 
+            elevation={10} 
+            square
+            sx={{ 
+              padding: "20px",
+              width: "18%"
             }}
           >
             <ProfileBox />
           </Paper>
-          <Paper
-            elevation={0}
-            sx={{
-              width: "100%",
+          <Paper 
+            elevation={10} 
+            square
+            sx={{ 
+              width: "85%",
               padding: "20px"
             }}
           >

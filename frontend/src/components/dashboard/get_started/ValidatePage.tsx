@@ -1,33 +1,30 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Typography,
-  Container,
-  CircularProgress,
-  AppBar,
-  Toolbar,
   Dialog,
   DialogTitle,
-  DialogContent,
-  DialogActions,
+  Grid,
+  Paper,
+  Alert,
 } from "@mui/material";
 import { addInvoiceToUser, validateFile } from "../../../service/service";
 import { AuthContext } from "../../../context/AuthContextProvider";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import logo from '../../../assets/blacklogo.png'
 
 type ValidationOutcome = "" | "loading" | "successful" | "unsuccessful";
-type StoreOutcome = "" | "loading" | "stored" | "error";
 
 export default function ValidatePage() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
+  const navigate = useNavigate();
 
   const [file, setFile] = useState<File | null>(null);
   const [fileName] = useState('');
   const [warning, setWarning] = useState(false);
   const [validationOutcome, setValidationOutcome] = useState<ValidationOutcome>("");
-  const [storeOutcome, setStoreOutcome] = useState<StoreOutcome>("");
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [validationReason, setValidationReason] = useState("");
@@ -35,7 +32,6 @@ export default function ValidatePage() {
   const [submitted, setSubmitted] = useState(false);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValidationOutcome("");
-    setStoreOutcome("");
     setWarning(false);
     setSubmitted(false);
 
@@ -92,12 +88,10 @@ export default function ValidatePage() {
 
   const handleFileStore = async () => {
     try {
-      setStoreOutcome("loading");
       await addInvoiceToUser(user!.username, user!.password, file!)
       setSubmitted(true);
-      setStoreOutcome("stored");
     } catch (err) {
-      setStoreOutcome("error");
+      console.log("storage failed")
     }
   };
 
@@ -107,103 +101,165 @@ export default function ValidatePage() {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>
-            3000Return e-invoice application
-          </Typography>
-          <Button color="inherit" component={Link} to="/user">
-            Back
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Container>
-        <br />
-        <br />
-        <Typography variant="h2">Upload your invoice</Typography>
-        <br />
-        <br />
-        <br />
-        <div>
+      <Grid
+        container
+        direction={"column"}
+        bgcolor={"#7B54E8"}
+        height={"100vh"}
+        justifyContent={"center"}
+        padding={"20px"}
+        paddingTop={"0px"}
+      >
+        <Grid
+          container
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          height={"8%"}
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Validation
+            </Typography>
+          </Grid>
           <Button
-            component="label"
-            role={undefined}
             variant="contained"
-            startIcon={<CloudUploadIcon />}
+            sx={{
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              navigate("/user");
+            }}
           >
-            Upload file
-            <input type="file" onChange={handleFileChange} hidden />
+            Dashboard
           </Button>
-        </div>
-        <br />
-        {warning && <Typography variant="body1">Error: the file must be XML</Typography>}
-        {file && (
-          <div>
-            <Typography variant="body1">File details:</Typography>
-            <ul>
-            <li>
-              Name: 
-              <input
-                
-                type="text"
-                value={fileName !== '' ? fileName : (file ? file.name : '')}
-                onChange={handleFileNameChange}
-                disabled={submitted}
-              />
-            </li>
-              <li>Size: {file.size} bytes</li>
-            </ul>
-          </div>
-        )}
-        {file ? (
-          <Typography variant="body1">
-            Click submit. We will run some validation checks before allowing you to store it to our database
-          </Typography>
-        ) : (
-          <Typography variant="body1">Choose a file to upload</Typography>
-        )}
-        {validationOutcome && validationOutcome !== "loading" && (
-          <Typography variant="body1">Validation Outcome: {validationOutcome}</Typography>
-        )}
-        <Button disabled={!file || validationOutcome === "loading"} onClick={handleFileSubmit}>
-          Submit
-        </Button>
-        <Button disabled={!file || validationOutcome !== "successful"} onClick={handleFileStore}>
-          Store
-        </Button>
-        {storeOutcome && (
-          <Typography variant="body1">
-            Storage Outcome: {storeOutcome === "loading" ? <CircularProgress size={20} /> : storeOutcome}
-          </Typography>
-        )}
-        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
-          <DialogTitle>{dialogMessage}</DialogTitle>
-          <DialogContent>
-            {validationOutcome === "successful" ? (
-              <>
-                <Typography variant="body1">
-                  Your file has been successfully validated.
-                </Typography>
-                <Button disabled={!file || validationOutcome !== "successful"} onClick={() => { handleCloseDialog(); handleFileStore(); }}>
-                  Store
-                </Button>
-              </>
-            ) : (
-              <>
-                <Typography variant="body1">
-                  {validationReason}
-                </Typography>
-                <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
-              </>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Container>
+        </Grid>
+        
+        <Grid
+          container
+          justifyContent={"space-between"}
+          height={"92%"}
+        >
+          <Paper
+            elevation={10} 
+            square
+            sx={{ 
+              width: "100%",
+            }}
+          >
+            <Grid
+              container
+              direction={"column"}
+              wrap="nowrap"
+              padding={2}
+              height={"100%"}
+            >
+              <Typography variant="h3">Upload your eInvoice</Typography>
+              <br />
+              <Button
+                component="label"
+                variant="outlined"
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  height: "60%",
+                  color: "#7B54E8",
+                  backgroundColor: "#F1E8FF",
+                  borderColor: "#7B54E8",
+                  '&:hover': {
+                    borderColor: "#7B54E8",
+                  }
+                }}
+              >
+                Upload file
+                <input type="file" onChange={handleFileChange} hidden />
+              </Button>
+              <br />
+              {warning && <Alert severity="error">Error: the file must be XML</Alert>}
+              {file && (
+                <div>
+                  <Typography variant="body1">
+                    File details: <br />
+                    Name: 
+                    <input
+                      
+                      type="text"
+                      value={fileName !== '' ? fileName : (file ? file.name : '')}
+                      onChange={handleFileNameChange}
+                      disabled={submitted}
+                    />
+                    <br />
+                    Size: {file.size} bytes
+                  </Typography>
+                </div>
+              )}
+
+              <br />
+
+              <Button 
+                variant="contained"
+                disabled={!file || validationOutcome === "loading"} 
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#28ed8e",
+                  '&:hover': {
+                    backgroundColor: "#44e397",
+                  }
+                }}
+                onClick={handleFileSubmit} 
+              >
+                Submit
+              </Button>
+
+              <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+                <Grid
+                  container
+                  direction={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  padding={"20px"}
+                  paddingTop={0}
+                >
+                  <DialogTitle>{dialogMessage}</DialogTitle>
+                  {validationOutcome === "successful" ? (
+                    <>
+                      <Typography variant="body1">
+                        Your file has been successfully validated.
+                      </Typography>
+                      <br />
+                      <Button 
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#060C2A",
+                          borderRadius: "100px",
+                          '&:hover': {
+                            backgroundColor: "#7B54E8",
+                          }
+                        }}
+                        disabled={!file || validationOutcome !== "successful"} 
+                        onClick={() => { handleFileStore(); navigate("/user"); }}
+                      >
+                        Store
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="body1">
+                        {validationReason}
+                      </Typography>
+                      <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
+                    </>
+                  )}
+                </Grid>
+              </Dialog>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
     </>
   );
 }

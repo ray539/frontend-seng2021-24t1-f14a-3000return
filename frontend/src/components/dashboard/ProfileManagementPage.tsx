@@ -2,68 +2,104 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContextProvider";
-import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, FormControl, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changeEmail, changePassword, deleteAccount, logInAndGetUser, updateAccountType } from "../../service/service";
+import logo from '../../assets/blacklogo.png'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
-function BackButton() {
-  const navigate = useNavigate();
-  return (
-    <Box sx={{
-      background: 'black',
-      color: 'white',
-      padding: '0.5em',
-      borderRadius: '1em',
-      display: 'flex',
-      userSelect: 'none',
-      '&:hover': {
-        cursor: 'pointer'
-      }
-    }}
-      onClick={() => navigate('/user')}
-    >
-      <img src="/images/back-arrow.png" style={{ width: '30px', marginRight: '0.5em' }}></img>
-      <Typography sx={{ display: 'inline' }}>Back</Typography>
-    </Box>
-  )
-}
-
-function DropDown({ text, tc, bgc, element, showElement, setShowElement }: { text: string, tc: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
-  // const [showElement, setShowElement] = useState(false)
-
+function DropDown({ text, bgc, element, showElement, setShowElement }: { text: string, bgc: string, element: React.ReactNode, showElement: boolean, setShowElement: Function }) {
   return (
     <>
-      <Container sx={{
-        width: '50%',
-        marginTop: '2em',
-        marginBottom: '2em',
-        display: 'flex',
-        justifyContent: 'center',
-        userSelect: 'none',
-        backgroundColor: bgc,
-        color: tc,
-        padding: '0.5em',
-        borderRadius: '1em',
-        '&:hover': {
-          cursor: 'pointer'
-        }
-      }}
+      <Button
+        variant="contained"
+        sx={{
+          width: "30%",
+          backgroundColor: "#060C2A",
+          '&:hover': {
+            backgroundColor: bgc,
+          }
+        }}
         onClick={() => {
           setShowElement(!showElement)
         }}
       >
-        <Typography>{text}</Typography>
-      </Container>
-
+        {text}
+      </Button>
       {showElement && element}
-
     </>
   )
 }
 
+function ChangeAccountTypeForm() {
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [accountType, setAccountType] = useState<string>(''); // State to hold the selected account type
+  const authContext = useContext(AuthContext);
+  const user = authContext.currentUser;
 
-function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
+  // Initialize accountType with the user's current account type
+  useEffect(() => {
+    if (user) {
+      setAccountType(user.accountType);
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updatedUser = await updateAccountType(user!.username, user!.password, accountType);
+      authContext.setCurrentUser(updatedUser);
+      setShowSuccess(true)
+    } catch (error) {
+      console.error('Error updating account type:', error);
+    }
+  };
+
+  return (
+    <>
+      <Grid
+        width={"100%"}
+        padding={2}
+        sx={{
+          border: '1px solid #dddddd',
+          borderRadius: '1em',
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth>
+            <TextField
+              select
+              margin="normal"
+              id="account-select"
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              fullWidth
+              label="plan"
+              required
+            >
+              <MenuItem value={"Free"}>Free</MenuItem>
+              <MenuItem value={"Premium"}>Premium</MenuItem>
+              <MenuItem value={"Team"}>Team</MenuItem>
+            </TextField>
+          </FormControl>
+
+          <Container sx={{ width: 'fit-content', marginBottom: '1em' }}>
+            <Button variant='contained' type='submit'>Confirm</Button>
+          </Container>
+          {
+            showSuccess &&
+            <Alert severity="success" sx={{ marginBottom: '1em' }}>
+              Plan successfully changed.
+            </Alert>
+          }
+        </form>
+      </Grid>
+    </>
+  );
+}
+
+function ChangeEmailForm() {
   const authContext = useContext(AuthContext);
   const user = authContext.currentUser;
 
@@ -84,57 +120,31 @@ function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
       <Container sx={{
         border: '1px solid #dddddd',
         borderRadius: '1em',
-        maxWidth: '75%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative'
       }}>
-        <form onSubmit={async (e) => {
-          e.preventDefault()
-          if (newEmail != confEmail) {
-            window.alert('emails do not match')
-            return;
-          }
-          let a = await logInAndGetUser(user!.username, pass)
-          if (a == null) {
-            window.alert('incorrect password')
-            return
-          }
+        <form 
+          onSubmit={async (e) => {
+            e.preventDefault()
+            if (newEmail != confEmail) {
+              window.alert('emails do not match')
+              return;
+            }
+            let a = await logInAndGetUser(user!.username, pass)
+            if (a == null) {
+              window.alert('incorrect password')
+              return
+            }
 
-          let account = await changeEmail(user!.username, user!.password, newEmail)
-          if (!account) {
-            window.alert('an unknown error occured')
-            return
-          }
-          console.log(account)
-          authContext.setCurrentUser(account)
-          setShowSuccess(true)
-        }}
+            let account = await changeEmail(user!.username, user!.password, newEmail)
+            if (!account) {
+              window.alert('an unknown error occured')
+              return
+            }
+            console.log(account)
+            authContext.setCurrentUser(account)
+            setShowSuccess(true)
+          }}
           onFocus={() => setShowSuccess(false)}
         >
-
-
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Update email</Typography>
-
-          <Box sx={{
-            border: '1px solid black',
-            width: 'fit-content',
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            padding: '0 0.5em 0 0.5em',
-            borderRadius: '0.5em',
-            color: 'white',
-            backgroundColor: 'black',
-            userSelect: 'none',
-            '&:hover': {
-              cursor: 'pointer'
-            }
-          }}
-            onClick={() => { setShowElement(false) }}
-          >
-            <Typography>back</Typography>
-          </Box>
 
           <TextField
             fullWidth
@@ -188,7 +198,7 @@ function ChangeEmailForm({ setShowElement }: { setShowElement: Function }) {
   )
 }
 
-function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
+function ChangePasswordForm() {
   const [oldPass, setOldPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [confPass, setConfPass] = useState('')
@@ -202,10 +212,6 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
       <Container sx={{
         border: '1px solid #dddddd',
         borderRadius: '1em',
-        maxWidth: '75%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative'
       }}>
         <form
           onSubmit={async (e) => {
@@ -230,32 +236,7 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
             setShowSuccess(true)
           }}
           onFocus={() => setShowSuccess(false)}
-
         >
-
-
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Change password</Typography>
-
-          <Box sx={{
-            border: '1px solid black',
-            width: 'fit-content',
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            padding: '0 0.5em 0 0.5em',
-            borderRadius: '0.5em',
-            color: 'white',
-            backgroundColor: 'black',
-            userSelect: 'none',
-            '&:hover': {
-              cursor: 'pointer'
-            }
-          }}
-            onClick={() => setShowElement(false)}
-          >
-            <Typography>back</Typography>
-          </Box>
-
           <TextField
             fullWidth
             type='password'
@@ -307,100 +288,7 @@ function ChangePasswordForm({ setShowElement }: { setShowElement: Function }) {
   )
 }
 
-function ChangeAccountTypeForm({ setShowElement }: { setShowElement: Function }) {
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [accountType, setAccountType] = useState<string>(''); // State to hold the selected account type
-  const authContext = useContext(AuthContext);
-  const user = authContext.currentUser;
-
-  // Initialize accountType with the user's current account type
-  useEffect(() => {
-    if (user) {
-      setAccountType(user.accountType);
-    }
-  }, [user]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const updatedUser = await updateAccountType(user!.username, user!.password, accountType);
-      authContext.setCurrentUser(updatedUser);
-      setShowElement(false);
-      setShowSuccess(true)
-    } catch (error) {
-      console.error('Error updating account type:', error);
-    }
-  };
-
-  return (
-    <>
-      <Container
-        sx={{
-          border: '1px solid #dddddd',
-          borderRadius: '1em',
-          maxWidth: '75%',
-          marginTop: '1em',
-          marginBottom: '1em',
-          position: 'relative'
-        }}
-      >
-        <form onSubmit={handleSubmit}>
-          <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '30px', fontWeight: '600' }}>Change plan</Typography>
-          <Box
-            sx={{
-              border: '1px solid black',
-              width: 'fit-content',
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              padding: '0 0.5em 0 0.5em',
-              borderRadius: '0.5em',
-              color: 'white',
-              backgroundColor: 'black',
-              userSelect: 'none',
-              '&:hover': {
-                cursor: 'pointer'
-              }
-            }}
-            onClick={() => setShowElement(false)}
-          >
-            <Typography>back</Typography>
-          </Box>
-
-          <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
-            <TextField
-              select
-              margin="normal"
-              id="account-select"
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              fullWidth
-              label="plan"
-              required
-            >
-              <MenuItem value={"Free"}>Free</MenuItem>
-              <MenuItem value={"Premium"}>Premium</MenuItem>
-              <MenuItem value={"Team"}>Team</MenuItem>
-            </TextField>
-          </FormControl>
-
-          <Container sx={{ width: 'fit-content', marginBottom: '1em' }}>
-            <Button variant='contained' type='submit'>Confirm</Button>
-          </Container>
-          {
-            showSuccess &&
-            <Alert severity="success" sx={{ marginBottom: '1em' }}>
-              Plan successfully changed.
-            </Alert>
-          }
-        </form>
-      </Container>
-    </>
-  );
-}
-
-
-function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
+function DeleteAccountForm() {
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
   const authContext = useContext(AuthContext);
@@ -413,18 +301,12 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
         border: '1px solid #dddddd',
         borderRadius: '1em',
         maxWidth: '100%',
-        marginTop: '1em',
-        marginBottom: '1em',
-        position: 'relative',
-        paddingTop: '2em'
       }}>
         <form onSubmit={(e) => {
           e.preventDefault()
           console.log('submited');
 
         }}>
-
-
           <Typography component={'h1'} sx={{ width: 'fit-content', margin: 'auto', fontSize: '20px', fontWeight: '600' }}>
             Are you sure you wish to delete your account?
           </Typography>
@@ -476,11 +358,9 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
 
 
             }}>Delete</Button>
-            <Button variant='contained' sx={{ margin: '1em' }} onClick={() => setShowElement(false)}>Cancel</Button>
           </Container>
         </form>
       </Container>
-
     </>
   )
 }
@@ -488,7 +368,7 @@ function DeleteAccountForm({ setShowElement }: { setShowElement: Function }) {
 export default function ProfileManagementPage() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
-  const user = authContext.currentUser
+  // const user = authContext.currentUser
 
   const [showChangeEmail, setShowChangeEmail] = useState(false)
   const [showChangePass, setShowChangePass] = useState(false)
@@ -499,84 +379,113 @@ export default function ProfileManagementPage() {
     <>
       <Box
         bgcolor={"#7B54E8"}
-        height={"100vh"}
+        minHeight={"100vh"}
+        height={"fit-content"}
       >
         <Grid
           container
-          justifyContent={"space-between"}
-          height={"5%"}
-          padding={1}
-          paddingLeft={4}
-          paddingRight={4}
-        >
-          <Typography
-            variant="h5"
-            alignContent={"center"}
+          justifyContent={"space-between"} 
+          alignItems={"center"}
+          height={"8%"}
+          paddingLeft={"20px"}
+          paddingRight={"20px"}
+          wrap="nowrap"
+        > 
+          <Grid container wrap="nowrap" alignItems={"center"} width={"50%"} gap={1}>
+            <img src={logo} alt="Logo" width={"60px"}/>
+            <Typography 
+              variant="h5" 
+              fontWeight={"bold"}
+            >
+              Settings
+            </Typography>
+          </Grid>
+
+          <Button
+            variant="contained"
             sx={{
-              flexGrow: 1
+              backgroundColor: "#060C2A",
+              borderRadius: "100px"
+            }}
+            onClick={() => {
+              navigate("/user");
             }}
           >
             Dashboard
-          </Typography>
+          </Button>
 
-          {authContext.currentUser == null ? (
-            <>
-              <Button variant="contained" color="primary" href="/login" role="button">
-                Sign In
-              </Button>
-              <Button variant="contained" color="primary" href="/register" role="button">
-                Sign Up
-              </Button>
-            </>
-          ) : (
-            // DOESNT ACTUALLY LOG A USER OUT!!! FIX LATER!
-            <Button
-              variant="contained"
-              href="/"
-              role="button"
-              sx={{
-                backgroundColor: "#060C2A",
-                borderRadius: "100px"
-              }}
-              onClick={() => {
-                authContext.setCurrentUser(null);
-                navigate("/");
-              }}
-            >
-              Sign Out
-            </Button>
-          )}
         </Grid>
-        <Box sx={{
-          display: 'flex',
-          margin: '1em',
-          justifyContent: 'space-between'
-        }}>
-          <BackButton></BackButton>
-        </Box>
 
-        <Container sx={{ border: '1px solid #dddddd', backgroundColor: '#fcfcfc', marginTop: '1em', paddingTop: '1em' }} maxWidth='sm'>
-          <Box sx={{ width: 'fit-content', margin: 'auto', display: 'flex', alignItems: 'center' }}>
-            <img src="/images/empty-profile.png" style={{ width: '50px', marginRight: '0.5em' }}></img>
-            <Typography fontSize={20}>username: {user?.username}</Typography>
-          </Box>
+        <Grid
+          container
+          justifyContent={"space-between"}
+          wrap="nowrap"
+          height={"92%"}
+          padding={"20px"}
+          paddingTop={"0"}
+        >
+          <Paper 
+            elevation={10} 
+            square
+            sx={{ 
+              padding: "20px",
+              width: "100%",
+              height: "fit-content"
+            }}
+          >
+            
+            <Grid 
+              container
+              alignItems={"center"}
+              gap={1}
+              marginBottom={"20px"}
+            >
+              <AccountCircleIcon fontSize="large"/> 
+              <Typography variant="h5">
+                {authContext.currentUser?.username}
+              </Typography>
+            </Grid>
 
-          <DropDown
-            setShowElement={setShowChangeAccountType}
-            showElement={showChangeAccountType}
-            text={"Change Account Type"}
-            tc={"white"}
-            bgc={"black"}
-            element={<ChangeAccountTypeForm setShowElement={setShowChangeAccountType} />}
-          ></DropDown>
+            <Grid 
+              container
+              direction={"column"}
+              alignItems={"flex-start"}
+              gap={3}
+            >
+              <DropDown
+                setShowElement={setShowChangeAccountType}
+                showElement={showChangeAccountType}
+                text={"Change Plan"}
+                bgc={"#7B54E8"}
+                element={<ChangeAccountTypeForm />}
+              />
 
-          <DropDown setShowElement={setShowChangeEmail} showElement={showChangeEmail} text={"Update Email"} tc={"white"} bgc={"black"} element={<ChangeEmailForm setShowElement={setShowChangeEmail} />} ></DropDown>
+              <DropDown 
+                setShowElement={setShowChangeEmail} 
+                showElement={showChangeEmail} 
+                text={"Change Email"} 
+                bgc={"#7B54E8"} 
+                element={<ChangeEmailForm />} 
+              />
 
-          <DropDown setShowElement={setShowChangePass} showElement={showChangePass} text={"Change password"} tc={"white"} bgc={"black"} element={<ChangePasswordForm setShowElement={setShowChangePass} />} ></DropDown>
+              <DropDown 
+                setShowElement={setShowChangePass} 
+                showElement={showChangePass} 
+                text={"Change password"} 
+                bgc={"#7B54E8"} 
+                element={<ChangePasswordForm />} 
+              />
 
-          <DropDown setShowElement={setShowDeleteAcc} showElement={showDeleteAcc} text={"Delete account"} tc='white' bgc='red' element={<DeleteAccountForm setShowElement={setShowDeleteAcc} />} />
-
-        </Container>
+              <DropDown 
+                setShowElement={setShowDeleteAcc} 
+                showElement={showDeleteAcc} 
+                text={"Delete account"} 
+                bgc='red' 
+                element={<DeleteAccountForm />} 
+              />
+            </Grid>
+          </Paper>
+        </Grid>
       </Box>
     </>
   )
