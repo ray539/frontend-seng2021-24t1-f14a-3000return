@@ -3,7 +3,7 @@ import { xmlData } from './common.js';
 
 
 const RENDERING_ACCOUNT = {
-  email: 'a@gmail.com',
+  email: 'e@gmail.com',
   password: 'Password123'
 }
 
@@ -55,3 +55,11 @@ export async function callRenderingAPIPDF(xmlData) {
 // let res = callRenderingAPIPDF(xmlData).then(res => {
 //   console.log(res)
 // })
+
+// const res = await axios.post('http://rendering.ap-southeast-2.elasticbeanstalk.com/render', {
+//   email: 'd@gmail.com',
+//   password: 'Password123',
+//   nameFirst: 'a',
+//   nameLast: 'b'
+// })
+// console.log(res.data)
