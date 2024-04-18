@@ -212,7 +212,6 @@ export default function ValidatePage() {
                     >
                       Submit
                     </Button>
-
                     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="lg">
                       <Grid
                           container
