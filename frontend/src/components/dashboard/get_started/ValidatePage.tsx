@@ -212,48 +212,47 @@ export default function ValidatePage() {
                     >
                       Submit
                     </Button>
-
-                    <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+                    <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="lg">
                       <Grid
-                        container
-                        direction={"column"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        padding={"20px"}
-                        paddingTop={0}
+                          container
+                          direction={"column"}
+                          justifyContent={"center"}
+                          alignItems={"center"}
+                          padding={"20px"}
+                          paddingTop={0}
                       >
-                        <DialogTitle>{dialogMessage}</DialogTitle>
-                        {validationOutcome === "successful" ? (
-                          <>
-                            <Typography variant="body1">
-                              Your file has been successfully validated.
-                            </Typography>
-                            <br />
-                            <Button 
-                              variant="contained"
-                              sx={{
-                                backgroundColor: "#060C2A",
-                                borderRadius: "100px",
-                                '&:hover': {
-                                  backgroundColor: "#7B54E8",
-                                }
-                              }}
-                              disabled={!file || validationOutcome !== "successful"} 
-                              onClick={() => { handleFileStore(); navigate("/user"); }}
-                            >
-                              Store
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Typography variant="body1">
-                              {validationReason}
-                            </Typography>
-                            <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
-                          </>
-                        )}
+                          <DialogTitle>{dialogMessage}</DialogTitle>
+                          {validationOutcome === "successful" ? (
+                              <>
+                                  <Typography variant="body1">
+                                      Your file has been successfully validated.
+                                  </Typography>
+                                  <br />
+                                  <Button 
+                                      variant="contained"
+                                      sx={{
+                                          backgroundColor: "#060C2A",
+                                          borderRadius: "100px",
+                                          '&:hover': {
+                                              backgroundColor: "#7B54E8",
+                                          }
+                                      }}
+                                      disabled={!file || validationOutcome !== "successful"} 
+                                      onClick={() => { handleFileStore(); navigate("/user"); }}
+                                  >
+                                      Store
+                                  </Button>
+                              </>
+                          ) : (
+                              <>
+                                  <Typography variant="body1">
+                                      {validationReason}
+                                  </Typography>
+                                  <Typography variant="body1" dangerouslySetInnerHTML={{ __html: validationDetails }} />
+                              </>
+                          )}
                       </Grid>
-                    </Dialog>
+                  </Dialog>
                   </Grid>
               </>
             }
