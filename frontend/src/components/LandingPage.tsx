@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Typography, Button, Grid, Fade, Box } from "@mui/material";
+import { Typography, Button, Grid, Box } from "@mui/material";
 import { PrettyBox } from "./PrettyBox";
 import logo from '../assets/blacklogo.png'
-import brothers from '../assets/invoice-brothers.png'
-// import lockin from '../assets/lock-in.png'
+// import brothers from '../assets/invoice-brothers.png'
+import invoice from '../assets/invoice.png'
 
 export default function LandingPage() {
   const authContext = useContext(AuthContext);
@@ -90,51 +90,57 @@ export default function LandingPage() {
           color={"white"}
           wrap="nowrap"
           paddingLeft={"100px"}
-          paddingRight={"160px"}
         >
-          <Fade in={true}>
-            <Grid
-              container
-              direction={"column"}
-              width={"45%"}
-              justifyContent={"center"}
-              gap={2}
+          <Grid
+            container
+            direction={"column"}
+            width={"35%"}
+            justifyContent={"center"}
+            gap={2}
+          >
+            <Typography variant="h2" fontWeight={"bold"}>eInvoicing made simple</Typography>
+            <Typography variant="subtitle1">
+              Say goodbye to paper invoices and embrace the digital age. <br />
+              Revolutionize your billing process by effortlessly with creating, sending, and tracking eInvoices. <br />
+              Make invoicing hassle-free and eco-friendly with e-invoicing today!
+            </Typography>
+            <Button 
+              component={Link} 
+              to="/register" 
+              variant="contained"
+              sx={{
+                height: "40px",
+                marginTop: "20px",
+                borderRadius: "100px",
+                fontWeight: "bold",
+                backgroundColor: "#28ed8e",
+                '&:hover': {
+                  backgroundColor: "#44e397",
+                }
+              }}
             >
-              <Typography variant="h2" fontWeight={"bold"}>eInvoicing made simple</Typography>
-              <Typography variant="subtitle1">
-                Say goodbye to paper invoices and embrace the digital age. <br />
-                Revolutionize your billing process by effortlessly with creating, sending, and tracking eInvoices. <br />
-                Make invoicing hassle-free and eco-friendly with e-invoicing today!
-              </Typography>
-              <Button 
-                component={Link} 
-                to="/register" 
-                variant="contained"
-                sx={{
-                  height: "40px",
-                  marginTop: "20px",
-                  borderRadius: "100px",
-                  fontWeight: "bold",
-                  backgroundColor: "#28ed8e",
-                  '&:hover': {
-                    backgroundColor: "#44e397",
-                  }
-                }}
-              >
-                Get started
-              </Button>
-            </Grid>
-          </Fade>
+              Get started
+            </Button>
+          </Grid>
           
-          <PrettyBox 
-            width="auto" 
-            colour="#060C2A" 
-            element={
-              <>
-                <img src={brothers} alt="eInvoicing brothers" height={"100%"} />
-              </>
-            }
-          />
+          <Grid 
+            container
+            width={"65%"}
+            paddingLeft={"12vw"}
+          >
+            <PrettyBox 
+              width="auto" 
+              colour="#060C2A" 
+              element={
+                <>
+                  <Grid container justifyContent={"center"} alignItems={"center"} height={"100%"}>
+                    <img src={invoice} alt="eInvoicing brothers"  width={"50%"}/>
+                  </Grid>
+                </>
+              }
+            />
+          </Grid>
+          
         </Grid>
         
         <Box height={"10vh"}></Box>
