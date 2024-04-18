@@ -217,8 +217,8 @@ export default function LandingPage() {
                   container
                   direction={"row"}
                   wrap="nowrap"
-                  justifyContent={"space-between"}
                   width={"100%"}
+                  marginBottom={"-20px"}
                 >
                   <Grid
                     container
@@ -259,8 +259,8 @@ export default function LandingPage() {
                   container
                   direction={"row"}
                   wrap="nowrap"
-                  justifyContent={"space-between"}
                   width={"100%"}
+                  marginBottom={"-20px"}
                 >
                   <Grid
                     container
@@ -269,7 +269,9 @@ export default function LandingPage() {
                   >
                     <Typography variant="h5">Team</Typography>
                     <Typography>
-                      - coming soon
+                      - Work in teams of at at least 5 users <br />
+                      - Each user receives a premium account <br />
+                      - Users in a team gain access to new features, allowing collaborative work
                     </Typography>
                   </Grid>
                   <Grid
@@ -278,7 +280,7 @@ export default function LandingPage() {
                     alignItems={"center"}
                     width={"30%"}
                   >
-                    <Typography variant="h3">Contact us</Typography>
+                    <Typography variant="h4">Coming soon</Typography>
                   </Grid>
                 </Grid>
               </>
