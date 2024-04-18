@@ -386,15 +386,18 @@ const validateFormData = (formData: CreationFormData) => {
     for (let field in item) {
       if (!(item as any)[field]) {
         window.alert('you have not filled in one or more fields in one of the items')
+        return
       }
     }
 
     if (!/^[0-9]+$/.test(item.InvoicedQuantity)) {
       window.alert('invalid value for quantity was found in one of the items')
+      return
     }
 
     if (!/^[0-9]+\.[0-9]{2}$/.test(item.UnitPrice)) {
       window.alert('make sure that all unitPrices for all items are given strictly as a decimal to 2dp. Note: 0 is 0.00.')
+      return
     }
   }
 
@@ -459,6 +462,13 @@ export default function CreationFormPage() {
           textLabel='10.00'
           value={formData.InvoiceLines[i].UnitPrice}
           setterFn={(v: string) => setItem("UnitPrice", i, v)}
+          >
+        </StringField>
+        <StringField
+          label="Quantity"
+          textLabel='3'
+          value={formData.InvoiceLines[i].InvoicedQuantity}
+          setterFn={(v: string) => setItem("InvoicedQuantity", i, v)}
           >
         </StringField>
       </div>

@@ -9,6 +9,13 @@ import { callRenderingAPIPDF } from './external-apis/rendering.js'
 import axios from 'axios'
 import 'express-async-errors'
 import { convertDataToInvoice } from './external-apis/creation.js'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+console.log(__dirname)
 
 // app
 const app = express();
@@ -17,6 +24,7 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan())
 app.use(express.text({ type: 'application/xml' }))
+
 
 
 // bcrypt
@@ -754,3 +762,7 @@ app.put('/api/updateAccountType', async (req, res) => {
   await user.save();
   res.json(user)
 });
+
+app.get('*', (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'index.html'))
+})
