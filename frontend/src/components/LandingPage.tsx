@@ -1,8 +1,11 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Typography, Button, Grid, Paper } from "@mui/material";
+import { Typography, Button, Grid, Fade, Box } from "@mui/material";
+import { PrettyBox } from "./PrettyBox";
 import logo from '../assets/blacklogo.png'
+import brothers from '../assets/invoice-brothers.png'
+// import lockin from '../assets/lock-in.png'
 
 export default function LandingPage() {
   const authContext = useContext(AuthContext);
@@ -11,8 +14,8 @@ export default function LandingPage() {
     <>
       <Grid
         container
+        direction={"column"}
         bgcolor={"#7B54E8"}
-        minHeight={"100vh"}
         height={"fit-content"}
         justifyContent={"center"}
         alignItems={"flex-start"}
@@ -82,102 +85,208 @@ export default function LandingPage() {
         
         <Grid
           container
+          justifyContent={"space-between"}
           direction={"row"}
           color={"white"}
           wrap="nowrap"
+          paddingLeft={"100px"}
+          paddingRight={"160px"}
         >
-          <Grid
-            item
-            width={"45%"}
-          >
-            <Typography variant="h2" fontWeight={"bold"}>eInvoicing made simple</Typography>
-            <Typography variant="subtitle1">
-              Say goodbye to paper invoices and embrace the digital age. <br />
-              Revolutionize your billing process by effortlessly creating, sending, and tracking eInvoices. <br />
-              Make invoicing hassle-free and eco-friendly with e-invoicing today!
-            </Typography>
-          </Grid>
-          <Grid
-            container
-            width={"55%"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Button 
-              component={Link} 
-              to="/register" 
-              variant="contained"
-              sx={{
-                height: "40px",
-                borderRadius: "100px",
-                fontWeight: "bold",
-                backgroundColor: "#28ed8e",
-                '&:hover': {
-                  backgroundColor: "#44e397",
-                }
-              }}
+          <Fade in={true}>
+            <Grid
+              container
+              direction={"column"}
+              width={"45%"}
+              justifyContent={"center"}
+              gap={2}
             >
-              Get started
-            </Button>
-
-          </Grid>
+              <Typography variant="h2" fontWeight={"bold"}>eInvoicing made simple</Typography>
+              <Typography variant="subtitle1">
+                Say goodbye to paper invoices and embrace the digital age. <br />
+                Revolutionize your billing process by effortlessly with creating, sending, and tracking eInvoices. <br />
+                Make invoicing hassle-free and eco-friendly with e-invoicing today!
+              </Typography>
+              <Button 
+                component={Link} 
+                to="/register" 
+                variant="contained"
+                sx={{
+                  height: "40px",
+                  marginTop: "20px",
+                  borderRadius: "100px",
+                  fontWeight: "bold",
+                  backgroundColor: "#28ed8e",
+                  '&:hover': {
+                    backgroundColor: "#44e397",
+                  }
+                }}
+              >
+                Get started
+              </Button>
+            </Grid>
+          </Fade>
           
-          
+          <PrettyBox 
+            width="auto" 
+            colour="#060C2A" 
+            element={
+              <>
+                <img src={brothers} alt="eInvoicing brothers" height={"100%"} />
+              </>
+            }
+          />
         </Grid>
         
+        <Box height={"10vh"}></Box>
 
-        <Paper
-          elevation={10} 
-          square
-          sx={{ 
-            width: "100%",
-          }}
-        >
-          <Grid
-            container
-            bgcolor={"white"}
-            padding={2}
-            justifyContent={"center"}
-          >
-            <Typography variant="h4">Our Plans</Typography>
-            <Grid container spacing={4} justifyContent="center">
-              <Grid item xs={12} sm={4}>
-                <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="h5">Free</Typography>
-                  <Typography variant="h6" sx={{ mt: 1 }}>Free</Typography>
-                  <Typography>
-                    - Invoice creation <br />
-                    - Invoice validation <br />
-                    - Store up to five invoices
-                  </Typography>
-                </Paper>
-              </Grid>
+        
 
-              <Grid item xs={12} sm={4}>
-                <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="h5">Premium</Typography>
-                  <Typography variant="h6" sx={{ mt: 1 }}>$15/month</Typography>
-                  <Typography>
-                    - Access to the same features as the free plan <br />
-                    - Invoice rendering <br />
-                    - Invoice sending <br />
-                    - Unlimited storage
-                  </Typography>
-                </Paper>
-              </Grid>
+        
 
-              <Grid item xs={12} sm={4}>
-                <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="h5">Team</Typography>
-                  <Typography variant="h6" sx={{ mt: 1 }}>Contact us</Typography>
-                  <Typography>
-                    - Coming soon!
-                  </Typography>
-                </Paper>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
+      </Grid>
+
+      <Grid
+        container
+        direction={"column"}
+        height={"fit-content"}
+        // alignItems={"flex-start"}
+        bgcolor={"#060C2A"}
+        padding={"5vw"}
+        paddingTop={"3vw"}
+        gap={4}
+      >
+        {/* <Grid container width={"auto"}>
+          <PrettyBox 
+            width="50%" 
+            colour="#060C2A" 
+            element={
+              <>
+                <img src={lockin} alt="cat saying lock in" height={"100%"} />
+              </>
+            }
+          />
+        </Grid> */}
+
+        <Typography variant="h3" fontWeight={"bold"} color={"white"}>Our Subsciption Plans</Typography>
+        <Grid container width={"auto"}>
+          <PrettyBox
+            width={"100%"}
+            colour="#7B54E8"
+            element={
+              <>
+                <Grid
+                  container
+                  direction={"row"}
+                  wrap="nowrap"
+                  justifyContent={"space-between"}
+                  width={"100%"}
+                >
+                  <Grid
+                    container
+                    direction={"column"}
+                    width={"70%"}
+                  >
+                    <Typography variant="h5">Free</Typography>
+                    <Typography>
+                      - Invoice creation <br />
+                      - Invoice validation <br />
+                      - Store up to five invoices
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    container
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={"30%"}
+                  >
+                    <Typography variant="h3">Free</Typography>
+                  </Grid>
+                </Grid>
+              </>
+            }
+          />
+        </Grid>
+
+        <Grid container width={"auto"}>
+          <PrettyBox
+            width={"100%"}
+            colour="#7B54E8"
+            element={
+              <>
+                <Grid
+                  container
+                  direction={"row"}
+                  wrap="nowrap"
+                  width={"100%"}
+                  marginBottom={"-20px"}
+                >
+                  <Grid
+                    container
+                    direction={"column"}
+                    width={"70%"}
+                  >
+                    <Typography variant="h5">Premium</Typography>
+                    <Typography>
+                      - Access to the same features as the free plan <br />
+                      - Invoice rendering <br />
+                      - Invoice sending <br />
+                      - Unlimited storage
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    container
+                    direction={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={"30%"}
+                  >
+                    <Typography variant="h3">$15</Typography>
+                    <Typography variant="h5">per month</Typography>
+                  </Grid>
+                </Grid>
+              </>
+            }
+          />
+        </Grid>
+
+        <Grid container width={"auto"}>
+          <PrettyBox
+            width={"100%"}
+            colour="#7B54E8"
+            element={
+              <>
+                <Grid
+                  container
+                  direction={"row"}
+                  wrap="nowrap"
+                  width={"100%"}
+                  marginBottom={"-20px"}
+                >
+                  <Grid
+                    container
+                    direction={"column"}
+                    width={"70%"}
+                  >
+                    <Typography variant="h5">Team</Typography>
+                    <Typography>
+                      - Work in teams of at at least 5 users <br />
+                      - Each user receives a premium account <br />
+                      - Users in a team gain access to new features, allowing collaborative work
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    container
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    width={"30%"}
+                  >
+                    <Typography variant="h4">Coming soon</Typography>
+                  </Grid>
+                </Grid>
+              </>
+            }
+          />
+        </Grid>
       </Grid>
     </>
   );
