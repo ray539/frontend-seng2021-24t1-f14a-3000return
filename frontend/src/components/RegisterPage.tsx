@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import react from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { TextField, Button, Alert, Typography, Link, Grid, MenuItem, Box, Container } from '@mui/material';
+import { TextField, Button, Alert, Typography, Link, Grid, MenuItem, Container } from '@mui/material';
 import { registerUser } from "../service/service";
 import logo from '../assets/logo.png'
 import { PrettyBox } from "./PrettyBox";
@@ -84,15 +84,15 @@ function TeamCreationForm({setTeamsPage}: {setTeamsPage: Function}) {
   )
 }
 
-function AccountRegistrationForm({teamsPage, setTeamsPage}: {teamsPage: boolean, setTeamsPage: Function}) {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showError, setShowError] = useState(false);
-  const [plan, setPlan] = useState('');
+function AccountRegistrationForm({setTeamsPage}: {teamsPage: boolean, setTeamsPage: Function}) {
+  const [username, setUsername] = react.useState('');
+  const [email, setEmail] = react.useState('');
+  const [password, setPassword] = react.useState('');
+  const [confirmPassword, setConfirmPassword] = react.useState('');
+  const [showError, setShowError] = react.useState(false);
+  const [plan, setPlan] = react.useState('');
   const navigate = useNavigate();
-  const authContext = useContext(AuthContext);
+  const authContext = react.useContext(AuthContext);
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -231,9 +231,7 @@ function AccountRegistrationForm({teamsPage, setTeamsPage}: {teamsPage: boolean,
 export default function RegisterPage() {
   const navigate = useNavigate();
 
-  const [teamsPage, setTeamsPage] = useState(false)
-  
-  const authContext = useContext(AuthContext);
+  const [teamsPage, setTeamsPage] = react.useState(false)
 
   return (
     <>

@@ -224,9 +224,10 @@ function ManageInvoicePopup({ invoices, setInvoices, index, setPopup }: { invoic
               </ListItemButton>
               }
           </Box>
-          <Button variant='contained' onClick={() => {
-            pushTagListChanges(tempTagList)
-            pushUserTaglistChanges()
+          <Button variant='contained' onClick={async () => {
+            await pushTagListChanges(tempTagList)
+            await pushUserTaglistChanges()
+            setPopup(false)
           }}>
             save changes
           </Button>
