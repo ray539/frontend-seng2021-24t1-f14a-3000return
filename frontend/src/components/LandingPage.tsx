@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContextProvider";
-import { Typography, Button, Grid, Fade, Box } from "@mui/material";
+import { Typography, Button, Grid, Box } from "@mui/material";
 import { PrettyBox } from "./PrettyBox";
 import logo from '../assets/blacklogo.png'
-import brothers from '../assets/invoice-brothers.png'
+// import brothers from '../assets/invoice-brothers.png'
 import invoice from '../assets/invoice.png'
 
 export default function LandingPage() {
