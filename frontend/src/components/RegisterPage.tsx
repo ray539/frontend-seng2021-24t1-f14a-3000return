@@ -74,16 +74,9 @@ function TeamCreationForm({setTeamsPage}: {setTeamsPage: Function}) {
             >
               create team
             </Button>
-            <Typography>
-              Team code
-            </Typography>
             <Typography variant='caption' sx={{textAlign:'center'}}>
-              Share this code with your teammates when they register their account.
+              Your team code will be visible from your account.
             </Typography>
-            <Container sx={{width: '100%', border: '1px solid black', display: 'flex', justifyContent: 'space-between'}}>
-              <Typography>Promo code:</Typography>
-              <Typography sx={{backgroundColor: 'lightgrey'}}>Qafiaias12ASdasd</Typography>
-            </Container>
           </Grid>
         </form>
       </Grid>
