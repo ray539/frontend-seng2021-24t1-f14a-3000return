@@ -205,6 +205,7 @@ app.post('/api/validate', async (req, res) => {
 
   const xmlData = req.body
   const data = await callValidationAPIJSON(xmlData)
+  console.log(data)
   return res.json(data)
 })
 
